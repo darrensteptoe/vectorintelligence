@@ -1,32 +1,37 @@
-# Campaign Finance Engine (CFE) — Final Hardening Build
+# Campaign Finance Engine (CFE) — Final Words Pack
 
-This workspace contains the hardened CFE implementation aligned to the final hardening pack controls.
+This pack is the final language layer for the Campaign Finance Engine handoff.
 
-## Implemented hardening scope
-- 12-page app map aligned to `APP_MAP_AND_INFORMATION_ARCHITECTURE.md`
-- shell-level right-rail payload and page-question/manual guidance injection
-- role-aware permission payloads for top-level surfaces
-- state transition alignment for budget/scenario/bridge/activity/risk governance
-- diagnostics engine (`PASS/FAIL`) for canonical contract drift checks
-- snapshot governance extensions for budget and funding-path roundtrips
-- expanded test pack for routes, diagnostics, and snapshot contracts
+Its purpose is to give Codex the exact product voice and operator-facing language that typically gets left too thin:
+- page-by-page manual text
+- report body copy
+- warning libraries by trigger family
+- right-rail helper text by page
+- empty states and interpretive microcopy
+- a final implementation prompt
 
-## Route map
-- `/overview`
-- `/budget`
-- `/timeline`
-- `/benchmarks`
-- `/funding-path`
-- `/finance-operations`
-- `/donor-intelligence`
-- `/expenditure-intelligence`
-- `/risks`
-- `/reports`
-- `/manual`
-- `/settings-data-imports`
+This pack should be used alongside the earlier:
+- foundation pack
+- full handoff pack
+- surface pack
+- component pack
+- hardening pack
 
-## Verify
-```bash
-npm test
-node -e "import('./src/index.js').then(({bootstrapCfe,APP_ROUTES})=>{const {shell}=bootstrapCfe();for(const r of APP_ROUTES){shell.navigate(r.path);shell.render();}console.log('render-ok',APP_ROUTES.length);})"
-```
+## Included
+- PAGE_BY_PAGE_MANUAL_TEXT.md
+- REPORT_BODY_COPY_LIBRARY.md
+- WARNING_LIBRARY_BY_TRIGGER_FAMILY.md
+- RIGHT_RAIL_HELPER_TEXT_BY_PAGE.md
+- EMPTY_STATES_AND_INTERPRETIVE_MICROCOPY.md
+- MANUAL_TONE_AND_ECOSYSTEM_ALIGNMENT.md
+- prompts/CODEX_FINAL_WORDS_PROMPT.md
+
+## Standard to hold
+CFE must read like the finance sibling to FPE:
+- serious
+- dense without being muddy
+- helpful to skilled operators
+- explicit about uncertainty
+- never generic
+- never filler-heavy
+- always consultant-grade and campaign-usable

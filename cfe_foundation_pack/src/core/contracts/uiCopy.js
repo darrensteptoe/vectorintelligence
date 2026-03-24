@@ -419,9 +419,14 @@ export const UI_STRINGS = {
   buttons: [
     "Build Budget Plan",
     "Add Budget Line",
-    "Rebuild Path",
+    "Generate Path",
+    "Rebuild Benchmark",
+    "Mark as Conditional",
+    "Needs Review",
+    "Promote to Active Scenario",
     "Import Field Snapshot",
     "Generate Report",
+    "Export Report",
     "Schedule Activity",
     "Log Call Time",
     "Add Event",
@@ -430,7 +435,6 @@ export const UI_STRINGS = {
     "Apply Override",
     "Save Classification",
     "Review Unknowns",
-    "Export Memo",
     "View Risk Detail",
     "Compare Scenario",
     "Return to Overview"
@@ -636,62 +640,122 @@ export const STATE_MATRIX = {
 
 export const EMPTY_STATES = {
   budget:
-    "No budget lines have been added yet. Start with the campaign's known fixed costs and the field posture you already expect to fund.",
+    "No budget lines have been entered yet. Start by defining the major campaign domains first: field, staff, consultants, digital, events, compliance, operations, and reserve. Precision can come later. Clarity comes first.",
   timeline:
-    "No spend timeline is available yet. Add budget lines and timing assumptions first so the engine can map cost pressure over time.",
+    "The timeline cannot calculate pressure without timing. Add start dates, end dates, or phase placement to budget lines to see when the plan demands cash.",
   benchmarks:
-    "No benchmark set is active. Benchmarks help the campaign understand whether the selected plan looks ordinary, aggressive, or unusually light for this race type.",
+    "No historical analogs have been selected yet. Benchmarks are strongest when they are chosen intentionally rather than assumed from a generic race label.",
   fundingPath:
-    "No funding path has been generated yet. Compute the path once a budget plan, current campaign condition, and timing assumptions are in place.",
+    "Channel targets have not been generated yet. Once the funding path is active, this page will translate required dollars into finance work by source.",
   channels:
-    "No channel target plan is active. Channel targets should come after the core funding requirement is computed.",
+    "Current channel assumptions are lightly supported. Treat this plan as directional until the campaign records enough real activity to sharpen it.",
   activity:
-    "No finance activities are scheduled for this period yet. Use the calendar to turn the path into actual work.",
+    "No finance activity is scheduled. A path without activity becomes a wish. Add call time, donor meetings, events, and follow-up blocks to make the plan executable.",
   pledges:
-    "No pledges are currently tracked. Record commitments separately from receipts so the campaign can see what is promised, what is late, and what is real.",
+    "No pledge records are currently tracked. Distinguish commitments from received money so timing risk stays visible.",
   donors:
-    "No donor intelligence summary is ready yet. Import contribution data and review the geography and occupation outputs.",
+    "Donor intelligence appears once the campaign imports or records contribution data. This page is most useful when it can compare donor geography, occupation, and concentration over time.",
   spending:
-    "No spending intelligence summary is ready yet. Import expenditure data and review category and vendor classification.",
+    "No expenditure records are available yet. Once spend data is loaded, this page will compare budget, actuals, and category mix.",
   risks:
-    "No formal risks are active under the current thresholds. Stay alert anyway: absence of a formal warning is not the same thing as proof of safety."
+    "No active risks are currently triggered under the selected scenario. That does not mean the campaign can relax discipline. It means the current path is not showing immediate warning conditions."
 };
 
 export const GLOBAL_EMPTY_STATES = {
-  noHistoricalData: {
-    header: "No benchmark context is attached yet",
+  noCampaignSelected: {
+    header: "No campaign selected",
     body:
-      "Historical evidence is optional for planning, but it strengthens realism and report context once comparables are loaded."
+      "Select or create a campaign to begin building a finance path. CFE is strongest when tied to a real race, a real budget structure, and a real operating timeline."
+  },
+  noActiveScenario: {
+    header: "No active scenario",
+    body:
+      "No active budget scenario is selected. Choose a scenario to view path, risk, and report outputs in context."
+  },
+  noDataYet: {
+    header: "No data yet",
+    body:
+      "This surface becomes useful as soon as the campaign defines its plan or imports its first evidence. Empty does not mean broken. It means the campaign has not yet taught the engine what it is trying to run."
+  },
+  noHistoricalData: {
+    header: "No comparables selected",
+    body:
+      "Historical evidence is currently absent. Benchmarks are strongest when comparables are selected intentionally and reviewed for relevance."
   },
   noDonorIntelligence: {
-    header: "No donor intelligence summary is available yet",
+    header: "No donor records",
     body:
-      "Import or sync contribution data, then review geography and occupation outputs."
+      "Donor intelligence appears once contribution data is imported or entered."
   },
   noReportContext: {
-    header: "Report cannot be generated yet",
+    header: "No active report context",
     body:
-      "A required campaign, path, or intelligence snapshot is missing. Refresh the underlying snapshot first."
+      "Choose an active scenario and refresh canonical snapshots before generating circulation output."
   }
 };
 
 export const TOOLTIP_LIBRARY = {
-  onPath: "Tracking broadly in line with the current funding requirement.",
-  watch: "Still recoverable, but the margin for error has narrowed.",
-  offPath: "Behind the active funding path relative to upcoming cost pressure.",
+  onPath: "A summary read that the campaign's pace and structure are consistent with the active funding path.",
+  watch: "Still recoverable, but margin has narrowed and upcoming checkpoints depend on cleaner execution.",
+  offPath: "Current production timing is insufficient for the active plan and reserve protection is increasingly exposed.",
   healthyReserve: "Reserve is currently in a workable range for the next spending window.",
-  tightReserve: "Reserve is thinner than preferred and should be watched closely.",
-  atRiskReserve: "Reserve is below a safe range for the next spending window.",
+  tightReserve: "Reserve flexibility is thinning; one soft period could create immediate operating pressure.",
+  atRiskReserve: "Reserve floor protection is below safe operating range for the next commitment window.",
   comparableRaces:
     "Historical campaigns used to benchmark realism, thresholds, and timing norms.",
   reserveFloor:
-    "The minimum cushion the campaign should maintain to avoid obvious timing stress and prevent routine cash disruption.",
+    "The minimum cushion the campaign should preserve to avoid turning normal variance into operational instability.",
+  competitiveThreshold:
+    "A historically informed funding level at which campaigns of this type begin to look financially credible.",
+  conditionalCost:
+    "A real planned cost that should not be treated as safely fundable until the campaign reaches a stronger condition.",
+  concentrationRisk:
+    "The extent to which current finance strength depends on a narrow set of donors, geographies, or channels.",
+  pathStatus:
+    "A summary of whether the campaign's current pace and structure are consistent with the active funding path.",
   checkpointTarget:
     "What the campaign should have raised or effectively secured by a specific upcoming date.",
   modeledValue: "An estimate generated from CFE logic rather than directly imported source data.",
   standardizedValue: "A source value that has been normalized for comparison and analysis.",
   manualOverride:
     "A reviewed value that intentionally supersedes the app's default classification or grouping."
+};
+
+export const SHORT_INTERPRETIVE_LINES = {
+  positive: [
+    "Current condition is building real flexibility, not just short-term relief.",
+    "The campaign is protecting its next checkpoint rather than borrowing from it.",
+    "Current activity is carrying the path in a meaningful way.",
+    "Reserve protection is improving the campaign's decision quality.",
+    "The donor base is broadening in ways that support more durable finance strength."
+  ],
+  mixed: [
+    "Current strength is real, but cushion remains limited.",
+    "The path is holding, though too much depends on clean execution next period.",
+    "Gross performance is respectable, but timing pressure remains.",
+    "The plan is viable, though less forgiving than the top-line summary suggests.",
+    "The campaign is still in range, but concentration and reserve pressure deserve attention."
+  ],
+  negative: [
+    "Current pace is not doing enough to protect the next operating pressure point.",
+    "The campaign is carrying more of the path in assumption than in received money.",
+    "Too much of the current structure depends on one channel or one donor cluster.",
+    "The budget path has become heavier than the current finance program is carrying safely.",
+    "Execution discipline is no longer strong enough to support the modeled plan without correction."
+  ]
+};
+
+export const BUTTON_PROMPTS = {
+  generatePath:
+    "Generate the current funding path from the selected budget, timing, and benchmark inputs.",
+  rebuildBenchmark: "Recalculate the benchmark layer from the current comparable pool and settings.",
+  markAsConditional:
+    "Use this when the campaign would like to carry a cost, but should not treat it as safely funded under current conditions.",
+  needsReview:
+    "Use this when the available data supports cautious interpretation but not confident classification.",
+  promoteToActiveScenario: "Make this the scenario that drives dashboards, risk, and reports.",
+  exportReport:
+    "Create a report from the active canonical snapshot so language and numbers remain aligned."
 };
 
 export const CORE_CARD_TITLES = [

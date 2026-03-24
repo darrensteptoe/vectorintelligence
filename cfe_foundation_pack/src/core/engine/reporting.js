@@ -75,11 +75,11 @@ export function composeWeeklyFinanceMemo(input) {
     preface: REPORT_PREFACE_VARIANTS.standard,
     section_structure: REPORT_SECTION_STRUCTURE,
     executive_summary: executiveSummary,
-    funding_status_read:
-      `The current raise path calls for ${currency(input.plannedRaiseThisPeriod)} during this period. ` +
-      `The campaign recorded ${currency(input.raisedThisPeriod)}, leaving a period variance of ${currency(
-        variance
-      )}. Current attainment is ${percent(attainment)}.`,
+    funding_status_read: WEEKLY_FINANCE_MEMO_CONTENT.fundingStatusTemplate
+      .replace("[target_period_amount]", currency(input.plannedRaiseThisPeriod))
+      .replace("[actual_period_amount]", currency(input.raisedThisPeriod))
+      .replace("[variance_amount]", currency(variance)),
+    raise_pace_read: WEEKLY_FINANCE_MEMO_CONTENT.raisePaceParagraph,
     activity_read: WEEKLY_FINANCE_MEMO_CONTENT.activityReadTemplate,
     pledge_pipeline_read: WEEKLY_FINANCE_MEMO_CONTENT.pledgeReadTemplate,
     risk_read: WEEKLY_FINANCE_MEMO_CONTENT.riskReadTemplates,
@@ -88,10 +88,12 @@ export function composeWeeklyFinanceMemo(input) {
       path_phrase: statusPhrase(pathStatus),
       reserve_status: input.reserveStatus,
       raised_this_period: currency(input.raisedThisPeriod),
-      planned_raise_this_period: currency(input.plannedRaiseThisPeriod)
+      planned_raise_this_period: currency(input.plannedRaiseThisPeriod),
+      attainment: percent(attainment)
     },
     recommended_actions:
       input.recommendations.length > 0 ? input.recommendations : WEEKLY_FINANCE_MEMO_CONTENT.defaultActions,
+    closing_action_read: WEEKLY_FINANCE_MEMO_CONTENT.closingActionParagraph,
     closing: UNIVERSAL_CLOSING_BLOCK
   };
 }
@@ -104,10 +106,11 @@ export function composeCandidateBrief(input) {
     title: CANDIDATE_BRIEF_CONTENT.title,
     opening: CANDIDATE_BRIEF_CONTENT.opening,
     preface: REPORT_PREFACE_VARIANTS.candidateFacing,
-    current_position:
-      CANDIDATE_BRIEF_CONTENT.currentPositionTemplate
-        .replace("[path_status]", input.fundingStatus ?? "Watch")
-        .replace("[near_term_goal]", currency(input.weeklyRaiseGoal)),
+    current_position: CANDIDATE_BRIEF_CONTENT.currentPositionTemplate
+      .replace("[path_status]", input.fundingStatus ?? "Watch")
+      .replace("[near_term_goal]", currency(input.weeklyRaiseGoal)),
+    call_time_read: CANDIDATE_BRIEF_CONTENT.callTimeLanguage,
+    top_asks_read: CANDIDATE_BRIEF_CONTENT.topAsksLanguage,
     candidate_priorities:
       input.topAsks.length > 0
         ? [`Make these asks first: ${input.topAsks.join(", ")}`].concat(CANDIDATE_BRIEF_CONTENT.priorities)
@@ -116,6 +119,7 @@ export function composeCandidateBrief(input) {
     event_priorities: input.eventPriorities,
     one_risk: input.oneRisk,
     tone_variants: CANDIDATE_BRIEF_CONTENT.toneVariants,
+    briefing_close: CANDIDATE_BRIEF_CONTENT.close,
     closing: UNIVERSAL_CLOSING_BLOCK
   };
 }
@@ -163,10 +167,14 @@ export function composeLeadershipMemo(input) {
       .replace("[pressure_window]", input.spendingPressureNote)
       .replace("[safely_fundable_summary]", input.safeCommitments.join(", "))
       .replace("[less_secure_summary]", input.unsafeCommitments.join(", ")),
+    safely_fundable_read: BUDGET_HEALTH_REPORT_CONTENT.safelyFundableTemplate
+      .replace("[safely_fundable_summary]", input.safeCommitments.join(", "))
+      .replace("[less_secure_summary]", input.unsafeCommitments.join(", ")),
     field_affordability: input.fieldAffordabilityNote,
     safe_to_proceed: input.safeCommitments,
     do_not_proceed_yet: input.unsafeCommitments,
     recommended_actions: input.decisionPoints,
+    budget_close: BUDGET_HEALTH_REPORT_CONTENT.closingActionParagraph,
     closing: UNIVERSAL_CLOSING_BLOCK
   };
 }
@@ -186,9 +194,11 @@ export function composeDonorIntelligenceMemo(input) {
       "[top_occupation_summary]",
       input.interpretation
     ),
-    concentration_read: DONOR_INTELLIGENCE_MEMO_CONTENT.concentrationTemplate
-      .replace("[concentration_read]", input.interpretation),
-    closing: UNIVERSAL_CLOSING_BLOCK
+    concentration_read: DONOR_INTELLIGENCE_MEMO_CONTENT.concentrationTemplate.replace(
+      "[concentration_read]",
+      input.interpretation
+    ),
+    closing: DONOR_INTELLIGENCE_MEMO_CONTENT.closing
   };
 }
 

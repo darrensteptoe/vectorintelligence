@@ -1,3 +1,7 @@
+import {
+  ECOSYSTEM_ALIGNMENT_RULES,
+  RIGHT_RAIL_HELPER_BY_PAGE
+} from "../core/contracts/manualLanguage.js";
 import { HARDENING_ACCEPTANCE_FOCUS, RIGHT_RAIL_SECTIONS } from "../core/contracts/hardening.js";
 
 /**
@@ -28,7 +32,22 @@ function nextAction(state) {
   if (state.snapshots.reports.weeklyFinanceMemo?.recommended_actions?.[0]) {
     return state.snapshots.reports.weeklyFinanceMemo.recommended_actions[0];
   }
-  return "No elevated warning is active; continue disciplined weekly execution and snapshot review.";
+  return "No elevated warning is active; continue disciplined weekly execution and protect the next checkpoint margin.";
+}
+
+/**
+ * @param {string} route
+ */
+function helperForRoute(route) {
+  return (
+    RIGHT_RAIL_HELPER_BY_PAGE[route] ?? {
+      rail_title: "How to read this page",
+      rail_body:
+        "Use this page as an operating coach: read condition, identify the exposed decision, and choose the most controllable correction.",
+      good_discipline: "Prefer early correction over late rescue behavior.",
+      bad_habit: "Do not confuse polished summaries with protected operating reality."
+    }
+  );
 }
 
 /**
@@ -38,10 +57,17 @@ function nextAction(state) {
 export function buildRightRail(route, state) {
   const funding = state.snapshots.fundingRequirement;
   const diagnostics = state.snapshots.diagnostics;
+  const helper = helperForRoute(route);
 
   return {
     route,
     section_order: RIGHT_RAIL_SECTIONS,
+    coach_block: {
+      title: helper.rail_title,
+      body: helper.rail_body,
+      good_discipline: helper.good_discipline,
+      bad_habit: helper.bad_habit
+    },
     current_state: {
       scenario_id: state.scenarioId,
       scenario_state: state.scenarioState,
@@ -52,10 +78,11 @@ export function buildRightRail(route, state) {
     warnings: topWarnings(state),
     assumptions: [
       "Canonical engine values are rendered from stored snapshots.",
-      "Unknown classifications remain visible and are not auto-hidden.",
-      "Bridge exchange remains snapshot-based and versioned."
+      "Unknown classifications stay visible instead of being smoothed away.",
+      "Bridge exchange remains snapshot-based, validated, and versioned."
     ],
     interpretation: HARDENING_ACCEPTANCE_FOCUS,
+    ecosystem_alignment: ECOSYSTEM_ALIGNMENT_RULES,
     next_action: nextAction(state),
     snapshot_context: {
       has_budget_summary: isPresent(state.snapshots.budgetSummary),

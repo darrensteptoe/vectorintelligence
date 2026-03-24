@@ -1,289 +1,406 @@
+export const MANUAL_TONE_RULES = [
+  "Serious.",
+  "Calm.",
+  "Exact without pretending omniscience.",
+  "Campaign-literate.",
+  "Dense enough to teach.",
+  "Direct enough to be usable under pressure."
+];
+
+export const ECOSYSTEM_ALIGNMENT_RULES = [
+  "Same respect for canonical calculations as FPE.",
+  "Same respect for operator judgment as FPE.",
+  "Same preference for dense useful explanation over decorative text.",
+  "Same refusal to hide uncertainty with fake smoothness.",
+  "Same right-rail and manual teaching standard.",
+  "Warnings are decision support, not drama."
+];
+
 export const MANUAL_FRONT_PAGE = {
   title: "Campaign Finance Engine Manual",
   opening:
-    "Campaign Finance Engine is built for campaigns that need to fund real plans, not admire spreadsheets. The purpose of the system is to help leadership understand what the campaign is trying to fund, when those costs hit, whether history suggests the plan is realistic, and what the finance operation must do next to support it.",
+    "This manual is a product surface, not a help afterthought. It is written so finance directors, candidates, campaign managers, and consultants can understand what each CFE page is for, what healthy and weak patterns look like, what not to overread, and what should happen next.",
   context:
-    "The system is strongest when it is used honestly. A realistic budget is more valuable than a flattering one. A visible unknown is better than a false label. A warning that causes a course correction is more useful than a perfect-looking dashboard that hides pressure until it is too late."
+    "When there is a choice between sounding sleek and sounding useful, choose useful. When there is a choice between sounding minimal and teaching clearly, choose clear. When there is a choice between false certainty and explicit uncertainty, choose explicit uncertainty."
 };
 
 export const MANUAL_USAGE_GUIDANCE =
-  "Teach the campaign how to think, not just where to click. Explain what a measure means, what strong and weak conditions look like, and what to do next.";
+  "Use this manual to teach judgment. Start with page purpose, then metric meaning, then healthy versus weak patterns, then next action.";
 
-export const MANUAL_SECTIONS = {
-  budgetPlan: {
-    title: "Budget Plan",
-    whatItIs:
-      "A campaign budget is not a wish list and not a post hoc record. In this system, the budget is the campaign's working statement of what it intends to fund, when those costs will hit, and which parts of the plan are essential versus discretionary.",
-    strongBudget:
-      "A strong budget is timed, prioritized, and honest. It reflects the campaign the team can plausibly execute, not merely the campaign it would like to run under perfect conditions.",
-    requiredVsOptional:
-      "Required lines support the minimum viable campaign. Optional lines may still be strategically smart, but they should remain visible as lines the campaign could delay, reduce, or sequence differently if pressure rises."
+export const PAGE_MANUAL_LIBRARY = {
+  overview: {
+    title: "Finance Path Dashboard - What the Campaign Must Raise, By When, and Why",
+    body:
+      "This is the command surface for the campaign funding path. Read timing, checkpoint pressure, reserve condition, and activity carry together. A campaign can look active and still be fragile if money is not arriving before pressure points."
   },
-  spendTimeline: {
-    title: "Spend Timeline",
-    whyTimingMatters:
-      "Campaigns often get into trouble not because their total target was impossible, but because costs accelerated before enough money was safely in hand. A timeline view helps the campaign see those pressure points before it is negotiating from weakness.",
-    peakSpendWindows:
-      "A peak spend window is the period where the campaign's expected costs are at their highest or most compressed. When a campaign enters one of these periods thinly funded, ordinary delays become more dangerous."
+  budget: {
+    title: "Budget Builder - Building the Campaign the Finance Plan Must Actually Support",
+    body:
+      "Define the campaign you are actually trying to fund. Distinguish required, optional, and conditional costs. The goal is not fake precision. The goal is a visible, phase-aware cost structure that can be financed honestly."
+  },
+  timeline: {
+    title: "Spend Timeline - When Money Must Exist, Not Just How Much",
+    body:
+      "Convert static budget into a calendar of pressure. Ask when costs need to be liquid, not just whether totals look acceptable. The relevant risk month is often the month before the visible problem."
+  },
+  benchmarks: {
+    title: "Historical Benchmarks - What Similar Campaigns Actually Carried",
+    body:
+      "Use benchmark bands as realism context, not commands. If the plan is above or below historical norms, leadership should explain why and show a path that supports that choice."
   },
   fundingPath: {
-    title: "Funding Path",
-    whatPathMeans:
-      "The funding path is the campaign's working answer to a simple question: how much money must arrive, and by when, to support the selected plan without creating avoidable cash stress.",
-    pathStatuses: {
-      onPath: "On Path means the campaign is broadly aligned with the active raise plan.",
-      watch: "Watch means the path is still alive, but flexibility is narrowing.",
-      offPath:
-        "Off Path means the campaign is behind in a way that now affects upcoming commitments, not just abstract totals."
-    },
-    safeVsCompetitive:
-      "Safe funding means the campaign can support the selected plan without violating its reserve logic. Competitive funding usually refers to a stronger posture with less reliance on narrow timing success or perfect execution."
+    title: "Channel Plan and Funding Path - Where Required Money Has to Come From",
+    body:
+      "Translate the requirement into channel responsibility. Weak plans hide wishful thinking in one oversized event or one unrealistic assumption. Healthy plans spread load across real channels and real operators."
   },
-  activity: {
-    title: "Finance Activity",
-    whyTrackingMatters:
-      "Finance plans fail most often in execution, not in spreadsheet design. This section exists so the campaign can compare what it said it would do with what it actually did and with what that work produced.",
-    callTime:
-      "Track call time in enough detail to improve it. The point is not to prove effort. The point is to understand whether the candidate or finance team is completing enough asks, converting enough commitments, and following up with enough discipline.",
-    events:
-      "Events are not judged only by gross receipts. Net yield, conversion speed, host quality, and follow-up strength matter more than a flattering top-line number.",
-    pledges:
-      "A pledge is not cash. It may still be politically and financially meaningful, but campaigns get in trouble when they plan against money that has not actually landed."
+  financeOperations: {
+    title: "Finance Operations - The Work Required for Money to Arrive",
+    body:
+      "Treat this as production management, not busyness tracking. Meetings on a calendar do not fund a campaign. Completed asks, disciplined follow-up, converted pledges, and received dollars do."
   },
   donorIntelligence: {
-    title: "Donor Intelligence",
-    geography:
-      "Donor geography can show concentration, local strength, outside-network reliance, and donor breadth. It cannot tell you everything about voter support, neighborhood persuasion, or precise turf strength.",
-    occupationIndustry:
-      "Occupation strings are useful, but messy. A good system preserves uncertainty and lets campaigns learn over time. When classification is weak, the right move is to say so.",
-    concentration:
-      "A narrow donor base can still fund a campaign for a time, but it creates fragility. Breadth matters because it gives the campaign more room to absorb underperformance from any one cluster."
+    title: "Donor Intelligence - Who Is Funding the Campaign and From Where",
+    body:
+      "Read donor composition as strategy guidance. Look for concentration, breadth, local depth, and outside dependence. Unknown classification is acceptable. False certainty is not."
   },
   expenditureIntelligence: {
-    title: "Expenditure Intelligence",
-    spendMix:
-      "Spending becomes most useful when compared against strategy and timing. The question is not whether a campaign spent on consultants, field, or digital. The question is whether the mix fits the campaign's actual path and race stage.",
-    vendorConcentration:
-      "Heavy vendor concentration can be normal in some races, but it becomes risky when too much campaign flexibility depends on a narrow stack of providers or high-overhead relationships."
+    title: "Expenditure Intelligence - Whether Spend Still Fits Strategy",
+    body:
+      "Use this page to catch drift early: overhead creep, consultant gravity, and category mix misalignment. Spend should reflect strategy, not habit."
   },
-  risk: {
-    title: "Risk and Warnings",
-    howToReadWarnings:
-      "Warnings are designed to sharpen judgment, not create panic. A warning is best read as an early signal that the campaign should act while options still exist.",
-    reservePressure:
-      "Reserve pressure matters because weak reserve turns ordinary delay into real risk. A campaign with no cushion is forced to make harder choices faster.",
-    fundingPace:
-      "Raise pace risk is not only about being behind target. It is about being behind target at the wrong time relative to upcoming commitments.",
-    realismWarnings:
-      "Historical realism warnings do not tell the campaign what it must do. They indicate when budget, mix, or pace is departing from what similar races have usually sustained."
+  risks: {
+    title: "Risk Console - Where the Finance Plan Is Becoming Fragile",
+    body:
+      "Each warning should answer trigger, consequence, exposure, and correction. The goal is to act early enough to avoid a worse warning later."
   },
-  bridge: {
-    title: "Bridge with FPE",
-    bridgePurpose:
-      "The field bridge allows the finance system to incorporate the cost and timing of the selected field posture without absorbing the field app's internal logic. It keeps the apps coordinated without making them dependent on the same codebase.",
-    returnSignal:
-      "The finance return signal tells the field side whether the selected posture is safely fundable, cautiously fundable, or in redline territory under the current finance path."
+  reports: {
+    title: "Reports - Turning Engine Outputs Into Campaign Action",
+    body:
+      "A strong report states condition, explanation, consequence, and next move. If a report sounds polished but leaves action unclear, it is not finished."
   },
-  confidenceAndUncertainty: {
-    title: "Confidence and Uncertainty",
-    classes: {
-      reported: "Reported values come directly from source records or campaign entries.",
-      standardized:
-        "Standardized values have been cleaned or classified so they can be compared more reliably.",
-      modeled:
-        "Modeled values are engine outputs based on active assumptions, budget, timeline, and evidence."
-    },
-    whyVisible:
-      "Campaign software becomes less trustworthy when it hides uncertainty behind polished interfaces. This system keeps uncertainty visible so leadership can make better decisions sooner."
+  manual: {
+    title: "How to Use CFE - Reading the Finance Engine Like an Operator",
+    body:
+      "Use CFE as a management instrument: define the plan, phase costs, test realism, generate path, allocate channel responsibility, track execution, then adjust before stress forces corrections."
+  },
+  settingsDataImports: {
+    title: "Settings / Data / Imports - Preserving Trust in the System",
+    body:
+      "Govern imports, exports, and snapshots so reported, standardized, and modeled values remain distinct and inspectable."
   }
 };
 
-export const OPERATOR_MISTAKES = [
-  "Entering vague budget lines that hide real commitments.",
-  "Assuming pledges are the same as receipts.",
-  "Treating benchmarks as destiny.",
-  "Ignoring reserve pressure because topline feels acceptable.",
-  "Assuming events will solve structural underperformance.",
-  "Failing to revisit channel mix when one source softens.",
-  "Delaying follow-up on live commitments."
-];
+export const RIGHT_RAIL_HELPER_BY_PAGE = {
+  "/overview": {
+    rail_title: "How to read this page",
+    rail_body:
+      "This page shows whether the active plan is financially supportable under current conditions. Focus on the next checkpoint, reserve condition, safe-funding gap, and whether current activity is carrying the path.",
+    good_discipline:
+      "When the page turns stronger, protect margin before approving new optional costs.",
+    bad_habit:
+      "Do not treat pledges or hoped-for event yield as interchangeable with usable cash."
+  },
+  "/budget": {
+    rail_title: "What this page is for",
+    rail_body:
+      "Define the campaign you are actually trying to fund. The point is visible phase-aware structure, not perfect foresight.",
+    good_discipline:
+      "Keep optional and conditional costs explicit so later corrections are deliberate.",
+    bad_habit:
+      "Missing categories create fake optimism; hidden optional costs create fake pressure."
+  },
+  "/timeline": {
+    rail_title: "What matters here",
+    rail_body:
+      "This page is about timing pressure. Ask when dollars must exist to keep commitments safe, not just how much is needed eventually.",
+    good_discipline:
+      "Use this page to protect the month before visible pressure.",
+    bad_habit:
+      "Do not wait for a stress month to start financing its commitments."
+  },
+  "/benchmarks": {
+    rail_title: "How to use history well",
+    rail_body:
+      "Use benchmarks to test realism, not replace strategy. Reference bands are context, not commands.",
+    good_discipline:
+      "Explain intentional departures from historical ranges in operational terms.",
+    bad_habit:
+      "Do not cite benchmark averages as a substitute for an executable channel path."
+  },
+  "/funding-path": {
+    rail_title: "What to look for",
+    rail_body:
+      "This page should answer where required money comes from and who carries each share of production.",
+    good_discipline:
+      "If one channel carries large load, verify activity ownership and conversion support.",
+    bad_habit:
+      "Do not let one channel become the default rescue assumption for the whole path."
+  },
+  "/finance-operations": {
+    rail_title: "What counts as progress",
+    rail_body:
+      "Production is completed asks, follow-up, conversion, and received dollars, not calendar volume.",
+    good_discipline:
+      "Treat follow-up completion as production accountability by owner.",
+    bad_habit:
+      "Do not confuse busy schedules with path-carrying output."
+  },
+  "/donor-intelligence": {
+    rail_title: "How to interpret donor patterns",
+    rail_body:
+      "Read donor intelligence as strategy guidance on concentration, breadth, local strength, and openings for expansion.",
+    good_discipline:
+      "Use patterns to widen the finance structure before concentration hardens.",
+    bad_habit:
+      "Do not overclaim social certainty from imperfect classification."
+  },
+  "/expenditure-intelligence": {
+    rail_title: "What this page should prevent",
+    rail_body:
+      "Catch spend distortion early: overhead creep, consultant gravity, and category drift away from strategy.",
+    good_discipline:
+      "Compare spend mix against stated strategy every operating period.",
+    bad_habit:
+      "Do not let repeated spend habits replace explicit strategic priorities."
+  },
+  "/risks": {
+    rail_title: "How to use warnings well",
+    rail_body:
+      "Start with trigger, identify threatened campaign function, then act on the most controllable correction.",
+    good_discipline:
+      "Use warnings early enough to avoid worse downstream conditions.",
+    bad_habit:
+      "Do not read severity without reading cause and recommended action."
+  },
+  "/reports": {
+    rail_title: "What a good report should do",
+    rail_body:
+      "A good report states condition, why it exists, what it threatens, and what should happen next.",
+    good_discipline:
+      "Block export until the next move is clear and snapshot context is current.",
+    bad_habit:
+      "Do not ship polished narrative that leaves decisions vague."
+  },
+  "/manual": {
+    rail_title: "How to use this manual",
+    rail_body:
+      "Use this manual to learn judgment, not just labels. It should clarify healthy, weak, and risky conditions in campaign terms.",
+    good_discipline:
+      "Tie manual reading directly to weekly planning and report interpretation.",
+    bad_habit:
+      "Do not treat manual content as optional after onboarding."
+  },
+  "/settings-data-imports": {
+    rail_title: "Why this page matters",
+    rail_body:
+      "Use this page to protect data integrity. Keep reported, standardized, and modeled values distinct so downstream warnings and reports stay trustworthy.",
+    good_discipline:
+      "Validate provenance and contracts before promoting imports into active scenario workflows.",
+    bad_habit:
+      "Do not flatten trust labels or bypass validation to move faster."
+  }
+};
 
-export const HEALTHY_RANGE_GUIDANCE = [
-  "healthier than planned",
-  "in range",
-  "tighter than preferred",
-  "materially behind",
-  "unusually concentrated",
-  "heavier than the historical norm"
-];
+export const MANUAL_SECTIONS = {
+  financePathDashboard: PAGE_MANUAL_LIBRARY.overview,
+  budgetBuilder: PAGE_MANUAL_LIBRARY.budget,
+  spendTimeline: PAGE_MANUAL_LIBRARY.timeline,
+  historicalBenchmarks: PAGE_MANUAL_LIBRARY.benchmarks,
+  channelPlan: PAGE_MANUAL_LIBRARY.fundingPath,
+  financeOperations: PAGE_MANUAL_LIBRARY.financeOperations,
+  donorIntelligence: PAGE_MANUAL_LIBRARY.donorIntelligence,
+  expenditureIntelligence: PAGE_MANUAL_LIBRARY.expenditureIntelligence,
+  riskConsole: PAGE_MANUAL_LIBRARY.risks,
+  reports: PAGE_MANUAL_LIBRARY.reports,
+  manualGuide: PAGE_MANUAL_LIBRARY.manual,
+  settingsDataImports: PAGE_MANUAL_LIBRARY.settingsDataImports
+};
 
 export const PAGE_MANUAL_GUIDANCE = {
   overview: {
     what_this_page_is_for:
-      "Leadership view of budget posture, path posture, reserve posture, and immediate action priorities.",
+      "Command surface for what the campaign must raise, by when, and whether current execution is safely carrying the plan.",
     how_to_read:
-      "Start with path status, then reserve status, then field funding signal. The ordering matters because timing risk often appears in reserve before it appears in topline summaries.",
+      "Read checkpoint pressure, reserve condition, and activity carry before reading vanity totals.",
     strong_condition:
-      "Strong means the campaign is On Path with a Healthy reserve and no material timing contradiction in upcoming costs.",
+      "On Path with preserved reserve flexibility and no immediate timing contradiction.",
     weak_condition:
-      "Weak means the campaign is Off Path, reserve is Tight or At Risk, and next-window commitments assume receipts that are not yet secure.",
+      "Behind path with narrowing reserve and commitments depending on unconverted assumptions.",
     what_to_do_next:
-      "Strengthen near-term finance execution and delay optional obligations if reserve pressure is rising.",
+      "Protect next checkpoint and reserve before expanding optional commitments.",
     limits:
-      "Overview is a command summary; it cannot replace line-level budget, activity, or classification review."
+      "Dashboard condition is a summary, not a replacement for line-level review."
   },
   budget: {
     what_this_page_is_for:
-      "Define campaign costs by domain, timing, and required/optional discipline.",
+      "Define the campaign cost structure the finance path must honestly support.",
     how_to_read:
-      "Review required and optional shares before adding new lines. Confirm timing assumptions for each major line instead of entering totals without windows.",
+      "Verify required versus optional versus conditional lines and phase timing by domain.",
     strong_condition:
-      "Strong budgets are timed, prioritized, and realistic about what is actually required.",
+      "Major domains are visible, phased, and prioritized without hidden stretch assumptions.",
     weak_condition:
-      "Weak budgets carry too much early pressure and hide optional spend as if it were mandatory.",
+      "Core and optional costs are blended, timing is vague, and reserve is treated as afterthought.",
     what_to_do_next:
-      "If the path tightens, adjust optional sequencing before cutting core operating lines.",
+      "Clarify conditional lines and rephase early pressure before path recompute.",
     limits:
-      "Budget structure does not prove finance execution quality by itself."
+      "Budget realism helps planning but does not prove execution capacity by itself."
   },
   timeline: {
     what_this_page_is_for:
-      "Translate budget structure into time-aware pressure windows.",
+      "Show when campaign cash pressure appears and where commitments bunch together.",
     how_to_read:
-      "Look at peak window first, then reserve floor ahead, then checkpoint demands.",
+      "Start with peak pressure windows and reserve stress, then inspect prior-month lead indicators.",
     strong_condition:
-      "Strong timing means costs and likely receipts are aligned enough to preserve choice.",
+      "Costs and likely receipts remain phase-aligned with preserved operating flexibility.",
     weak_condition:
-      "Weak timing means commitments compress before likely money and reduce room for correction.",
+      "Commitments arrive before likely cash and force reactive sequencing decisions.",
     what_to_do_next:
-      "Resequence optional spend and pull forward high-probability asks before entering peak pressure.",
+      "Bring forward controllable production and delay discretionary pressure windows.",
     limits:
-      "Timeline outputs are modeled projections and should be reviewed when assumptions change."
+      "Modeled timing improves judgment but must be refreshed when assumptions change."
   },
   benchmarks: {
     what_this_page_is_for:
-      "Provide historical realism context from comparable races.",
+      "Provide historical realism context for the active scenario.",
     how_to_read:
-      "Treat benchmark signals as evidence context, not commands. Compare current assumptions against comparable distributions and timing norms.",
+      "Use floor, competitive threshold, and likely band as reference, not deterministic commands.",
     strong_condition:
-      "Strong benchmark posture means assumptions are within credible bands and deviations are intentional.",
+      "Scenario assumptions are either in range or intentionally out of range with clear justification.",
     weak_condition:
-      "Weak benchmark posture means key assumptions rely on outlier performance without operational support.",
+      "Scenario relies on historically difficult assumptions without corresponding channel proof.",
     what_to_do_next:
-      "If realism flags rise, tighten assumptions or increase near-term execution plans.",
+      "Either strengthen supporting execution logic or trim unsupported scope.",
     limits:
-      "Comparables can inform judgment, but they cannot predict campaign-specific outcomes alone."
+      "Historical analogs inform but cannot replace campaign-specific strategy and operations."
   },
   fundingPath: {
     what_this_page_is_for:
-      "Show required raise totals, checkpoint targets, and channel implications under reserve discipline.",
+      "Translate required funding into practical checkpoints and channel responsibility.",
     how_to_read:
-      "Read total requirement, next checkpoint, and reserve floor together. A healthy topline can still hide near-term exposure.",
+      "Compare gross path, checkpoint timing, reserve condition, and channel balance together.",
     strong_condition:
-      "Strong path means current pace supports near-term windows without reserve degradation.",
+      "Requirement is distributed across executable channels with owned activity plans.",
     weak_condition:
-      "Weak path means checkpoint pressure depends on assumptions the campaign has not earned yet.",
+      "Path depends on one outsized source or one period of perfect execution.",
     what_to_do_next:
-      "Raise execution volume in the next two weeks and defer optional commitments if margin is narrowing.",
+      "Rebalance channel load and protect the next checkpoint before adding new fixed commitments.",
     limits:
-      "Path outputs do not replace activity quality review or pledge conversion review."
+      "Path quality still depends on completion and conversion in Finance Operations."
   },
   financeOperations: {
     what_this_page_is_for:
-      "Track and improve the work that creates receipts: calls, meetings, events, follow-up, and tasks.",
+      "Track the production work that turns modeled path requirements into real money.",
     how_to_read:
-      "Compare planned versus completed work and review conversion quality, not activity count alone.",
+      "Review completed asks, follow-up, conversion, and received dollars against planned output.",
     strong_condition:
-      "Strong operations means high completion on high-yield work with disciplined follow-up.",
+      "High-yield activities are completed with disciplined follow-through and visible conversion.",
     weak_condition:
-      "Weak operations means inconsistent completion and unresolved commitments accumulating.",
+      "Calendar activity looks busy but completion and conversion lag path needs.",
     what_to_do_next:
-      "Tighten owner-level accountability and prioritize asks closest to conversion.",
+      "Cut low-value work and enforce owner-level accountability on top-yield tasks.",
     limits:
-      "Activity logs do not guarantee receipt timing unless conversion and deposits follow."
+      "Recorded activity without conversion should not be treated as financial safety."
   },
   donorIntelligence: {
     what_this_page_is_for:
-      "Interpret donor base breadth, geography, and occupation/industry composition.",
+      "Interpret donor structure for resilience, concentration risk, and expansion opportunity.",
     how_to_read:
-      "Start with concentration and in-district share before over-reading small segment changes.",
+      "Prioritize concentration, local depth, and underdeveloped donor terrain.",
     strong_condition:
-      "Strong donor posture is broad enough to absorb softness in any single donor cluster.",
+      "Production is supported by a broad enough base to absorb softness in one segment.",
     weak_condition:
-      "Weak donor posture is overconcentrated or highly dependent on outside-network clusters.",
+      "Too much path stability depends on a narrow cluster of donors or networks.",
     what_to_do_next:
-      "Broaden ask universes and keep unknown classifications visible until reviewed.",
+      "Use findings to widen host strategy and assignment coverage.",
     limits:
-      "Donor profile does not directly prove voter persuasion strength or turnout behavior."
+      "Classification is directional and should not be used as false social certainty."
   },
   expenditureIntelligence: {
     what_this_page_is_for:
-      "Explain spending mix and alignment with strategy and timing.",
+      "Check whether actual spending still matches declared strategy and path discipline.",
     how_to_read:
-      "Compare category shares with budget intent and timing sequence, not totals alone.",
+      "Compare spend mix, overhead load, and variance against budget priorities.",
     strong_condition:
-      "Strong spend posture aligns category mix to current strategy and known timing constraints.",
+      "Spend remains aligned to strategic spine and avoids avoidable overhead drift.",
     weak_condition:
-      "Weak spend posture is top-heavy, mistimed, or too dependent on overhead growth.",
+      "Category drift is crowding out core program needs.",
     what_to_do_next:
-      "Control optional overhead and verify vendor concentration risk before new commitments.",
+      "Freeze non-core expansion and restore strategic category protection.",
     limits:
-      "Category signals can guide decisions but cannot capture every qualitative program tradeoff."
+      "Spend diagnostics do not capture every qualitative tradeoff, but they expose structural drift."
   },
   risks: {
     what_this_page_is_for:
-      "Concentrated warning surface tied to canonical triggers and practical action.",
+      "Provide trigger-based early warnings with concrete correction paths.",
     how_to_read:
-      "Read severity with cause and next action together. Severity without cause is not operationally useful.",
+      "For each risk, read trigger, consequence, and immediate action as one unit.",
     strong_condition:
-      "Strong risk posture means no elevated triggers or rapid mitigation on recent flags.",
+      "Few elevated warnings and rapid corrective action where warnings appear.",
     weak_condition:
-      "Weak risk posture means multiple active warnings tied to pace, reserve, or execution degradation.",
+      "Multiple active warnings across pace, reserve, and execution with unresolved actions.",
     what_to_do_next:
-      "Act on top risks in priority order and confirm trigger movement in the next reporting cycle.",
+      "Act in severity order on controllable fixes before next checkpoint.",
     limits:
-      "Risk flags are decision aids, not guarantees of outcome."
+      "Warnings are decision support, not guaranteed forecasts."
   },
   reports: {
     what_this_page_is_for:
-      "Generate circulation-ready outputs that reuse canonical snapshots and interpretation language.",
+      "Create circulation-ready outputs that preserve canonical truth and practical guidance.",
     how_to_read:
-      "Verify snapshot freshness and section completeness before export.",
+      "Confirm snapshot freshness, section completeness, and action clarity before export.",
     strong_condition:
-      "Strong report posture means outputs are complete, current, and actionable without rewrite.",
+      "Report can circulate without rewrite and clearly states condition, cause, and next move.",
     weak_condition:
-      "Weak report posture means missing snapshot context or unresolved classification coverage.",
+      "Report is polished but vague, or unsupported by current snapshot context.",
     what_to_do_next:
-      "Resolve blocking sections and regenerate using current canonical snapshots.",
+      "Resolve missing sections and regenerate from canonical snapshots.",
     limits:
-      "Report polish does not substitute for underlying data completeness."
+      "Narrative quality cannot compensate for incomplete underlying data."
   },
   manual: {
     what_this_page_is_for:
-      "Teach campaign operators how to interpret and act on CFE outputs.",
+      "Teach operators how to interpret CFE outputs under real campaign pressure.",
     how_to_read:
-      "Use module intros first, then metric explainers, then warning guidance.",
+      "Move page by page from purpose to interpretation to correction behavior.",
     strong_condition:
-      "Strong manual usage means operators can explain why a metric matters and what action follows.",
+      "Users can explain why metrics matter and what action each condition implies.",
     weak_condition:
-      "Weak manual usage means users navigate screens but cannot interpret underlying implications.",
+      "Users memorize labels but cannot act from the signals.",
     what_to_do_next:
-      "Use manual notes in workflow planning and report interpretation.",
+      "Use manual sections as weekly planning and review scaffolding.",
     limits:
-      "Manual guidance supports judgment; it does not replace campaign leadership decisions."
+      "Manual supports leadership judgment; it does not replace it."
   },
   settingsDataImports: {
     what_this_page_is_for:
-      "Control imports, exports, snapshot governance, and role-aware system behavior.",
+      "Keep data and snapshots trustworthy through explicit governance controls.",
     how_to_read:
-      "Validate snapshot and contract diagnostics before accepting new data into active scenario workflows.",
+      "Validate provenance, contract status, and trust-label separation before activating new data.",
     strong_condition:
-      "Strong controls preserve provenance and keep Reported/Standardized/Modeled distinctions intact.",
+      "Imports are validated, outputs are labeled, and snapshots roundtrip cleanly.",
     weak_condition:
-      "Weak controls accept unvalidated data or flatten trust-label distinctions silently.",
+      "Unvalidated data or flattened labels blur what is reported versus modeled.",
     what_to_do_next:
-      "Run diagnostics before export and inspect rejected/flagged import records.",
+      "Resolve validation failures before promoting data to active scenario workflows.",
     limits:
-      "Control surfaces enforce discipline but cannot repair poor source records automatically."
+      "Governance surfaces protect integrity but cannot fix poor source capture on their own."
   }
 };
+
+export const OPERATOR_MISTAKES = [
+  "Treating pledges and usable cash as interchangeable.",
+  "Expanding commitments when reserve flexibility is thinning.",
+  "Using benchmark averages as commands rather than realism context.",
+  "Confusing schedule volume with production quality.",
+  "Allowing channel concentration to harden before widening the base.",
+  "Using polished reports to hide unclear next actions."
+];
+
+export const HEALTHY_RANGE_GUIDANCE = [
+  "Building real flexibility, not short-term relief.",
+  "Protecting next checkpoint rather than borrowing from it.",
+  "Carrying the path through real execution, not symbolic effort.",
+  "Holding condition with narrow but manageable cushion.",
+  "Below safe timing requirements and needing correction.",
+  "Structurally overconcentrated and fragile without diversification."
+];

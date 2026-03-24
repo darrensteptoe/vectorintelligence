@@ -1,10 +1,10 @@
 export const REPORT_TONE_RULES = [
-  "Clear and disciplined.",
-  "Meant to travel inside real campaigns.",
-  "Strong enough for leadership; plain enough for candidates.",
-  "Never sounds like generic SaaS copy.",
-  "Never overclaims what the data can support.",
-  "Name risk directly and tie it to next action."
+  "Direct, evidence-based, and useful.",
+  "Written for real internal circulation.",
+  "Strong enough for leadership and plain enough for candidates.",
+  "Interpretive without pretending certainty.",
+  "Never padded, generic, or machine-flat.",
+  "Every risk statement should imply a next move."
 ];
 
 export const REPORT_SECTION_STRUCTURE = [
@@ -17,131 +17,143 @@ export const REPORT_SECTION_STRUCTURE = [
 
 export const REPORT_STATUS_PHRASES = {
   strong: [
-    "remains on a workable path",
-    "broadly aligned with the active plan",
-    "holding within a usable range",
-    "operating with a manageable level of pressure",
-    "showing disciplined completion of core finance work",
-    "carrying the plan at a credible level"
+    "remains on its active finance path",
+    "operating from a controlled position rather than a reactive one",
+    "holding in a disciplined range"
   ],
   mixed: [
-    "still recoverable, but narrower than preferred",
-    "workable for now, though the margin for error is thinning",
-    "not yet a crisis, but no longer comfortable",
-    "producing enough to stay alive, but not enough to feel secure",
-    "carrying some of the plan, but not all of it cleanly"
+    "remains viable, but the margin for error has narrowed",
+    "still in range, but carrying more stress than the dashboard alone suggests",
+    "workable for now, though less forgiving"
   ],
   weak: [
-    "materially behind the active path",
-    "too soft relative to upcoming commitments",
-    "not yet cash-safe",
-    "relying on assumptions the campaign has not earned",
-    "vulnerable to even a modest delay in receipts",
-    "carrying less of the plan than leadership should be comfortable with"
+    "is currently behind the modeled finance path",
+    "is carrying a mismatch between required timing and actual production",
+    "is becoming increasingly difficult to execute on schedule"
   ]
 };
 
 export const REPORT_PREFACE_VARIANTS = {
   standard:
-    "This report is designed to show what the campaign is trying to fund, how current fundraising compares with that requirement, and where timing or execution risk may pressure the plan next.",
+    "This report is designed to show what the campaign is trying to fund, how current production compares with that requirement, and where timing or execution risk may pressure the plan next.",
   benchmarkHeavy:
-    "This report combines the campaign's active budget and finance condition with historical evidence from comparable races. Historical benchmarks are used here as realism context, not as a substitute for campaign planning.",
+    "This report combines the campaign's active budget and finance condition with historical evidence from comparable races. Benchmarks are realism context, not a substitute for campaign strategy.",
   candidateFacing:
-    "This report is meant to make the finance path easier to act on. It focuses on near-term targets, the most important asks, and activity most likely to move the campaign forward."
+    "This briefing is designed to focus the candidate on the finance work that matters most in the current period."
 };
 
 export const WEEKLY_FINANCE_MEMO_CONTENT = {
   title: "Weekly Finance Memo",
   executiveSummaryTemplates: {
     onPath:
-      "The campaign remains broadly aligned with the active finance path, but the current margin for error is narrower than preferred. This week should be treated as a working finance week, not a maintenance week, with particular emphasis on follow-up and higher-yield asks.",
+      "The campaign remains on its active finance path for the current period. Raise pace, activity completion, and reserve status are all broadly consistent with the selected budget scenario. This does not remove pressure, but it means the campaign is still operating from a controlled position rather than a reactive one.",
     watch:
-      "The campaign is still within reach of the active path, but recent activity and receipts were not strong enough to fully support the next spending window. The immediate priority is not cosmetic optimism. It is disciplined execution against the next two weeks of finance work.",
+      "The campaign remains viable under the active finance path, but the margin for error has narrowed. Current performance is still within range, though reserve flexibility, activity completion, or one or more channels are carrying more stress than the overall dashboard alone may suggest. The campaign should treat the next period as important for rebuilding cushion rather than assuming the path will continue to hold automatically.",
     offPath:
-      "The campaign is behind the active path in a way that now affects timing, not just totals. The next period should focus on restoring receipt pace, protecting reserve, and avoiding optional spending commitments that assume money not yet safely in hand."
+      "The campaign is currently behind the modeled finance path for the active scenario. The gap is not merely a summary number; it reflects a mismatch between required funding timing and actual production. Unless the campaign increases channel output, improves activity completion, or rephases selected costs, the current plan becomes increasingly difficult to execute on schedule.",
+    redline:
+      "The active finance path is currently in a redline condition. Under present assumptions, the campaign is not cash-safe relative to its planned commitments and reserve requirements. This does not mean the campaign cannot recover, but it does mean leadership should treat the current path as unstable until corrective action is taken."
   },
   fundingStatusTemplate:
-    "The current raise path calls for [target_period_amount] during this period. The campaign recorded [actual_period_amount], leaving a period variance of [variance_amount]. This does not mean the path is lost, but it does mean the campaign is carrying more timing pressure into the next spending window than preferred.",
+    "The current raise path calls for [target_period_amount] during this period. The campaign recorded [actual_period_amount], leaving a period variance of [variance_amount].",
+  raisePaceParagraph:
+    "The campaign's raise pace should be read in relation to timing, not vanity totals. A strong gross week or month matters only insofar as it supports the next real funding checkpoint. When the campaign is ahead of pace, that surplus should be read as preserved flexibility, not permission to lose discipline. When the campaign is behind, the key question is which channels and activities are failing to carry their share of the requirement.",
   activityReadTemplate:
-    "Planned finance work was [activity_completion_rate]% complete for the period. The strongest activity came from [top_channel], while [weak_channel] underperformed relative to plan. The practical takeaway is that the path is being carried by a narrower set of activities than intended.",
+    "Finance activity should be evaluated as production, not busyness. The relevant standard is not whether the candidate or finance team felt fully booked. The relevant standard is whether scheduled asks, meetings, events, and follow-up converted into the volume and timing of money required by the path.",
   pledgeReadTemplate:
-    "The current pledge pipeline still contains value, but unresolved commitments are beginning to matter more. The fastest near-term improvement available to the campaign is often not a brand-new ask; it is disciplined follow-up on money already discussed.",
+    "Reserve status remains one of the clearest indicators of whether the campaign is truly in control of its plan. Campaigns with weak reserves are often tempted to overread strong gross periods while ignoring the fragility underneath. Strong reserve status does not remove pressure, but it materially improves decision quality and protects the campaign from routine variance.",
   riskReadTemplates: [
-    "Reserve is workable but thinner than preferred.",
-    "Upcoming costs are beginning to arrive faster than current receipts.",
-    "The event program is not weak enough to abandon, but not strong enough to carry the path by itself.",
-    "The campaign's current position can still stabilize, but only if the next period is materially stronger than the last one."
+    "Treat reserve softness as a decision-quality issue, not just a cushion issue.",
+    "A path can look active while still being fragile if money arrives after pressure points.",
+    "Production concentration should be corrected before it becomes structural dependence."
   ],
+  closingActionParagraph:
+    "The campaign's immediate priority for the next period should be to protect the next checkpoint rather than admire the current summary.",
   defaultActions: [
-    "Increase candidate call time volume over the next two weeks and narrow the ask list to higher-probability targets.",
-    "Push immediate follow-up on unresolved commitments already in the pipeline before adding new lower-probability asks.",
-    "Delay optional spending until the next funding checkpoint improves."
+    "Increase near-term production in the most controllable channels.",
+    "Improve follow-up conversion on money already in the pipeline.",
+    "Prevent operational commitments from getting ahead of cash safety."
   ]
 };
 
 export const CANDIDATE_BRIEF_CONTENT = {
   title: "Candidate Brief",
   opening:
-    "This brief is designed to make the path actionable. It is not a full finance memo. It is the short list of what matters most right now: what must be raised next, which asks are most important, and where your time will have the greatest effect.",
+    "This briefing is designed to focus the candidate on the finance work that matters most in the current period. The goal is not to review every available number. The goal is to clarify the practical work that must happen next in order to keep the campaign on its funding path.",
   currentPositionTemplate:
-    "The campaign is currently [path_status] against the active finance path. The immediate goal is to secure [near_term_goal] before the next budget pressure point. That means the next week should be treated as a targeted raise week, not a general outreach week.",
+    "The campaign is currently [path_status] against the active finance path. The immediate goal is to secure [near_term_goal] before the next budget pressure point.",
+  callTimeLanguage:
+    "The candidate's call time target should be treated as a production responsibility, not a symbolic obligation. When the call time target is missed, the campaign usually feels the impact later through weaker reserve status, delayed commitments, or greater dependence on events and outside rescue.",
+  topAsksLanguage:
+    "The top asks listed here are not merely the largest names available. They are the asks most relevant to the campaign's immediate path pressure.",
   priorities: [
-    "Make the top scheduled asks first.",
-    "Resolve outstanding commitments before adding too many new low-probability asks.",
-    "Protect time for events or meetings most likely to produce near-term receipts.",
-    "Treat follow-up as part of fundraising, not as optional cleanup."
+    "Prioritize asks that materially affect the next checkpoint, reserve condition, or channel balance.",
+    "Treat follow-up as part of fundraising, not optional cleanup.",
+    "Protect candidate time for the highest-yield asks and meetings.",
+    "Do not let low-probability asks crowd out near-term production work."
   ],
   toneVariants: {
-    steady: "The campaign is still within reach of its path, but the next period matters.",
-    urgent: "The campaign can still recover ground, but it needs stronger execution immediately.",
-    positive:
-      "There is enough opportunity in the current pipeline to improve the picture, but only if the campaign acts on it."
-  }
+    steady: "The path is still workable, but this period needs disciplined execution.",
+    urgent: "The campaign can recover ground, but only with stronger near-term production.",
+    positive: "There is a real opportunity to improve condition if follow-up and top asks are executed now."
+  },
+  close:
+    "The candidate should leave this briefing understanding three things clearly: what needs to be raised next, who is central to that effort, and what follow-up cannot be allowed to drift."
 };
 
 export const FINANCE_COMMITTEE_BRIEF_CONTENT = {
   title: "Finance Committee Brief",
   intro:
-    "This memo is meant to create accountability and clarity, not noise. It shows where the committee can move money, where follow-up is lagging, and what support the campaign needs from committee members now.",
+    "The finance committee's role is to expand the campaign's production capacity, not merely to lend credibility. This memo is intended to make responsibility legible by showing where the committee is carrying meaningful load, where it is underperforming, and where follow-up or host development is needed.",
   accountabilityTemplate:
-    "Committee-assigned prospects remain an important part of the active path, but completion and follow-up are uneven. The campaign will benefit more from a smaller number of completed, disciplined asks than from a larger number of nominal assignments that do not move.",
+    "Committee performance should be judged on real activity and resulting production: asks completed, meetings held, hosts activated, commitments advanced, and dollars converted. Soft participation without measurable movement should not be mistaken for finance strength.",
   actionHeader: "What the Committee Should Do Next",
   actions: [
-    "Complete assigned asks by the stated deadline.",
-    "Escalate any high-value ask requiring candidate support.",
-    "Move unresolved commitments toward firm dates and amounts.",
-    "Concentrate on hosts and asks most likely to affect the next report or spend window."
+    "Reduce concentration risk by widening active host and ask coverage.",
+    "Strengthen the event pipeline where it can affect the next checkpoint.",
+    "Move unresolved commitments toward specific dates and amounts.",
+    "Prioritize disciplined follow-up over one-time outreach."
   ]
 };
 
 export const BUDGET_HEALTH_REPORT_CONTENT = {
   title: "Leadership Budget Health Report",
   opening:
-    "This report is meant to help leadership decide what parts of the campaign plan are currently supportable, what is under pressure, and what should not expand yet.",
+    "This memo is intended to show whether the campaign's operating plan remains financially supportable under current conditions. The goal is not simply to summarize current cash or gross raised. The goal is to clarify whether staffing, field scale, consultant load, and other major commitments remain aligned with what the campaign can responsibly fund.",
   budgetRealismTemplate:
-    "Relative to comparable races, the active budget appears [realism_status]. That does not decide what the campaign should do, but it does matter when assessing how much discipline the finance plan will require.",
+    "Relative to comparable races, the active budget appears [realism_status].",
   timingPressureTemplate:
-    "The most important upcoming cost window falls in [pressure_window]. Under the active pace, the campaign's ability to enter that window cleanly depends on both stronger receipts and disciplined control of optional commitments.",
+    "The most important upcoming cost window falls in [pressure_window]. Leadership should protect [safely_fundable_summary] and avoid expanding [less_secure_summary] until condition improves.",
   safelyFundableTemplate:
-    "At the current pace and reserve posture, the campaign can safely support [safely_fundable_summary]. The portions of the plan that remain less secure are [less_secure_summary]."
+    "At the current pace and reserve posture, the campaign can safely support [safely_fundable_summary]. The portions of the plan that remain less secure are [less_secure_summary].",
+  fieldAdequatelyFunded:
+    "The current finance path is sufficient to support the selected field scenario under present assumptions. This does not remove the need for continued pace discipline, but it means the campaign is not presently trying to execute a field plan that finance cannot carry.",
+  fieldPartiallyFunded:
+    "The active finance path supports only part of the selected field scenario with a comfortable margin. Leadership should read this as a caution condition rather than a technical success.",
+  fieldNotSafelyFunded:
+    "The current finance path does not safely support the selected field scenario. Leadership should assume that expansion, hiring, or continued scale is exposing the campaign to avoidable financial stress unless production increases or the scenario is rephased.",
+  closingActionParagraph:
+    "The right decision standard is not whether the campaign wants the larger plan. It is whether the campaign can support that plan without sacrificing reserve protection or forcing emergency corrections later."
 };
 
 export const DONOR_INTELLIGENCE_MEMO_CONTENT = {
   title: "Donor Intelligence Memo",
   opening:
-    "This memo is designed to show who is financially powering the campaign, where support is concentrated, and whether the donor base is broad, narrow, local, outside-network, or some mix of the above.",
+    "This memo explains who is funding the campaign, from where, and with what degree of concentration. It should be read as coalition intelligence for the finance program, not as a sociological claim about the entire electorate or a false-precise portrait of every donor.",
   geographyTemplate:
-    "The donor base is currently strongest in [top_geo_summary]. That can be an advantage when it reflects durable support, but it becomes a structural weakness if the campaign is too dependent on a small geographic cluster.",
+    "A broad in-district donor base usually improves resilience, local credibility, and host strategy. Current geographic read: [top_geo_summary].",
   occupationTemplate:
-    "The campaign's itemized donor base appears strongest among [top_occupation_summary]. This should be interpreted as a broad support pattern, not as a literal income model for individual donors.",
+    "Occupation and sector summaries help identify the social structure of the donor base. Current sector read: [top_occupation_summary].",
   concentrationTemplate:
-    "The campaign's donor structure currently looks [concentration_read]. High concentration can still support a functioning campaign, but it reduces room for error and makes the finance path more dependent on a narrower donor universe."
+    "Current concentration interpretation: [concentration_read]. High concentration can still carry a period, but it reduces tolerance for underperformance.",
+  closing:
+    "The strongest use of donor intelligence is strategic: widening the base, reducing dependence, identifying underdeveloped host networks, and improving understanding of who is actually carrying the finance operation."
 };
 
 export const LEADERSHIP_RISK_REPORT_CONTENT = {
   title: "Leadership Risk Brief",
   opening:
-    "This brief is designed for senior decision-makers. It highlights the few financial conditions most likely to destabilize the campaign in the near term and ties each condition to a practical choice.",
+    "This report identifies the areas where the campaign's finance condition is becoming fragile. It should not be read as a list of abstractions. Each risk shown here has practical implications for staffing, scheduling, reserve protection, or the campaign's ability to execute its selected plan without distortion.",
   riskTemplate: {
     header: "Risk: [risk_title]",
     whyItMatters: "Why it matters: [why_it_matters]",
@@ -149,19 +161,24 @@ export const LEADERSHIP_RISK_REPORT_CONTENT = {
     nextAction: "What the campaign should do next: [recommended_action]"
   },
   closingVariants: [
-    "The campaign is still within a workable range, but only if the next operating period is handled with discipline.",
-    "The campaign can still carry the active plan, but the cost of weak execution is rising.",
-    "The current finance posture supports caution, not drift.",
-    "The campaign should treat the next set of finance decisions as budget decisions, not just activity decisions."
+    "The objective is not to eliminate all risk at all times. The objective is to make risk visible early enough that the campaign can choose its corrections rather than receive them under pressure.",
+    "Risk discipline means acting while choices still exist.",
+    "The campaign should treat this report as a sequencing tool, not a postmortem."
   ]
 };
 
 export const FILING_SNAPSHOT_CONTENT = {
   title: "Filing Period Snapshot",
   intro:
-    "This report is designed to help the campaign understand how the upcoming filing period is likely to read publicly and what work remains to strengthen that picture before the deadline closes.",
+    "This report is designed to frame the campaign's current filing condition in practical terms. It shows not only what has already landed, but what is likely to be visible, what may arrive too late to strengthen the headline, and how the campaign compares to historically relevant analogs.",
   headlineTemplate:
-    "If current commitments convert on schedule, the campaign is positioned to show approximately [expected_filing_position] for the filing period. If not, the public-facing number may understate the campaign's broader finance activity.",
+    "If current commitments convert on schedule, the campaign is positioned to show approximately [expected_filing_position] for the filing period.",
+  strongRead:
+    "The campaign is positioned to post a filing that supports the current finance narrative.",
+  mixedRead:
+    "The filing condition is mixed. The headline may still be usable, but the underlying shape requires careful explanation.",
+  weakRead:
+    "The campaign is at risk of posting a filing that does not adequately support the active finance story.",
   riskNote:
     "The filing number matters politically, but the campaign should not weaken its longer-term posture simply to create a cleaner short-term appearance."
 };
@@ -178,4 +195,4 @@ export const CHANNEL_PERFORMANCE_MEMO_CONTENT = {
 };
 
 export const UNIVERSAL_CLOSING_BLOCK =
-  "This report should be used to sharpen judgment and sequence decisions, not to replace campaign leadership. The strongest finance systems do not eliminate uncertainty. They make uncertainty easier to see early, name clearly, and act on in time.";
+  "Use this report to sharpen judgment and sequence decisions, not to replace campaign leadership. The strongest finance systems do not remove uncertainty; they make uncertainty visible early enough to act in time.";
