@@ -1,120 +1,134 @@
-export const OVERALL_PATH_STATUS_DESCRIPTIONS = {
-  "On Path":
-    "The campaign is generally tracking with the active funding path. This does not eliminate risk, but the current pace and projected receipts are broadly aligned with the next major spending window.",
+export const WARNING_TONE_RULES = [
+  "This does not require panic, but it does require attention.",
+  "The campaign can absorb this for a short period, but it should not normalize it.",
+  "This is manageable if corrected early.",
+  "This is now strong enough to affect planning decisions."
+];
+
+export const FUNDING_WARNING_BY_SEVERITY = {
   Watch:
-    "The campaign is still within reach of the active path, but the margin for error has narrowed. One weak period or a delayed set of receipts could create avoidable pressure.",
-  "Off Path":
-    "The campaign is behind the active funding path. The problem is not only the current gap, but the timing of that gap relative to upcoming commitments."
+    "The campaign is still broadly workable, but the current path is beginning to show strain. This is the moment to tighten discipline before the issue grows.",
+  Elevated:
+    "The campaign can still recover without major disruption, but it should not assume that current conditions will fix themselves. A near-term adjustment is advisable.",
+  Serious:
+    "The campaign is now carrying a meaningful mismatch between its commitments and its finance path. This should affect planning decisions immediately.",
+  Redline:
+    "The campaign is beyond a comfortable level of strain. New commitments should be treated as conditional until the underlying path improves."
 };
 
-export const RESERVE_STATUS_DESCRIPTIONS = {
-  Healthy: "The reserve cushion is currently in a workable range for the next spending window.",
-  Tight:
-    "The reserve cushion is thinner than preferred. The campaign may still be able to proceed, but flexibility is narrowing.",
-  "At Risk": "The reserve cushion is below a safe operating range for the next spending window."
+export const RESERVE_WARNING_BY_SEVERITY = {
+  "Reserve Watch":
+    "Reserve coverage is thinner than ideal. The campaign still has room to operate, but ordinary timing slippage will be less forgiving.",
+  "Reserve Pressure":
+    "Reserve protection has weakened enough that normal disruption could begin affecting operating choices.",
+  "Reserve Breach":
+    "The campaign is no longer carrying the reserve protection that the active plan expects. This should be treated as a structural issue, not a cosmetic one."
 };
 
-export const FIELD_FUNDING_STATUS_DESCRIPTIONS = {
-  Greenlight: "The selected field posture is presently supportable under the active finance path.",
-  Caution:
-    "The selected field posture may be supportable, but the campaign has less room for delay or underperformance than preferred.",
-  Redline: "The selected field posture is not safely supported by the current finance path."
+export const ACTIVITY_WARNINGS = {
+  weakCompletion:
+    "Planned finance activity is not being completed consistently enough to treat the current path as secure.",
+  followUpLag:
+    "The campaign is doing a meaningful amount of ask activity, but follow-up discipline is not strong enough to convert enough of that work into receipts.",
+  eventDrag:
+    "The event program is consuming time and cost, but it is not yet producing results proportional to the load it places on the calendar."
 };
 
-export const ACTIVITY_EXECUTION_STATUS_DESCRIPTIONS = {
-  Strong:
-    "Planned finance activity is being completed at a level that gives the path a real chance to hold.",
-  Mixed: "Some planned finance work is happening, but not consistently enough to feel secure.",
-  Weak:
-    "The campaign is not completing enough of the planned finance work to support the path reliably."
+export const DATA_COMPLETENESS_WARNINGS = {
+  limitedComparables:
+    "Historical benchmark coverage is thinner than ideal for this race. Use the benchmark layer as directional context, not as a hard rule.",
+  limitedClassificationCoverage:
+    "Some contribution, vendor, or occupation records remain insufficiently reviewed for fine-grained interpretation. Broad patterns may still be useful, but precision is lower.",
+  incompleteCurrentPeriodData:
+    "Current-period receipts, obligations, or outcomes may still be in motion. Treat near-term totals as provisional until deposits and follow-up settle."
 };
 
-export const RISK_FLAG_LANGUAGE = {
-  fundingPace: {
-    titles: [
-      "Funding Pace Is Slipping",
-      "Raise Pace Is Below Target",
-      "Current Pace Is Not Keeping Up With Plan"
-    ],
-    description:
-      "The campaign has raised less than the required amount for this period. At the current pace, upcoming budget pressure will be harder to cover cleanly.",
-    recommendedActions: [
-      "Increase candidate call time volume immediately.",
-      "Focus follow-up on unresolved commitments already in the pipeline.",
-      "Shift the next two weeks toward higher-yield finance activity."
-    ]
+export const EMPTY_STATE_WARNINGS = {
+  noActivitiesThisWeek:
+    "No finance activity is scheduled for this period. The path can still be modeled, but the campaign's execution layer will remain mostly theoretical until real work is added.",
+  noPledgesRecorded:
+    "No pledges have been recorded yet. If the campaign is actively asking for money, start logging commitments so the difference between potential money and real cash remains visible.",
+  noExpenditureCategorization:
+    "Expenditures have been imported, but category review is not complete enough to produce a reliable spend mix view yet.",
+  noFieldBridgeSnapshot:
+    "No field demand snapshot is attached to this campaign. The finance path can still be generated, but field-specific budget timing will remain less grounded."
+};
+
+export const FUNDING_PATH_WARNINGS = {
+  paceBehind: {
+    title: "Current raise pace is behind the active plan",
+    body:
+      "Under current conditions, the campaign is not raising money quickly enough to support the selected budget path. This does not mean the whole plan must be abandoned, but it does mean the campaign should either improve production immediately or reduce near-term commitments."
   },
-  reservePressure: {
-    titles: [
-      "Reserve Cushion Is Too Thin",
-      "Reserve Floor Has Slipped",
-      "Upcoming Costs Are Pressuring Cash Safety"
-    ],
-    description:
-      "The current reserve position is below the preferred cushion for the next spending window. That does not automatically require cuts, but it does reduce flexibility and increase risk around new commitments.",
-    recommendedActions: [
-      "Pause optional spending until reserve improves.",
-      "Pull forward higher-probability asks where possible.",
-      "Avoid adding new recurring cost commitments until the next checkpoint stabilizes."
-    ]
+  channelConcentration: {
+    title: "The path is too dependent on one finance channel",
+    body:
+      "A healthy funding path does not rely on a single source doing all the work. If one channel underperforms, the campaign should still remain structurally viable. Consider broadening the mix before the next pressure window."
   },
-  fieldAffordability: {
-    titles: [
-      "Selected Field Plan Is Not Yet Cash-Safe",
-      "Field Expansion Is Running Ahead Of Funding",
-      "Field Commitments Are Pressuring The Finance Path"
-    ],
-    description:
-      "The campaign's selected field posture is creating timed cost pressure that the current finance path does not comfortably support.",
-    recommendedActions: [
-      "Delay expansion until reserve returns to a safer range.",
-      "Reduce assumptions about near-term scale if receipts do not improve.",
-      "Treat hiring and expansion as finance-dependent decisions, not fixed assumptions."
-    ]
-  },
-  overweightOverhead: {
-    titles: [
-      "Overhead Share Is Running High",
-      "Admin And Consultant Load Is Crowding The Plan",
-      "Too Much Budget Is Moving Outside Core Program Needs"
-    ],
-    description:
-      "A larger share of the budget is going to overhead, consulting, or non-program costs than the current plan comfortably supports.",
-    recommendedActions: [
-      "Review which costs are required versus merely preferred.",
-      "Delay or resize optional consultant and production commitments.",
-      "Protect reserve and core program needs before expanding overhead."
-    ]
-  },
-  eventUnderperformance: {
-    titles: [
-      "Event Program Is Underperforming",
-      "Events Are Not Carrying Their Assigned Share",
-      "Event Yield Is Too Soft For The Current Plan"
-    ],
-    description:
-      "The event program is producing less net revenue than the plan assumes. The problem may be attendance, ask strategy, follow-up, or cost discipline.",
-    recommendedActions: [
-      "Treat the next event as a targeted yield exercise.",
-      "Tighten host expectations and follow-up discipline.",
-      "Do not assume future events will close a broader path gap without evidence."
-    ]
-  },
-  donorConcentration: {
-    titles: [
-      "Donor Base Is Too Narrow",
-      "Too Much Of The Path Depends On A Small Group",
-      "Current Raise Mix Is Overconcentrated"
-    ],
-    description:
-      "A disproportionate share of current money is coming from a narrow set of donors, geographies, or channels. That can work temporarily, but it increases vulnerability to fatigue and delay.",
-    recommendedActions: [
-      "Broaden the near-term ask universe.",
-      "Build secondary channels that reduce dependence on a single source.",
-      "Use donor intelligence to identify adjacent geographies and sectors for expansion."
-    ]
+  unrealisticCheckpoint: {
+    title: "Next checkpoint appears stretch-dependent",
+    body:
+      "The next funding checkpoint is technically reachable, but it currently depends on unusually strong performance relative to recent pace. Treat this as a warning to tighten follow-up, pull forward asks, or revise commitments."
   }
 };
 
-export const EMPTY_WARNING_STATE =
-  "No active warnings are currently above threshold. That does not mean the campaign is risk-free. It means no current metric is elevated enough to trigger a formal warning under the active scenario.";
+export const BUDGET_WARNINGS = {
+  overbuilt: {
+    title: "Budget appears aggressive for this race type",
+    body:
+      "The current budget materially exceeds the typical spend band for comparable campaigns. That does not make it wrong, but it does mean the finance path should be treated as stretch-dependent until the campaign has proof that the raise pace can support it."
+  },
+  thinReserve: {
+    title: "Reserve layer is too thin",
+    body:
+      "The budget leaves very little room for timing slippage, delayed deposits, or last-minute operating pressure. A campaign can survive a lean budget more easily than it can survive a budget with no protection."
+  },
+  optionalTooEarly: {
+    title: "Optional costs are entering too early",
+    body:
+      "Several non-core costs are scheduled before the campaign has secured safe coverage for required operating needs. Reordering those commitments may improve stability without materially weakening the plan."
+  }
+};
+
+export const DONOR_INTELLIGENCE_WARNINGS = {
+  inDistrictWeakness: {
+    title: "Local donor base appears thin",
+    body:
+      "A large share of current fundraising appears to be coming from outside the district or outside the campaign's immediate local base. That may be acceptable in some races, but it can also signal weak local depth."
+  },
+  concentrationRisk: {
+    title: "Donor base is concentrated",
+    body:
+      "A relatively small number of donors or ZIP clusters are carrying a large share of the raise. This can work for a while, but it increases fragility if one segment cools off."
+  },
+  classificationLimits: {
+    title: "Some donor records remain unclassified",
+    body:
+      "Occupation, industry, or geography enrichment is only partially complete for this view. Use the underlying signal, but do not over-interpret fine distinctions until review coverage improves."
+  }
+};
+
+export const EXPENDITURE_WARNINGS = {
+  overheadHeavy: {
+    title: "Overhead share is elevated",
+    body:
+      "Administrative, consulting, or general operating costs appear to be taking a larger share of the budget than expected for a campaign of this type. Review whether those commitments are supporting core campaign goals proportionately."
+  },
+  fieldUnderweight: {
+    title: "Field investment may be undersupported",
+    body:
+      "The campaign's actual or planned spend mix appears lighter on field than the selected strategy would suggest. This does not automatically require expansion, but it should prompt a check against the operating plan."
+  },
+  timingMismatch: {
+    title: "Spend timing is drifting from the plan",
+    body:
+      "Actual spending is arriving earlier or in a different mix than the budget path anticipated. Even if totals remain close, timing drift can create pressure later in the cycle."
+  }
+};
+
+export const GENERIC_RECOMMENDATION_OPENERS = [
+  "Recommended action:",
+  "Practical next step:",
+  "Best near-term correction:",
+  "Before the next checkpoint, the campaign should:"
+];

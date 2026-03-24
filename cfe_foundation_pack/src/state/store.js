@@ -37,6 +37,7 @@ import { buildSpendTimelineSnapshot } from "../core/engine/timeline.js";
  *     fundingRequirement: import('../core/contracts/types.js').FundingRequirementSnapshot | null,
  *     reserveStatus: string,
  *     fieldFundingStatus: string | null,
+ *     activityCompletionRate: number | null,
  *     riskFlags: import('../core/contracts/types.js').RiskFlag[],
  *     reports: {
  *       weeklyFinanceMemo: Record<string, unknown> | null,
@@ -79,6 +80,29 @@ function estimateRaisedToDate(activities) {
 }
 
 /**
+ * @param {import('../core/contracts/types.js').FinanceActivity[]} activities
+ * @returns {number | null}
+ */
+function estimateActivityCompletionRate(activities) {
+  if (activities.length === 0) {
+    return null;
+  }
+
+  let completedWeight = 0;
+  for (const activity of activities) {
+    if (activity.status === "Completed" || activity.status === "Closed") {
+      completedWeight += 1;
+      continue;
+    }
+    if (activity.status === "Partially Completed") {
+      completedWeight += 0.5;
+    }
+  }
+
+  return completedWeight / activities.length;
+}
+
+/**
  * @returns {CfeState}
  */
 function makeInitialState() {
@@ -101,8 +125,9 @@ function makeInitialState() {
       budgetSummary: null,
       spendTimeline: null,
       fundingRequirement: null,
-      reserveStatus: "Healthy",
+      reserveStatus: "Reserve Protected",
       fieldFundingStatus: null,
+      activityCompletionRate: null,
       riskFlags: [],
       reports: {
         weeklyFinanceMemo: null,
@@ -311,13 +336,16 @@ export function createCfeStore(seed = {}) {
         fieldFundingStatus = cfeBridgeSnapshot.hiring_greenlight_status;
       }
 
+      const activityCompletionRate = estimateActivityCompletionRate(state.financeActivities);
+
       const riskFlags = buildCoreRiskFlags({
         campaignId: state.campaignProfile.id,
         scenarioId: state.scenarioId,
         fundingRequirement,
         reserveStatus,
         fieldFundingStatus,
-        fundedPercentOfFieldPlan: cfeBridgeSnapshot?.funded_percent_of_field_plan
+        fundedPercentOfFieldPlan: cfeBridgeSnapshot?.funded_percent_of_field_plan,
+        activityCompletionRate: activityCompletionRate ?? undefined
       });
 
       const recommendations =
@@ -385,7 +413,7 @@ export function createCfeStore(seed = {}) {
             ? "No spend peak identified yet."
             : `Peak spend month is ${timeline.peak_month}, reserve planning should be paced to that window.`,
         decisionPoints: [
-          "Approve optional lines only when reserve status is Healthy or Tight.",
+          "Approve optional lines only when reserve status is Reserve Protected or Reserve Watch.",
           "Hold expansion decisions until next checkpoint target is met."
         ]
       });
@@ -403,6 +431,7 @@ export function createCfeStore(seed = {}) {
           fundingRequirement,
           reserveStatus,
           fieldFundingStatus,
+          activityCompletionRate,
           riskFlags,
           reports: {
             weeklyFinanceMemo,

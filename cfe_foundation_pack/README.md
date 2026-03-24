@@ -1,49 +1,41 @@
-# Campaign Finance Engine (CFE) — Full Handoff Pack
+# Campaign Finance Engine - Surface Implementation Handoff
 
-This pack is the build-ready product definition for the Campaign Finance Engine (CFE), the finance sibling to the Field Path Engine (FPE).
+This package applies the surface implementation pack on top of the CFE foundation scaffold.
 
-## Purpose
-CFE is a standalone campaign budget, funding path, and finance execution system. It should help a campaign answer:
+Implemented surface map:
+- `/overview`
+- `/budget-plan`
+- `/spend-timeline`
+- `/funding-path`
+- `/finance-activity`
+- `/donor-intelligence`
+- `/expenditure-intelligence`
+- `/reports`
+- `/manual`
+- `/settings`
 
-- What are we trying to fund?
-- When do those costs hit?
-- What does history say is realistic for this kind of race?
-- What must we raise by each checkpoint?
-- Which finance activities are producing the money?
-- What part of the plan is safely fundable right now?
-- What needs to change before the next cost window arrives?
+What is wired:
+- Page headers, intros, helper text, tooltips, and empty states from the handoff copy packs.
+- Warning tone and severity language from warning contracts.
+- Report shell language and narrative scaffolding from reporting contracts.
+- Manual/front-page guidance from manual contracts.
+- Canonical snapshot boundary preserved: pages consume store/core snapshot outputs and do not recompute engine math.
 
-## Pack contents
-- core product and architecture docs
-- schemas
-- formulas
-- workflows
-- bridge contract with FPE
-- reporting blueprint and report language
-- full warning and status language
-- manual/operator copy
-- UI copy pack
-- empty-state and helper text pack
-- Codex build prompt
+Compatibility:
+- Legacy `uiCopy` exports (`EMPTY_STATES`, `CORE_HELPER_TEXT`, etc.) are retained so old scaffold modules remain import-safe.
 
-## Product stance
-CFE is not generic bookkeeping software, generic donor CRM, or a compliance replacement. It is a budget-path planning and finance execution control system.
+## Verify
 
-## Relationship to FPE
-- FPE = operations demand engine
-- CFE = budget and funding path engine
+Run syntax checks:
 
-They remain separate applications and communicate only through narrow snapshot contracts.
+```bash
+cd /Users/anakinskywalker/Downloads/cfe_handoff_v2
+while IFS= read -r f; do node --check "$f"; done < <(rg --files src test -g '*.js' | sort)
+```
 
-## Implementation scaffold included
-This folder now includes a runnable JavaScript scaffold under `src/` with:
-- sacred-core boundary docs and canonical contracts
-- canonical engines for budget, timeline, funding path, reserve logic, risk flags, classification precedence, and report composition
-- validated FPE import and CFE export snapshot bridge surfaces
-- store/state scaffolding that computes canonical snapshots and feeds route pages
-- route/page shell for Overview, Setup, Budget, Timeline, Benchmarks, Funding Path, Channels, Activity, Pledges, Donors, Spending, Risks, Reports, and Bridge
-- language modules aligned to this handoff pack (`warning`, `manual`, `reporting`, `ui copy`, `empty states`)
-- baseline tests in `test/core.test.js`
+Run tests:
 
-## Local verification
-- Run: `npm test`
+```bash
+cd /Users/anakinskywalker/Downloads/cfe_handoff_v2
+npm test
+```

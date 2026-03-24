@@ -1,6 +1,7 @@
 import {
   CORE_PATH_STATUSES,
   FUNDING_RISK_LEVELS,
+  FUNDING_STATUSES,
   RESERVE_STATUSES,
   isOneOf
 } from "../contracts/enums.js";
@@ -26,31 +27,60 @@ export function computeReserveTarget(input) {
  */
 export function evaluateReserveStatus(input) {
   if (input.reserveTarget <= 0) {
-    return "Healthy";
+    return "Reserve Protected";
   }
 
   const ratio = input.reserveAvailable / input.reserveTarget;
   if (ratio >= 1) {
-    return "Healthy";
+    return "Reserve Protected";
   }
-  if (ratio >= 0.75) {
-    return "Tight";
+  if (ratio >= 0.8) {
+    return "Reserve Watch";
   }
-  return "At Risk";
+  if (ratio >= 0.65) {
+    return "Reserve Pressure";
+  }
+  return "Reserve Breach";
 }
 
 /**
  * @param {number} paceRatio
  * @returns {string}
  */
-function pathStatusFromPaceRatio(paceRatio) {
-  if (paceRatio >= 1) {
-    return "On Path";
+function paceStatusFromRatio(paceRatio) {
+  if (!Number.isFinite(paceRatio)) {
+    return "Pace Unclear";
   }
-  if (paceRatio >= 0.85) {
-    return "Watch";
+  if (paceRatio >= 1.1) {
+    return "Ahead of Pace";
   }
-  return "Off Path";
+  if (paceRatio >= 0.95) {
+    return "On Pace";
+  }
+  if (paceRatio >= 0.8) {
+    return "Slightly Behind";
+  }
+  return "Materially Behind";
+}
+
+/**
+ * @param {number} fundedShare
+ * @returns {string}
+ */
+function fundingStatusFromShare(fundedShare) {
+  if (fundedShare >= 1) {
+    return "Fully Fundable";
+  }
+  if (fundedShare >= 0.85) {
+    return "Mostly Fundable";
+  }
+  if (fundedShare >= 0.65) {
+    return "Partially Fundable";
+  }
+  if (fundedShare >= 0.45) {
+    return "Not Yet Fundable";
+  }
+  return "Redline";
 }
 
 /**
@@ -168,7 +198,7 @@ function requiredByCheckpoint(input) {
  *   reserveFloorByPeriod: Record<string, number>,
  *   notes?: string
  * }} input
- * @returns {import('../contracts/types.js').FundingRequirementSnapshot}
+ * @returns {import('../contracts/types.js').FundingRequirementSnapshot & { pace_status: string, funding_status: string }}
  */
 export function computeFundingRequirementSnapshot(input) {
   const debt = input.currentDebt ?? 0;
@@ -197,7 +227,7 @@ export function computeFundingRequirementSnapshot(input) {
       .reduce((sum, [, amount]) => sum + amount, 0)
   );
   const actualToDate = input.actualRaiseTotalToDate ?? raisedToDate;
-  const paceRatio = requiredToDate === 0 ? 1 : actualToDate / requiredToDate;
+  const paceRatio = requiredToDate === 0 ? Number.NaN : actualToDate / requiredToDate;
 
   const primaryMonth = monthFromIso(input.electionCalendar?.primary_date);
   const generalMonth = monthFromIso(input.electionCalendar?.general_date);
@@ -231,13 +261,20 @@ export function computeFundingRequirementSnapshot(input) {
     Math.max(0, competitiveThreshold - input.currentCashOnHand - raisedToDate)
   );
 
-  const pathStatus = pathStatusFromPaceRatio(paceRatio);
-  const fundingRiskLevel = fundingRiskLevelFromPaceRatio(paceRatio);
+  const paceStatus = paceStatusFromRatio(paceRatio);
+  const fundingRiskLevel = fundingRiskLevelFromPaceRatio(Number.isFinite(paceRatio) ? paceRatio : 0.5);
+  const fundedShare =
+    input.requiredBudget + input.reserveTarget <= 0
+      ? 1
+      : (input.currentCashOnHand + committedOrReceived) / (input.requiredBudget + input.reserveTarget);
+  const fundingStatus = fundingStatusFromShare(fundedShare);
 
-  if (!isOneOf(pathStatus, CORE_PATH_STATUSES)) {
-    throw new Error(`Invalid path status generated: ${pathStatus}`);
+  if (!isOneOf(paceStatus, CORE_PATH_STATUSES)) {
+    throw new Error(`Invalid pace status generated: ${paceStatus}`);
   }
-
+  if (!isOneOf(fundingStatus, FUNDING_STATUSES)) {
+    throw new Error(`Invalid funding status generated: ${fundingStatus}`);
+  }
   if (!isOneOf(fundingRiskLevel, FUNDING_RISK_LEVELS)) {
     throw new Error(`Invalid funding risk level generated: ${fundingRiskLevel}`);
   }
@@ -256,7 +293,9 @@ export function computeFundingRequirementSnapshot(input) {
     reserve_floor: input.reserveTarget,
     gap_to_safe_funding: gapToSafeFunding,
     gap_to_competitive_funding: gapToCompetitiveFunding,
-    path_status: pathStatus,
+    path_status: paceStatus,
+    pace_status: paceStatus,
+    funding_status: fundingStatus,
     funding_risk_level: fundingRiskLevel,
     notes: input.notes
   };
@@ -272,11 +311,11 @@ export function deriveFieldFundingStatus(reserveStatus, fundedPercentOfFieldPlan
     throw new Error(`Invalid reserve status: ${reserveStatus}`);
   }
 
-  if (reserveStatus === "At Risk" || fundedPercentOfFieldPlan < 0.8) {
+  if (reserveStatus === "Reserve Breach" || fundedPercentOfFieldPlan < 0.75) {
     return "Redline";
   }
 
-  if (reserveStatus === "Tight" || fundedPercentOfFieldPlan < 0.95) {
+  if (reserveStatus === "Reserve Pressure" || fundedPercentOfFieldPlan < 0.9) {
     return "Caution";
   }
 
