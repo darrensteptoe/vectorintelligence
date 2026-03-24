@@ -27,6 +27,9 @@ import { buildSpendTimelineSnapshot } from "../core/engine/timeline.js";
  *   budgetLines: import('../core/contracts/types.js').BudgetLine[],
  *   financeActivities: import('../core/contracts/types.js').FinanceActivity[],
  *   benchmarkSet: Record<string, unknown> | null,
+ *   channelTargetPlan: Record<string, unknown> | null,
+ *   donorGeoSummary: Record<string, unknown> | null,
+ *   spendMixSummary: Record<string, unknown> | null,
  *   bridge: {
  *     fpeSnapshot: import('../core/contracts/types.js').FPEBudgetDemandSnapshot | null,
  *     cfeSnapshot: import('../core/contracts/types.js').CFEFundingStatusSnapshot | null
@@ -117,6 +120,9 @@ function makeInitialState() {
     budgetLines: [],
     financeActivities: [],
     benchmarkSet: null,
+    channelTargetPlan: null,
+    donorGeoSummary: null,
+    spendMixSummary: null,
     bridge: {
       fpeSnapshot: null,
       cfeSnapshot: null
@@ -125,7 +131,7 @@ function makeInitialState() {
       budgetSummary: null,
       spendTimeline: null,
       fundingRequirement: null,
-      reserveStatus: "Reserve Protected",
+      reserveStatus: "Healthy",
       fieldFundingStatus: null,
       activityCompletionRate: null,
       riskFlags: [],
@@ -352,9 +358,9 @@ export function createCfeStore(seed = {}) {
         riskFlags.length > 0
           ? riskFlags.slice(0, 3).map((flag) => flag.recommended_action)
           : [
-              "Maintain current raise cadence and protect reserve discipline.",
-              "Keep follow-up velocity high on existing commitments.",
-              "Monitor optional spend approvals against reserve pressure weekly."
+              "Increase candidate call time volume over the next two weeks.",
+              "Prioritize unresolved commitments already in the pipeline.",
+              "Delay optional spending until reserve pressure improves."
             ];
 
       const weeklyFinanceMemo = composeWeeklyFinanceMemo({
@@ -380,7 +386,8 @@ export function createCfeStore(seed = {}) {
           "Pair event asks with same-week follow-up blocks."
         ],
         oneRisk:
-          riskFlags[0]?.title ?? "Reserve coverage should be watched as spending pressure increases."
+          riskFlags[0]?.title ?? "Reserve coverage should be watched as spending pressure increases.",
+        fundingStatus: fundingRequirement.path_status
       });
 
       const financeCommitteeMemo = composeFinanceCommitteeMemo({
@@ -413,7 +420,7 @@ export function createCfeStore(seed = {}) {
             ? "No spend peak identified yet."
             : `Peak spend month is ${timeline.peak_month}, reserve planning should be paced to that window.`,
         decisionPoints: [
-          "Approve optional lines only when reserve status is Reserve Protected or Reserve Watch.",
+          "Approve optional lines only when reserve status is Healthy or Tight.",
           "Hold expansion decisions until next checkpoint target is met."
         ]
       });

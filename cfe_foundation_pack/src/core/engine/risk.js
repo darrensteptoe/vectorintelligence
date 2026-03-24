@@ -1,17 +1,17 @@
-import {
-  ACTIVITY_WARNINGS,
-  FUNDING_PATH_WARNINGS,
-  FUNDING_WARNING_BY_SEVERITY,
-  RESERVE_WARNING_BY_SEVERITY
-} from "../contracts/warningLanguage.js";
+import { ACTIVITY_WARNINGS, WARNING_FAMILIES } from "../contracts/warningLanguage.js";
 import { makeId, nowIso } from "../contracts/types.js";
 
-const PACE_STATUS_TO_SEVERITY = {
-  "Ahead of Pace": null,
-  "On Pace": null,
-  "Pace Unclear": "Watch",
-  "Slightly Behind": "Elevated",
-  "Materially Behind": "Serious"
+const PATH_STATUS_TO_FLAG = {
+  Watch: {
+    severity: "Caution",
+    title: WARNING_FAMILIES.fundingPace.titleOptions[0],
+    recommended: WARNING_FAMILIES.fundingPace.recommendedActions[1]
+  },
+  "Off Path": {
+    severity: "Warning",
+    title: WARNING_FAMILIES.fundingPace.titleOptions[2],
+    recommended: WARNING_FAMILIES.fundingPace.recommendedActions[0]
+  }
 };
 
 /**
@@ -31,50 +31,40 @@ export function buildCoreRiskFlags(input) {
   const flags = [];
 
   const paceStatus = input.fundingRequirement.pace_status ?? input.fundingRequirement.path_status;
-  const paceSeverity = PACE_STATUS_TO_SEVERITY[paceStatus] ?? null;
-  if (paceSeverity) {
-    const body =
-      FUNDING_WARNING_BY_SEVERITY[paceSeverity] ?? FUNDING_PATH_WARNINGS.paceBehind.body;
+  const pathConfig = PATH_STATUS_TO_FLAG[paceStatus] ?? null;
+  if (pathConfig) {
     flags.push({
       id: makeId("risk"),
       campaign_id: input.campaignId,
       scenario_id: input.scenarioId,
       created_at: nowIso(),
       flag_type: "Funding Pace",
-      severity: paceSeverity === "Serious" ? "Warning" : "Caution",
-      title: FUNDING_PATH_WARNINGS.paceBehind.title,
-      explanation: body,
-      trigger_metric: "pace_status",
+      severity: pathConfig.severity,
+      title: pathConfig.title,
+      explanation: WARNING_FAMILIES.fundingPace.descriptionTemplate,
+      trigger_metric: "path_status",
       trigger_value: input.fundingRequirement.total_raise_target,
-      recommended_action: "Increase candidate call time volume immediately.",
+      recommended_action: pathConfig.recommended,
       status: "Active"
     });
   }
 
-  if (input.reserveStatus === "Reserve Watch" || input.reserveStatus === "Reserve Pressure" || input.reserveStatus === "Reserve Breach") {
-    const key =
-      input.reserveStatus === "Reserve Breach"
-        ? "Reserve Breach"
-        : input.reserveStatus === "Reserve Pressure"
-        ? "Reserve Pressure"
-        : "Reserve Watch";
+  if (input.reserveStatus === "Tight" || input.reserveStatus === "At Risk") {
     flags.push({
       id: makeId("risk"),
       campaign_id: input.campaignId,
       scenario_id: input.scenarioId,
       created_at: nowIso(),
-      flag_type: "Reserve",
-      severity:
-        input.reserveStatus === "Reserve Breach"
-          ? "Critical"
-          : input.reserveStatus === "Reserve Pressure"
-          ? "Warning"
-          : "Caution",
-      title: key,
-      explanation: RESERVE_WARNING_BY_SEVERITY[key],
+      flag_type: "Reserve Pressure",
+      severity: input.reserveStatus === "At Risk" ? "Critical" : "Caution",
+      title:
+        input.reserveStatus === "At Risk"
+          ? WARNING_FAMILIES.reservePressure.titleOptions[1]
+          : WARNING_FAMILIES.reservePressure.titleOptions[0],
+      explanation: WARNING_FAMILIES.reservePressure.descriptionTemplate,
       trigger_metric: "reserve_status",
       trigger_value: input.fundingRequirement.reserve_floor,
-      recommended_action: "Protect reserve before approving additional optional spending.",
+      recommended_action: WARNING_FAMILIES.reservePressure.recommendedActions[0],
       status: "Active"
     });
   }
@@ -85,31 +75,42 @@ export function buildCoreRiskFlags(input) {
       campaign_id: input.campaignId,
       scenario_id: input.scenarioId,
       created_at: nowIso(),
-      flag_type: "Field Funding",
+      flag_type: "Field Affordability",
       severity: input.fieldFundingStatus === "Redline" ? "Critical" : "Warning",
-      title: "Field funding is under strain",
-      explanation:
-        "Field-specific commitments are starting to outrun the current finance path. Treat expansion decisions as conditional until coverage improves.",
+      title:
+        input.fieldFundingStatus === "Redline"
+          ? WARNING_FAMILIES.fieldAffordability.titleOptions[2]
+          : WARNING_FAMILIES.fieldAffordability.titleOptions[0],
+      explanation: WARNING_FAMILIES.fieldAffordability.descriptionTemplate,
       trigger_metric: "funded_percent_of_field_plan",
       trigger_value: input.fundedPercentOfFieldPlan ?? 0,
-      recommended_action: "Hold field expansion until the next checkpoint improves.",
+      recommended_action: WARNING_FAMILIES.fieldAffordability.recommendedActions[0],
       status: "Active"
     });
   }
 
-  if (input.activityCompletionRate != null && input.activityCompletionRate < 0.7) {
+  if (input.activityCompletionRate != null && input.activityCompletionRate < 0.8) {
     flags.push({
       id: makeId("risk"),
       campaign_id: input.campaignId,
       scenario_id: input.scenarioId,
       created_at: nowIso(),
       flag_type: "Activity Execution",
-      severity: input.activityCompletionRate < 0.5 ? "Warning" : "Caution",
-      title: "Weak completion",
-      explanation: ACTIVITY_WARNINGS.weakCompletion,
+      severity: input.activityCompletionRate < 0.6 ? "Warning" : "Caution",
+      title:
+        input.activityCompletionRate < 0.6
+          ? WARNING_FAMILIES.eventUnderperformance.titleOptions[1]
+          : "Finance activity is uneven",
+      explanation:
+        input.activityCompletionRate < 0.6
+          ? ACTIVITY_WARNINGS.weakCompletion
+          : "Some planned finance work is happening, but not consistently enough to feel secure.",
       trigger_metric: "activity_completion_rate",
       trigger_value: input.activityCompletionRate,
-      recommended_action: "Increase scheduling and follow-up discipline for the next period.",
+      recommended_action:
+        input.activityCompletionRate < 0.6
+          ? WARNING_FAMILIES.eventUnderperformance.recommendedActions[1]
+          : "Tighten scheduling and follow-up discipline for the next two weeks.",
       status: "Active"
     });
   }

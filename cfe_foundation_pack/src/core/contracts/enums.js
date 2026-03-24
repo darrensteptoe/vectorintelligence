@@ -5,42 +5,20 @@ export const CLASSIFICATION_RESOLUTION_ORDER = [
   "unknown"
 ];
 
-export const FUNDING_STATUSES = [
-  "Fully Fundable",
-  "Mostly Fundable",
-  "Partially Fundable",
-  "Not Yet Fundable",
-  "Redline"
-];
-
-export const PACE_STATUSES = [
-  "On Pace",
-  "Slightly Behind",
-  "Materially Behind",
-  "Ahead of Pace",
-  "Pace Unclear"
-];
-
-// Compatibility alias for existing engine/store naming.
-export const CORE_PATH_STATUSES = PACE_STATUSES;
+export const CORE_PATH_STATUSES = ["On Path", "Watch", "Off Path"];
+export const PACE_STATUSES = CORE_PATH_STATUSES;
+export const FUNDING_STATUSES = CORE_PATH_STATUSES;
 
 export const FUNDING_RISK_LEVELS = ["Low", "Moderate", "Elevated", "High", "Severe"];
 
-export const RESERVE_STATUSES = [
-  "Reserve Protected",
-  "Reserve Watch",
-  "Reserve Pressure",
-  "Reserve Breach"
-];
-
+export const RESERVE_STATUSES = ["Healthy", "Tight", "At Risk"];
 export const FIELD_FUNDING_STATUSES = ["Greenlight", "Caution", "Redline"];
-
 export const ACTIVITY_EXECUTION_STATUSES = ["Strong", "Mixed", "Weak"];
 
 export const CLASSIFICATION_STATUSES = [
   "Confirmed",
-  "Auto-Classified",
-  "Needs Review",
+  "Auto-classified",
+  "Needs review",
   "Unknown",
   "Excluded"
 ];
@@ -51,7 +29,7 @@ export const BUDGET_PLAN_STATUSES = ["Draft", "Active", "Archived", "Frozen"];
 
 export const BUDGET_DOMAINS = [
   "Field Program",
-  "Staff Payroll",
+  "Payroll",
   "Consultants / Strategy",
   "Polling / Research",
   "Digital Program",
@@ -60,11 +38,11 @@ export const BUDGET_DOMAINS = [
   "Compliance / Legal / Accounting",
   "Office / Operations / Software",
   "Creative / Photo / Video",
-  "Fundraising Event Costs",
+  "Event Costs",
   "Travel / Meals",
   "Printing / Signs / Literature",
   "Data / Voter File / Tools",
-  "Contingency / Reserve"
+  "Reserve / Contingency"
 ];
 
 export const SPEND_PATTERNS = [
@@ -76,9 +54,9 @@ export const SPEND_PATTERNS = [
   "Custom"
 ];
 
-export const SOURCE_TRUST_LABELS = ["Reported", "Standardized", "Modeled"];
+export const SOURCE_TRUST_LABELS = ["Reported", "Standardized", "Modeled", "Bridge-Derived"];
 
-export const RISK_SEVERITY_LABELS = ["Watch", "Elevated", "Serious", "Redline"];
+export const RISK_SEVERITY_LABELS = ["On Path", "Watch", "Off Path"];
 
 export const RISK_FLAG_SEVERITIES = ["Info", "Watch", "Caution", "Warning", "Critical"];
 export const RISK_FLAG_STATUSES = ["Active", "Acknowledged", "Resolved", "Suppressed"];

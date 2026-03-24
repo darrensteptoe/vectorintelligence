@@ -1,98 +1,118 @@
 export const MANUAL_FRONT_PAGE = {
   title: "Campaign Finance Engine Manual",
   opening:
-    "CFE is designed to help campaigns answer a practical question: what does the campaign need to spend, when will those costs hit, what must be raised before those moments, and is the campaign's current finance program strong enough to support the plan?",
+    "Campaign Finance Engine is built for campaigns that need to fund real plans, not admire spreadsheets. The purpose of the system is to help leadership understand what the campaign is trying to fund, when those costs hit, whether history suggests the plan is realistic, and what the finance operation must do next to support it.",
   context:
-    "A good finance system does not merely total receipts and expenditures. It helps the campaign organize reality. That means budget planning, timing discipline, execution tracking, and a willingness to show when a plan is attractive on paper but weak in practice."
+    "The system is strongest when it is used honestly. A realistic budget is more valuable than a flattering one. A visible unknown is better than a false label. A warning that causes a course correction is more useful than a perfect-looking dashboard that hides pressure until it is too late."
 };
 
 export const MANUAL_USAGE_GUIDANCE =
-  "CFE works best when the campaign treats it as a planning and control system, not just a reporting screen. The quality of the outputs depends on the honesty of the budget, the discipline of activity logging, and the willingness to distinguish what is confirmed from what is merely hoped for.";
+  "Teach the campaign how to think, not just where to click. Explain what a measure means, what strong and weak conditions look like, and what to do next.";
 
 export const MANUAL_SECTIONS = {
-  overview: {
-    title: "Overview",
-    whatFor:
-      "The Overview page is meant to give senior users a fast read on the campaign's finance condition. It is not the place to micromanage every budget line. It is the place to understand whether the current path is broadly safe, under strain, or unrealistic.",
-    fullyFundable:
-      "'Fully Fundable' does not mean the campaign can relax. It means the active plan appears supportable under current assumptions and current pace without obvious structural strain.",
-    notYetFundable:
-      "'Not Yet Fundable' means the campaign is carrying more plan than the current finance path can responsibly support. That can change, but until it does, leaders should be cautious about new commitments."
-  },
   budgetPlan: {
     title: "Budget Plan",
-    why:
-      "Most campaign finance problems do not begin with poor reporting. They begin with an unclear campaign plan. This page forces the campaign to translate ambition into cost structure.",
-    goodBudgeting:
-      "A good budget is not automatically the smallest budget. It is the budget that reflects the real campaign strategy, includes actual timing, distinguishes required from optional costs, and leaves room for routine disruption.",
-    commonMistake:
-      "The most common mistake is underbudgeting required work while quietly assuming the campaign will 'figure it out later.' CFE is built to make those hidden assumptions visible."
+    whatItIs:
+      "A campaign budget is not a wish list and not a post hoc record. In this system, the budget is the campaign's working statement of what it intends to fund, when those costs will hit, and which parts of the plan are essential versus discretionary.",
+    strongBudget:
+      "A strong budget is timed, prioritized, and honest. It reflects the campaign the team can plausibly execute, not merely the campaign it would like to run under perfect conditions.",
+    requiredVsOptional:
+      "Required lines support the minimum viable campaign. Optional lines may still be strategically smart, but they should remain visible as lines the campaign could delay, reduce, or sequence differently if pressure rises."
   },
   spendTimeline: {
     title: "Spend Timeline",
     whyTimingMatters:
-      "Campaigns often focus on totals and ignore timing. But timing is usually what creates real stress. A campaign can be theoretically fundable and still become operationally unstable if cash arrives after commitments need to be made.",
-    pressureWindows:
-      "A pressure window is a period where the campaign's expected commitments or cash needs start outpacing the current finance path. These windows deserve attention early because the easiest month to solve next month's pressure is this month."
+      "Campaigns often get into trouble not because their total target was impossible, but because costs accelerated before enough money was safely in hand. A timeline view helps the campaign see those pressure points before it is negotiating from weakness.",
+    peakSpendWindows:
+      "A peak spend window is the period where the campaign's expected costs are at their highest or most compressed. When a campaign enters one of these periods thinly funded, ordinary delays become more dangerous."
   },
   fundingPath: {
     title: "Funding Path",
-    whatFor:
-      "The Funding Path page converts the campaign budget into a practical fundraising path. It should tell the campaign what needs to be raised, how quickly, and through which channels.",
-    strongPath: [
-      "The total target is credible.",
-      "The monthly pacing is operationally realistic.",
-      "The reserve layer remains intact even if normal slippage occurs."
-    ],
-    weakPath:
-      "A weak path usually depends on unusually strong performance arriving exactly on time, often from too few channels, with too little protection if deposits slip."
+    whatPathMeans:
+      "The funding path is the campaign's working answer to a simple question: how much money must arrive, and by when, to support the selected plan without creating avoidable cash stress.",
+    pathStatuses: {
+      onPath: "On Path means the campaign is broadly aligned with the active raise plan.",
+      watch: "Watch means the path is still alive, but flexibility is narrowing.",
+      offPath:
+        "Off Path means the campaign is behind in a way that now affects upcoming commitments, not just abstract totals."
+    },
+    safeVsCompetitive:
+      "Safe funding means the campaign can support the selected plan without violating its reserve logic. Competitive funding usually refers to a stronger posture with less reliance on narrow timing success or perfect execution."
   },
-  financeActivity: {
+  activity: {
     title: "Finance Activity",
-    why:
-      "Money rarely appears because the dashboard says it should. It appears because the campaign schedules the right work, completes that work, and follows through hard enough to convert asks into receipts.",
-    whatToLog:
-      "The campaign should log call time, donor meetings, events, follow-up blocks, online pushes, and major finance committee activity.",
-    plannedVsActual:
-      "Planned vs Actual is not there to punish a bad week. It is there to identify where the path is breaking."
+    whyTrackingMatters:
+      "Finance plans fail most often in execution, not in spreadsheet design. This section exists so the campaign can compare what it said it would do with what it actually did and with what that work produced.",
+    callTime:
+      "Track call time in enough detail to improve it. The point is not to prove effort. The point is to understand whether the candidate or finance team is completing enough asks, converting enough commitments, and following up with enough discipline.",
+    events:
+      "Events are not judged only by gross receipts. Net yield, conversion speed, host quality, and follow-up strength matter more than a flattering top-line number.",
+    pledges:
+      "A pledge is not cash. It may still be politically and financially meaningful, but campaigns get in trouble when they plan against money that has not actually landed."
   },
   donorIntelligence: {
     title: "Donor Intelligence",
-    whatFor:
-      "Donor Intelligence shows the shape of the donor base. The point is not to indulge curiosity. The point is to understand who is carrying the campaign, whether support is broad or narrow, and where future fundraising effort may be strongest.",
     geography:
-      "Geography is most useful for identifying concentration, underdeveloped local support, and white-space opportunity.",
+      "Donor geography can show concentration, local strength, outside-network reliance, and donor breadth. It cannot tell you everything about voter support, neighborhood persuasion, or precise turf strength.",
     occupationIndustry:
-      "Occupation and industry are directional signals. They should not be treated as perfect social science."
+      "Occupation strings are useful, but messy. A good system preserves uncertainty and lets campaigns learn over time. When classification is weak, the right move is to say so.",
+    concentration:
+      "A narrow donor base can still fund a campaign for a time, but it creates fragility. Breadth matters because it gives the campaign more room to absorb underperformance from any one cluster."
   },
   expenditureIntelligence: {
     title: "Expenditure Intelligence",
-    whatFor:
-      "This page helps the campaign evaluate whether its spending mix matches its actual strategy. A campaign can raise enough money and still drift into a spend pattern that weakens execution.",
-    watchFor: [
-      "rising overhead without strategic gain",
-      "consultant load crowding out core operations",
-      "field underinvestment relative to stated plan",
-      "spend arriving earlier than the budget assumed"
-    ]
+    spendMix:
+      "Spending becomes most useful when compared against strategy and timing. The question is not whether a campaign spent on consultants, field, or digital. The question is whether the mix fits the campaign's actual path and race stage.",
+    vendorConcentration:
+      "Heavy vendor concentration can be normal in some races, but it becomes risky when too much campaign flexibility depends on a narrow stack of providers or high-overhead relationships."
   },
-  reports: {
-    title: "Reports",
-    goodReports:
-      "A good report should help someone act. It should not merely restate data."
-  },
-  warningsStatuses: {
-    title: "Warnings and statuses",
-    whyWarningsExist:
-      "Warnings exist to help the campaign act before weak conditions become visible through missed payroll, missed hiring, late production, or degraded program quality.",
-    respond:
-      "The right first response is usually to identify whether the warning reflects a planning problem, a pace problem, an execution problem, a timing problem, or a classification/data completeness problem."
+  risk: {
+    title: "Risk and Warnings",
+    howToReadWarnings:
+      "Warnings are designed to sharpen judgment, not create panic. A warning is best read as an early signal that the campaign should act while options still exist.",
+    reservePressure:
+      "Reserve pressure matters because weak reserve turns ordinary delay into real risk. A campaign with no cushion is forced to make harder choices faster.",
+    fundingPace:
+      "Raise pace risk is not only about being behind target. It is about being behind target at the wrong time relative to upcoming commitments.",
+    realismWarnings:
+      "Historical realism warnings do not tell the campaign what it must do. They indicate when budget, mix, or pace is departing from what similar races have usually sustained."
   },
   bridge: {
     title: "Bridge with FPE",
-    why:
-      "The bridge exists so the finance engine can understand what the field plan is expected to cost and when those costs will matter.",
-    whatNot:
-      "The bridge is not a merger of the two apps. FPE and CFE should remain separate systems with explicit snapshots, not one tangled application."
+    bridgePurpose:
+      "The field bridge allows the finance system to incorporate the cost and timing of the selected field posture without absorbing the field app's internal logic. It keeps the apps coordinated without making them dependent on the same codebase.",
+    returnSignal:
+      "The finance return signal tells the field side whether the selected posture is safely fundable, cautiously fundable, or in redline territory under the current finance path."
+  },
+  confidenceAndUncertainty: {
+    title: "Confidence and Uncertainty",
+    classes: {
+      reported: "Reported values come directly from source records or campaign entries.",
+      standardized:
+        "Standardized values have been cleaned or classified so they can be compared more reliably.",
+      modeled:
+        "Modeled values are engine outputs based on active assumptions, budget, timeline, and evidence."
+    },
+    whyVisible:
+      "Campaign software becomes less trustworthy when it hides uncertainty behind polished interfaces. This system keeps uncertainty visible so leadership can make better decisions sooner."
   }
 };
+
+export const OPERATOR_MISTAKES = [
+  "Entering vague budget lines that hide real commitments.",
+  "Assuming pledges are the same as receipts.",
+  "Treating benchmarks as destiny.",
+  "Ignoring reserve pressure because topline feels acceptable.",
+  "Assuming events will solve structural underperformance.",
+  "Failing to revisit channel mix when one source softens.",
+  "Delaying follow-up on live commitments."
+];
+
+export const HEALTHY_RANGE_GUIDANCE = [
+  "healthier than planned",
+  "in range",
+  "tighter than preferred",
+  "materially behind",
+  "unusually concentrated",
+  "heavier than the historical norm"
+];

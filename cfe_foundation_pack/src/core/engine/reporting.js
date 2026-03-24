@@ -4,7 +4,10 @@ import {
   DONOR_INTELLIGENCE_MEMO_CONTENT,
   FINANCE_COMMITTEE_BRIEF_CONTENT,
   LEADERSHIP_RISK_REPORT_CONTENT,
+  REPORT_PREFACE_VARIANTS,
   REPORT_SECTION_STRUCTURE,
+  REPORT_STATUS_PHRASES,
+  UNIVERSAL_CLOSING_BLOCK,
   WEEKLY_FINANCE_MEMO_CONTENT
 } from "../contracts/reportingLanguage.js";
 
@@ -21,6 +24,28 @@ function currency(value) {
 }
 
 /**
+ * @param {number} value
+ * @returns {string}
+ */
+function percent(value) {
+  return `${Math.round(value * 100)}%`;
+}
+
+/**
+ * @param {string} pathStatus
+ * @returns {string}
+ */
+function statusPhrase(pathStatus) {
+  if (pathStatus === "On Path") {
+    return REPORT_STATUS_PHRASES.strong[1];
+  }
+  if (pathStatus === "Watch") {
+    return REPORT_STATUS_PHRASES.mixed[0];
+  }
+  return REPORT_STATUS_PHRASES.weak[0];
+}
+
+/**
  * @param {{
  *   campaignName: string,
  *   weekEndingDate: string,
@@ -32,25 +57,42 @@ function currency(value) {
  * }} input
  */
 export function composeWeeklyFinanceMemo(input) {
+  const pathStatus = input.fundingRequirement.pace_status ?? input.fundingRequirement.path_status;
+  const executiveSummary =
+    pathStatus === "On Path"
+      ? WEEKLY_FINANCE_MEMO_CONTENT.executiveSummaryTemplates.onPath
+      : pathStatus === "Watch"
+      ? WEEKLY_FINANCE_MEMO_CONTENT.executiveSummaryTemplates.watch
+      : WEEKLY_FINANCE_MEMO_CONTENT.executiveSummaryTemplates.offPath;
+
+  const variance = input.raisedThisPeriod - input.plannedRaiseThisPeriod;
+  const attainment =
+    input.plannedRaiseThisPeriod <= 0 ? 1 : input.raisedThisPeriod / input.plannedRaiseThisPeriod;
+
   return {
-    title: WEEKLY_FINANCE_MEMO_CONTENT.coverTitle,
+    title: WEEKLY_FINANCE_MEMO_CONTENT.title,
     header: `Weekly Finance Memo - ${input.campaignName} - ${input.weekEndingDate}`,
+    preface: REPORT_PREFACE_VARIANTS.standard,
     section_structure: REPORT_SECTION_STRUCTURE,
-    cover_summary: WEEKLY_FINANCE_MEMO_CONTENT.coverSummary,
-    executive_summary_template: WEEKLY_FINANCE_MEMO_CONTENT.executiveSummaryTemplate,
-    budget_health_text: WEEKLY_FINANCE_MEMO_CONTENT.budgetHealth,
-    pace_production_text: WEEKLY_FINANCE_MEMO_CONTENT.paceProduction,
-    activity_text: WEEKLY_FINANCE_MEMO_CONTENT.activity,
-    risk_summary_text: WEEKLY_FINANCE_MEMO_CONTENT.riskSummary,
+    executive_summary: executiveSummary,
+    funding_status_read:
+      `The current raise path calls for ${currency(input.plannedRaiseThisPeriod)} during this period. ` +
+      `The campaign recorded ${currency(input.raisedThisPeriod)}, leaving a period variance of ${currency(
+        variance
+      )}. Current attainment is ${percent(attainment)}.`,
+    activity_read: WEEKLY_FINANCE_MEMO_CONTENT.activityReadTemplate,
+    pledge_pipeline_read: WEEKLY_FINANCE_MEMO_CONTENT.pledgeReadTemplate,
+    risk_read: WEEKLY_FINANCE_MEMO_CONTENT.riskReadTemplates,
     current_condition: {
-      funding_status: input.fundingRequirement.funding_status ?? "Not Yet Fundable",
-      pace_status: input.fundingRequirement.pace_status ?? input.fundingRequirement.path_status,
+      path_status: pathStatus,
+      path_phrase: statusPhrase(pathStatus),
       reserve_status: input.reserveStatus,
       raised_this_period: currency(input.raisedThisPeriod),
       planned_raise_this_period: currency(input.plannedRaiseThisPeriod)
     },
     recommended_actions:
-      input.recommendations.length > 0 ? input.recommendations : WEEKLY_FINANCE_MEMO_CONTENT.recommendedActions
+      input.recommendations.length > 0 ? input.recommendations : WEEKLY_FINANCE_MEMO_CONTENT.defaultActions,
+    closing: UNIVERSAL_CLOSING_BLOCK
   };
 }
 
@@ -61,14 +103,20 @@ export function composeCandidateBrief(input) {
   return {
     title: CANDIDATE_BRIEF_CONTENT.title,
     opening: CANDIDATE_BRIEF_CONTENT.opening,
-    summary_template: CANDIDATE_BRIEF_CONTENT.summaryTemplate,
-    this_week_raise_goal: currency(input.weeklyRaiseGoal),
-    highest_priority_asks: input.topAsks,
+    preface: REPORT_PREFACE_VARIANTS.candidateFacing,
+    current_position:
+      CANDIDATE_BRIEF_CONTENT.currentPositionTemplate
+        .replace("[path_status]", input.fundingStatus ?? "Watch")
+        .replace("[near_term_goal]", currency(input.weeklyRaiseGoal)),
+    candidate_priorities:
+      input.topAsks.length > 0
+        ? [`Make these asks first: ${input.topAsks.join(", ")}`].concat(CANDIDATE_BRIEF_CONTENT.priorities)
+        : CANDIDATE_BRIEF_CONTENT.priorities,
     follow_up_focus: input.followUp,
     event_priorities: input.eventPriorities,
     one_risk: input.oneRisk,
-    caution_language: CANDIDATE_BRIEF_CONTENT.cautionLanguage,
-    what_candidate_needs_to_know: CANDIDATE_BRIEF_CONTENT.whatCandidateNeeds
+    tone_variants: CANDIDATE_BRIEF_CONTENT.toneVariants,
+    closing: UNIVERSAL_CLOSING_BLOCK
   };
 }
 
@@ -78,17 +126,18 @@ export function composeCandidateBrief(input) {
 export function composeFinanceCommitteeMemo(input) {
   return {
     title: FINANCE_COMMITTEE_BRIEF_CONTENT.title,
-    opening: FINANCE_COMMITTEE_BRIEF_CONTENT.opening,
-    summary_template: FINANCE_COMMITTEE_BRIEF_CONTENT.summaryTemplate,
+    opening: FINANCE_COMMITTEE_BRIEF_CONTENT.intro,
+    committee_progress: FINANCE_COMMITTEE_BRIEF_CONTENT.accountabilityTemplate,
     committee_target_for_period: currency(input.committeeTarget),
     assigned_prospects: input.topProspects,
     unresolved_commitments: input.unresolvedCommitments,
     event_program_status: input.eventSupportStatus,
-    accountability_template: FINANCE_COMMITTEE_BRIEF_CONTENT.accountability,
-    committee_action_language:
+    action_header: FINANCE_COMMITTEE_BRIEF_CONTENT.actionHeader,
+    committee_actions:
       input.accountabilityNotes.length > 0
         ? input.accountabilityNotes
-        : FINANCE_COMMITTEE_BRIEF_CONTENT.actionLanguage
+        : FINANCE_COMMITTEE_BRIEF_CONTENT.actions,
+    closing: UNIVERSAL_CLOSING_BLOCK
   };
 }
 
@@ -106,15 +155,19 @@ export function composeLeadershipMemo(input) {
   return {
     title: BUDGET_HEALTH_REPORT_CONTENT.title,
     opening: BUDGET_HEALTH_REPORT_CONTENT.opening,
-    summary_template: BUDGET_HEALTH_REPORT_CONTENT.summaryTemplate,
-    total_budget_status: input.status,
+    budget_realism: BUDGET_HEALTH_REPORT_CONTENT.budgetRealismTemplate.replace(
+      "[realism_status]",
+      input.status
+    ),
+    timing_pressure: BUDGET_HEALTH_REPORT_CONTENT.timingPressureTemplate
+      .replace("[pressure_window]", input.spendingPressureNote)
+      .replace("[safely_fundable_summary]", input.safeCommitments.join(", "))
+      .replace("[less_secure_summary]", input.unsafeCommitments.join(", ")),
     field_affordability: input.fieldAffordabilityNote,
-    major_upcoming_cost_windows: input.spendingPressureNote,
     safe_to_proceed: input.safeCommitments,
     do_not_proceed_yet: input.unsafeCommitments,
     recommended_actions: input.decisionPoints,
-    category_pressure_language: BUDGET_HEALTH_REPORT_CONTENT.categoryPressureLanguage,
-    greenlight_caution_redline: BUDGET_HEALTH_REPORT_CONTENT.greenlightCautionRedline
+    closing: UNIVERSAL_CLOSING_BLOCK
   };
 }
 
@@ -125,10 +178,17 @@ export function composeDonorIntelligenceMemo(input) {
   return {
     title: DONOR_INTELLIGENCE_MEMO_CONTENT.title,
     opening: DONOR_INTELLIGENCE_MEMO_CONTENT.opening,
-    summary_template: DONOR_INTELLIGENCE_MEMO_CONTENT.summaryTemplate,
-    donor_summary: input.donorSummary,
-    interpretation: input.interpretation,
-    guidance: DONOR_INTELLIGENCE_MEMO_CONTENT.interpretationGuidance
+    geography: DONOR_INTELLIGENCE_MEMO_CONTENT.geographyTemplate.replace(
+      "[top_geo_summary]",
+      input.donorSummary
+    ),
+    occupation_and_industry: DONOR_INTELLIGENCE_MEMO_CONTENT.occupationTemplate.replace(
+      "[top_occupation_summary]",
+      input.interpretation
+    ),
+    concentration_read: DONOR_INTELLIGENCE_MEMO_CONTENT.concentrationTemplate
+      .replace("[concentration_read]", input.interpretation),
+    closing: UNIVERSAL_CLOSING_BLOCK
   };
 }
 
@@ -139,10 +199,8 @@ export function composeLeadershipRiskReport(input) {
   return {
     title: LEADERSHIP_RISK_REPORT_CONTENT.title,
     opening: LEADERSHIP_RISK_REPORT_CONTENT.opening,
-    summary_template: LEADERSHIP_RISK_REPORT_CONTENT.summaryTemplate,
     risks: input.riskList,
-    pace_risk: LEADERSHIP_RISK_REPORT_CONTENT.riskParagraphs.pace,
-    reserve_risk: LEADERSHIP_RISK_REPORT_CONTENT.riskParagraphs.reserve,
-    field_funding_risk: LEADERSHIP_RISK_REPORT_CONTENT.riskParagraphs.fieldFunding
+    risk_template: LEADERSHIP_RISK_REPORT_CONTENT.riskTemplate,
+    closing: LEADERSHIP_RISK_REPORT_CONTENT.closingVariants[0]
   };
 }

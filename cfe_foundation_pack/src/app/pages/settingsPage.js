@@ -1,7 +1,14 @@
 import {
+  APP_SUBTITLE,
+  APP_TITLE,
+  GLOBAL_INFO_BANNER,
   GLOBAL_STATUS_LABELS,
   NAVIGATION_LABELS,
-  TOOLTIP_LIBRARY
+  SHARED_MODALS,
+  STATUS_CHIP_HELPER_COPY,
+  TOOLTIP_LIBRARY,
+  UI_STRINGS,
+  UNIVERSAL_SEARCH_PLACEHOLDER
 } from "../../core/contracts/uiCopy.js";
 
 export const settingsPage = {
@@ -9,24 +16,23 @@ export const settingsPage = {
   title: "Settings",
   render(state) {
     return {
-      header: "Settings",
-      subheader: "Scenario controls, snapshot context, and surface conventions.",
-      intro:
-        "Use this page to keep scenario assumptions explicit and preserve trust labels across all CFE surfaces.",
+      app_title: APP_TITLE,
+      app_subtitle: APP_SUBTITLE,
+      global_info_banner: GLOBAL_INFO_BANNER,
+      universal_search_placeholder: UNIVERSAL_SEARCH_PLACEHOLDER,
       active_route: state.route,
       active_scenario_id: state.scenarioId,
       navigation_labels: NAVIGATION_LABELS,
       status_taxonomy: GLOBAL_STATUS_LABELS,
-      source_trust_labels: ["Reported", "Standardized", "Modeled"],
+      source_trust_labels: ["Reported", "Standardized", "Modeled", "Bridge-Derived"],
+      shared_modals: SHARED_MODALS,
+      status_chip_helper_copy: STATUS_CHIP_HELPER_COPY,
+      ui_strings: UI_STRINGS,
       bridge_status: {
         has_fpe_snapshot: state.bridge.fpeSnapshot != null,
         has_cfe_snapshot: state.bridge.cfeSnapshot != null
       },
-      tooltips: {
-        modeled_value: TOOLTIP_LIBRARY.modeledValue,
-        standardized_value: TOOLTIP_LIBRARY.standardizedValue,
-        manual_override: TOOLTIP_LIBRARY.manualOverride
-      }
+      tooltips: TOOLTIP_LIBRARY
     };
   }
 };

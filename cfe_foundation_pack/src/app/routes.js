@@ -3,7 +3,7 @@ export const APP_ROUTES = [
   { path: "/budget-plan", title: "Budget Plan" },
   { path: "/spend-timeline", title: "Spend Timeline" },
   { path: "/funding-path", title: "Funding Path" },
-  { path: "/finance-activity", title: "Finance Activity" },
+  { path: "/activity", title: "Activity" },
   { path: "/donor-intelligence", title: "Donor Intelligence" },
   { path: "/expenditure-intelligence", title: "Expenditure Intelligence" },
   { path: "/reports", title: "Reports" },

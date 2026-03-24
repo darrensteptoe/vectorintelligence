@@ -1,8 +1,24 @@
 import {
+  EMPTY_STATES,
   FUNDING_PATH_SURFACE,
+  STATE_MATRIX,
+  STATUS_CHIP_HELPER_COPY,
   TOOLTIP_LIBRARY
 } from "../../core/contracts/uiCopy.js";
 import { FUNDING_PATH_WARNINGS } from "../../core/contracts/warningLanguage.js";
+
+/**
+ * @param {string | undefined} status
+ */
+function fundingPathState(status) {
+  if (status === "On Path") {
+    return STATE_MATRIX.fundingPath.strongPace;
+  }
+  if (status === "Watch") {
+    return STATE_MATRIX.fundingPath.slightlyBehind;
+  }
+  return STATE_MATRIX.fundingPath.materiallyBehind;
+}
 
 /**
  * @param {import('../../state/store.js').CfeState} state
@@ -15,8 +31,8 @@ function buildPathWarnings(state) {
     return warnings;
   }
 
-  const paceStatus = funding.pace_status ?? funding.path_status;
-  if (paceStatus === "Slightly Behind" || paceStatus === "Materially Behind") {
+  const pathStatus = funding.pace_status ?? funding.path_status;
+  if (pathStatus !== "On Path") {
     warnings.push(FUNDING_PATH_WARNINGS.paceBehind);
   }
 
@@ -45,62 +61,43 @@ function buildPathWarnings(state) {
   return warnings;
 }
 
-/**
- * @param {string | undefined} fundingStatus
- */
-function successStateFromFundingStatus(fundingStatus) {
-  const map = {
-    "Fully Fundable": FUNDING_PATH_SURFACE.successStates[0],
-    "Mostly Fundable": FUNDING_PATH_SURFACE.successStates[1],
-    "Partially Fundable": FUNDING_PATH_SURFACE.successStates[2],
-    "Not Yet Fundable": FUNDING_PATH_SURFACE.successStates[3],
-    Redline: FUNDING_PATH_SURFACE.successStates[3]
-  };
-
-  return map[fundingStatus ?? ""] ?? FUNDING_PATH_SURFACE.successStates[2];
-}
-
 export const fundingPathPage = {
   id: "funding-path",
   title: "Funding Path",
   render(state) {
     const funding = state.snapshots.fundingRequirement;
+    const channelPlan = state.channelTargetPlan ?? null;
 
     return {
       header: FUNDING_PATH_SURFACE.header,
-      subheader: FUNDING_PATH_SURFACE.subheader,
-      intro: FUNDING_PATH_SURFACE.intro,
-      interpretation: FUNDING_PATH_SURFACE.interpretation,
-      core_card_descriptions: FUNDING_PATH_SURFACE.coreCardDescriptions,
+      body: FUNDING_PATH_SURFACE.body,
+      core_cards: FUNDING_PATH_SURFACE.coreCards,
+      core_card_helper: FUNDING_PATH_SURFACE.coreCardHelper,
       funding_requirement_snapshot: funding ?? null,
       status_block:
         funding == null
           ? null
           : {
-              funding_status: funding.funding_status,
-              pace_status: funding.pace_status ?? funding.path_status,
+              path_status: funding.pace_status ?? funding.path_status,
               reserve_status: state.snapshots.reserveStatus,
               field_funding_status: state.snapshots.fieldFundingStatus,
               funding_risk_level: funding.funding_risk_level,
-              narrative: successStateFromFundingStatus(funding.funding_status)
+              state_banner: fundingPathState(funding.pace_status ?? funding.path_status)
             },
+      channel_target_panel: {
+        ...FUNDING_PATH_SURFACE.channelTargetPanel,
+        channel_target_plan: channelPlan
+      },
+      interpretation_block: FUNDING_PATH_SURFACE.interpretationBlock,
       warnings: buildPathWarnings(state),
       risk_flags: state.snapshots.riskFlags,
+      status_chip_helper_copy: STATUS_CHIP_HELPER_COPY,
       tooltips: {
         checkpoint_target: TOOLTIP_LIBRARY.checkpointTarget,
         reserve_floor: TOOLTIP_LIBRARY.reserveFloor,
         modeled_value: TOOLTIP_LIBRARY.modeledValue
       },
-      empty_state:
-        funding == null
-          ? {
-              header: "No funding path has been generated yet",
-              body:
-                "Create a budget plan and recompute canonical snapshots to generate target totals, pacing, and checkpoint requirements.",
-              cta: "Generate Funding Path"
-            }
-          : null,
-      note: "Funding path cards consume canonical funding snapshots; UI does not recompute engine values."
+      empty_state: funding == null ? FUNDING_PATH_SURFACE.emptyState : EMPTY_STATES.fundingPath
     };
   }
 };

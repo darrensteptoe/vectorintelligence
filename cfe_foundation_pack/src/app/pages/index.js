@@ -14,7 +14,7 @@ export const PAGES_BY_ROUTE = {
   "/budget-plan": budgetPage,
   "/spend-timeline": timelinePage,
   "/funding-path": fundingPathPage,
-  "/finance-activity": activityPage,
+  "/activity": activityPage,
   "/donor-intelligence": donorsPage,
   "/expenditure-intelligence": spendingPage,
   "/reports": reportsPage,

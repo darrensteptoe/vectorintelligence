@@ -27,20 +27,17 @@ export function computeReserveTarget(input) {
  */
 export function evaluateReserveStatus(input) {
   if (input.reserveTarget <= 0) {
-    return "Reserve Protected";
+    return "Healthy";
   }
 
   const ratio = input.reserveAvailable / input.reserveTarget;
   if (ratio >= 1) {
-    return "Reserve Protected";
+    return "Healthy";
   }
-  if (ratio >= 0.8) {
-    return "Reserve Watch";
+  if (ratio >= 0.75) {
+    return "Tight";
   }
-  if (ratio >= 0.65) {
-    return "Reserve Pressure";
-  }
-  return "Reserve Breach";
+  return "At Risk";
 }
 
 /**
@@ -49,18 +46,15 @@ export function evaluateReserveStatus(input) {
  */
 function paceStatusFromRatio(paceRatio) {
   if (!Number.isFinite(paceRatio)) {
-    return "Pace Unclear";
-  }
-  if (paceRatio >= 1.1) {
-    return "Ahead of Pace";
+    return "Watch";
   }
   if (paceRatio >= 0.95) {
-    return "On Pace";
+    return "On Path";
   }
   if (paceRatio >= 0.8) {
-    return "Slightly Behind";
+    return "Watch";
   }
-  return "Materially Behind";
+  return "Off Path";
 }
 
 /**
@@ -68,19 +62,13 @@ function paceStatusFromRatio(paceRatio) {
  * @returns {string}
  */
 function fundingStatusFromShare(fundedShare) {
-  if (fundedShare >= 1) {
-    return "Fully Fundable";
+  if (fundedShare >= 0.95) {
+    return "On Path";
   }
-  if (fundedShare >= 0.85) {
-    return "Mostly Fundable";
+  if (fundedShare >= 0.8) {
+    return "Watch";
   }
-  if (fundedShare >= 0.65) {
-    return "Partially Fundable";
-  }
-  if (fundedShare >= 0.45) {
-    return "Not Yet Fundable";
-  }
-  return "Redline";
+  return "Off Path";
 }
 
 /**
@@ -262,7 +250,7 @@ export function computeFundingRequirementSnapshot(input) {
   );
 
   const paceStatus = paceStatusFromRatio(paceRatio);
-  const fundingRiskLevel = fundingRiskLevelFromPaceRatio(Number.isFinite(paceRatio) ? paceRatio : 0.5);
+  const fundingRiskLevel = fundingRiskLevelFromPaceRatio(Number.isFinite(paceRatio) ? paceRatio : 0.6);
   const fundedShare =
     input.requiredBudget + input.reserveTarget <= 0
       ? 1
@@ -311,11 +299,11 @@ export function deriveFieldFundingStatus(reserveStatus, fundedPercentOfFieldPlan
     throw new Error(`Invalid reserve status: ${reserveStatus}`);
   }
 
-  if (reserveStatus === "Reserve Breach" || fundedPercentOfFieldPlan < 0.75) {
+  if (reserveStatus === "At Risk" || fundedPercentOfFieldPlan < 0.75) {
     return "Redline";
   }
 
-  if (reserveStatus === "Reserve Pressure" || fundedPercentOfFieldPlan < 0.9) {
+  if (reserveStatus === "Tight" || fundedPercentOfFieldPlan < 0.9) {
     return "Caution";
   }
 
