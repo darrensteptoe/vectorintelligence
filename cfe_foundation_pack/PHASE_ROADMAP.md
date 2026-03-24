@@ -14,7 +14,7 @@ Deliver:
 - manual/operator language
 - reporting blueprint
 - workflows
-- codex handoff prompt
+- Codex handoff prompt
 
 Goal:
 Lock the full design before implementation.
@@ -25,7 +25,7 @@ Deliver:
 - canonical data types
 - safe boundary docs in code
 - store/state scaffolding
-- empty page routing
+- page routing
 - import/export contract surfaces
 
 Goal:
@@ -80,56 +80,45 @@ Generate the actual finance plan.
 Deliver:
 - finance calendar
 - activities
-- call time tracker
+- call time
 - donor meetings
-- events
-- pledge pipeline
-- follow-up tasks
+- event tracking
+- pledge tracking
+- tasks and follow-up
 
 Goal:
-Track the work that produces money.
+Track the work behind the numbers.
 
-## Phase 7 — Intelligence Layers
+## Phase 7 — Donor + Spend Intelligence
 Deliver:
-- donor ZIP summaries
+- donor geography
 - occupation classification
-- vendor/spend classification
-- expenditure intelligence surfaces
-- concentration analysis
+- vendor and spend classification
+- concentration metrics
+- spend mix summaries
 
 Goal:
-Make the app strategically smarter.
+Explain who funds the campaign and where money is going.
 
-## Phase 8 — Reporting + Manual Surfaces
+## Phase 8 — Reporting + Polish
 Deliver:
-- weekly memo
-- candidate brief
-- committee brief
-- filing snapshot
-- budget health report
-- integrated help/manual panels
+- report composers
+- export surfaces
+- manual/help content
+- status and warning polish
+- empty states
+- QA on circulation-ready language
 
 Goal:
-Ship consultant-grade outputs and explanations.
+Make the app feel complete and trustworthy.
 
-## Phase 9 — FPE Bridge
+## Phase 9 — Scenario Depth + Hardening
 Deliver:
-- FPE import validation
-- field affordability logic
-- CFE export back to FPE
-- bridge status language
+- scenario overlays
+- bridge robustness
+- regression fixtures
+- freeze-candidate contracts
+- release checklist
 
 Goal:
-Connect field and finance without coupling the apps too tightly.
-
-## Phase 10 — Hardening and Freeze
-Deliver:
-- self-tests
-- contract tests
-- report tests
-- bridge tests
-- no-drift verification
-- freeze closeout docs
-
-Goal:
-Reach stable candidate build discipline similar to late-stage FPE.
+Harden before expansion.

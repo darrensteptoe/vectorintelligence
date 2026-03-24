@@ -1,6 +1,6 @@
 export const bridgePage = {
   id: "bridge",
-  title: "FPE-CFE Bridge",
+  title: "Bridge",
   render(state) {
     return {
       imported_fpe_snapshot: state.bridge.fpeSnapshot ?? null,

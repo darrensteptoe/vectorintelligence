@@ -1,17 +1,28 @@
 # Campaign Finance Engine (CFE) — Data Sources
 
 ## Source philosophy
-CFE should prioritize official, stable, publicly accessible sources first. Third-party sources can enrich but should not become fragile single points of failure.
+Prioritize official, stable, publicly accessible sources first. Third-party sources can enrich the product but should not become fragile single points of failure.
 
 ## Source classes
-- Official public campaign finance sources
-- Public enrichment sources (census/labor)
-- Internal campaign-entered data
+- official public campaign finance sources
+- public enrichment sources
+- internal campaign-entered data
 - FPE bridge snapshots
-- Manual review and override data
+- manual review and override data
 
-## Campaign finance evidence sources
-### Federal Election Commission (FEC)
+## Core public campaign finance sources
+### Illinois State Board of Elections
+Use for:
+- committee records
+- contributions
+- expenditures
+- filing periods
+- cash / debt context where available
+
+Role:
+- primary V1 public source for Illinois races
+
+### Federal Election Commission
 Use for:
 - committee records
 - itemized contributions
@@ -19,25 +30,13 @@ Use for:
 - cash on hand
 - debts
 - filing periods
-- employer/occupation where available
+- contributor occupation/employer where available
 - contributor city/state/ZIP
 
-Role in CFE:
-- federal benchmarking
-- donor and spend intelligence
-- structure reference for ingest layer
-
-### Illinois State Board of Elections
-Use for:
-- committee records
-- contributions
-- expenditures
-- cash/debt context where available
-- filing windows
-- state/local benchmarking for Illinois-first build
-
-Role in CFE:
-- V1 core public source for Illinois races
+Role:
+- federal benchmark layer
+- ingest reference structure
+- future expansion source
 
 ## Public enrichment sources
 ### Census / ACS
@@ -47,51 +46,31 @@ Use for:
 - education context
 - workforce composition context
 
-Role in CFE:
-- donor geography enrichment
-- donor class profile context
-
-### Bureau of Labor Statistics (BLS)
+### Bureau of Labor Statistics
 Use for:
 - occupation wage benchmarks
 - industry and occupational family context
-
-Role in CFE:
-- occupation/industry interpretation layer
-- donor base socioeconomic framing
 
 ## Internal campaign-entered sources
 Use for:
 - budget lines
 - planned spending
-- events
-- call time
+- campaign phase assumptions
+- finance activities
 - asks
 - pledges
 - follow-up tasks
-- notes
-- campaign phase assumptions
+- operator notes
 
 ## FPE bridge source
 Use for:
 - projected field budget demand
-- month-by-month field spend curve
-- field staffing ramp timing
+- field monthly spend curve
+- staffing ramp timing
 - field scenario label and uncertainty
 
-## Manual review / override source
-Use for:
-- occupation corrections
-- vendor corrections
-- spend category corrections
-- unknown resolution
-- local strategic labels
-
-## Data-source trust labels
-Each source-derived element should be labelable as:
-- Official reported source
-- Campaign-entered source
-- Bridge-derived source
-- Standardized from source
-- Estimated/model-derived
-- Manually overridden
+## Data labeling rule
+Every visible output should distinguish:
+- Reported
+- Standardized
+- Modeled

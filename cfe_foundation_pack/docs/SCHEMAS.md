@@ -1,21 +1,11 @@
 # Campaign Finance Engine (CFE) — Schemas
 
 ## Schema philosophy
-CFE schemas should be explicit, stable, traceable, and scenario-aware. Each major object should support:
-- campaign scoping
-- race scoping where relevant
-- scenario scoping where relevant
-- timestamps
-- notes
-- status where applicable
-- raw vs normalized distinction where applicable
+Schemas should be explicit, stable, traceable, and scenario-aware.
 
-## 1. Core campaign and race objects
+## Core campaign and race objects
 
 ### RaceProfile
-Purpose: define the race environment.
-
-Core fields:
 - id
 - state
 - office
@@ -32,9 +22,6 @@ Core fields:
 - notes
 
 ### CampaignProfile
-Purpose: define the campaign being planned.
-
-Core fields:
 - id
 - race_profile_id
 - candidate_name
@@ -47,9 +34,6 @@ Core fields:
 - strategic_notes
 
 ### FilingCalendar
-Purpose: define filing deadlines and reporting windows.
-
-Core fields:
 - id
 - jurisdiction
 - cycle_year
@@ -57,9 +41,6 @@ Core fields:
 - notes
 
 ### ElectionCalendar
-Purpose: define campaign timing anchors.
-
-Core fields:
 - id
 - race_profile_id
 - primary_date
@@ -69,258 +50,55 @@ Core fields:
 - mail_deadlines
 - notes
 
-## 2. Budget and path objects
+## Budget and path objects
 
 ### BudgetPlan
-Purpose: top-level budget object for a campaign/scenario.
-
-Core fields:
 - id
 - campaign_id
 - scenario_id
-- total_budget_planned
-- total_required_budget
-- required_cost_share
-- optional_cost_share
+- title
+- total_planned_budget
+- required_budget
+- optional_budget
 - reserve_target
 - status
 - notes
-
-Suggested statuses:
-- Draft
-- Active
-- Archived
-- Frozen
+- created_at
+- updated_at
 
 ### BudgetLine
-Purpose: represent one budgeted cost element.
-
-Core fields:
 - id
 - budget_plan_id
 - domain
-- category
-- subcategory
+- subdomain
 - title
 - planned_amount
 - required_flag
-- optionality_level
-- priority_rank
-- start_date
-- end_date
+- fixed_vs_variable
 - spend_pattern
-- phase_label
-- benchmark_reference
+- start_month
+- end_month
+- phase
+- priority_rank
 - source_type
+- source_reference_id
 - notes
-
-Suggested domains:
-- Field Program
-- Staff Payroll
-- Consultants / Strategy
-- Polling / Research
-- Digital Program
-- Paid Media
-- Direct Mail
-- Compliance / Legal / Accounting
-- Office / Software / Operations
-- Creative / Photo / Video
-- Fundraising Events Costs
-- Travel / Meals
-- Printing / Signs / Literature
-- Data / Voter File / Tools
-- Contingency / Reserve
-
-Suggested spend_pattern values:
-- Even
-- Front-loaded
-- Back-loaded
-- One-time
-- Milestone-based
-- Custom
 
 ### SpendTimelineSnapshot
-Purpose: canonical timed view of budget pressure.
-
-Core fields:
 - id
 - budget_plan_id
 - scenario_id
-- generated_at
-- monthly_spend_schedule
-- phase_spend_schedule
-- peak_month
-- total_before_primary
-- total_before_general
-- reserve_floor_by_period
-- cash_stress_periods
-- notes
-
-### FundingRequirementSnapshot
-Purpose: canonical finance requirement object.
-
-Core fields:
-- id
-- campaign_id
-- scenario_id
-- budget_plan_id
-- spend_timeline_snapshot_id
-- generated_at
-- total_raise_target
-- raise_target_by_month
-- raise_target_by_week
-- raise_target_by_checkpoint
-- reserve_floor
-- gap_to_safe_funding
-- gap_to_competitive_funding
-- path_status
-- funding_risk_level
-- notes
-
-Suggested path_status values:
-- On Path
-- Slightly Behind
-- Behind Pace
-- At Risk
-- Off Path
-
-Suggested funding_risk_level values:
-- Low
-- Moderate
-- Elevated
-- High
-- Severe
-
-### ChannelTargetPlan
-Purpose: channel allocation of raise targets.
-
-Core fields:
-- id
-- funding_requirement_snapshot_id
-- period_label
-- calltime_target
-- event_target
-- major_donor_target
-- online_target
-- finance_committee_target
-- other_target
-- concentration_warning
-- notes
-
-## 3. Disclosure and evidence objects
-
-### Committee
-Purpose: preserve source committee identity.
-
-Core fields:
-- id
-- source_system
-- committee_name_raw
-- committee_name_normalized
-- committee_type
-- jurisdiction
-- candidate_link
-- notes
-
-### FilingPeriod
-Purpose: preserve reporting context.
-
-Core fields:
-- id
-- source_system
-- committee_id
-- start_date
-- end_date
-- due_date
-- filing_label
-- amendment_flag
-- notes
-
-### ContributionRecord
-Purpose: preserve contribution-level evidence.
-
-Core fields:
-- id
-- source_system
-- committee_id
-- filing_period_id
-- contributor_name
-- contributor_type
-- raw_occupation
-- raw_employer
-- address_1
-- city
-- state
-- zip5
-- contribution_date
-- amount
-- election_designation
-- is_itemized
-- memo_raw
-- raw_source_row_id
-
-### ExpenditureRecord
-Purpose: preserve expenditure-level evidence.
-
-Core fields:
-- id
-- source_system
-- committee_id
-- filing_period_id
-- vendor_name
-- vendor_city
-- vendor_state
-- vendor_zip5
-- expenditure_date
-- amount
-- purpose_raw
-- memo_raw
-- raw_source_row_id
-
-### CashSnapshot
-Purpose: preserve official cash-on-hand evidence.
-
-Core fields:
-- id
-- committee_id
-- filing_period_id
-- report_date
-- cash_on_hand
-- notes
-
-### DebtSnapshot
-Purpose: preserve official debt evidence.
-
-Core fields:
-- id
-- committee_id
-- filing_period_id
-- report_date
-- debt_total
-- notes
-
-### ComparableRace
-Purpose: represent one historical analog.
-
-Core fields:
-- id
-- race_profile_id
-- comparable_race_label
-- committee_ids[]
-- comparability_score
-- comparability_weight
-- rationale
-- included_flag
-- notes
+- monthly_spend_schedule_json
+- peak_spend_month
+- peak_spend_amount
+- upcoming_commitment_windows_json
+- reserve_requirements_json
+- created_at
 
 ### BenchmarkSet
-Purpose: canonical threshold summary from historical evidence.
-
-Core fields:
 - id
 - race_profile_id
 - scenario_id
-- generated_at
 - comparable_pool_size
 - credibility_floor
 - competitive_threshold
@@ -328,18 +106,111 @@ Core fields:
 - likely_win_high
 - median_raised
 - median_spent
-- median_cash_on_hand
-- median_reserve_behavior
-- timing_norms
-- category_norms
-- realism_notes
+- category_norms_json
+- timing_norms_json
+- notes
+- created_at
 
-## 4. Operations objects
+### FinancePath
+- id
+- campaign_id
+- budget_plan_id
+- benchmark_set_id
+- scenario_id
+- target_total_raise
+- target_monthly_raise
+- target_weekly_raise
+- target_raise_by_checkpoint_json
+- reserve_floor
+- safe_funding_gap
+- competitive_gap
+- path_status
+- path_status_reason
+- created_at
+- updated_at
+
+### ChannelTargetPlan
+- id
+- finance_path_id
+- period_start
+- period_end
+- target_call_time_raise
+- target_major_donor_raise
+- target_event_raise
+- target_online_raise
+- target_committee_raise
+- concentration_risk_status
+- notes
+
+## Disclosure and evidence objects
+
+### Committee
+- id
+- source_system
+- external_committee_id
+- name_raw
+- name_normalized
+- committee_type
+- jurisdiction
+- notes
+
+### FilingPeriod
+- id
+- committee_id
+- source_system
+- filing_name
+- filing_start
+- filing_end
+- filing_due
+- filing_status
+- notes
+
+### ContributionRecord
+- id
+- committee_id
+- filing_period_id
+- source_system
+- contributor_name
+- contributor_type
+- amount
+- contribution_date
+- raw_occupation
+- raw_employer
+- address_1
+- city
+- state
+- zip5
+- is_itemized
+- memo_raw
+- raw_source_row_id
+
+### ExpenditureRecord
+- id
+- committee_id
+- filing_period_id
+- source_system
+- vendor_name
+- amount
+- expenditure_date
+- purpose_raw
+- memo_raw
+- vendor_city
+- vendor_state
+- vendor_zip5
+- raw_source_row_id
+
+### CashSnapshot
+- id
+- committee_id
+- filing_period_id
+- cash_on_hand
+- debt
+- source_system
+- as_of_date
+
+## Operations objects
 
 ### FinanceActivity
-Purpose: top-level activity object.
-
-Core fields:
 - id
 - campaign_id
 - scenario_id
@@ -350,36 +221,14 @@ Core fields:
 - scheduled_start
 - scheduled_end
 - goal_amount
+- goal_ask_count
 - goal_donor_count
 - status
 - notes
 
-Suggested activity types:
-- Call Time
-- Donor Meeting
-- Fundraiser
-- Finance Committee Meeting
-- Online Push
-- Filing Push
-- Thank-you / Follow-up Block
-- Internal Finance Review
-- Compliance Deadline
-
-Suggested statuses:
-- Scheduled
-- In Progress
-- Completed
-- Canceled
-- Deferred
-- Needs Follow-up
-
 ### CallTimeSession
-Purpose: structured call time record.
-
-Core fields:
 - id
 - finance_activity_id
-- candidate_or_caller
 - planned_hours
 - actual_hours
 - ask_count
@@ -387,44 +236,25 @@ Core fields:
 - pledge_total
 - received_total
 - followup_count
-- notes
+- operator_notes
 
 ### DonorMeeting
-Purpose: structured one-on-one finance meeting record.
-
-Core fields:
 - id
 - finance_activity_id
-- prospect_name
+- donor_name
 - ask_amount
-- commitment_status
-- pledged_amount
-- expected_received_date
-- actual_received_date
-- next_action
+- outcome_status
+- pledge_amount
+- expected_receipt_date
 - notes
 
-Suggested commitment statuses:
-- Not Asked Yet
-- Asked
-- Committed
-- Soft Commit
-- Declined
-- Needs Follow-up
-- Received
-
 ### FundraiserEvent
-Purpose: event-specific finance record.
-
-Core fields:
 - id
 - finance_activity_id
-- event_type
 - venue_name
 - host_name
 - rsvp_target
 - rsvp_actual
-- attendance_actual
 - ask_target
 - pledge_total
 - received_total
@@ -432,19 +262,8 @@ Core fields:
 - net_yield
 - followup_count
 - outcome_rating
-- notes
-
-Suggested outcome ratings:
-- Strong
-- Solid
-- Mixed
-- Weak
-- Underperformed
 
 ### Pledge
-Purpose: track money committed but not yet fully realized.
-
-Core fields:
 - id
 - campaign_id
 - donor_name
@@ -457,47 +276,21 @@ Core fields:
 - source_activity_id
 - notes
 
-Suggested statuses:
-- Expected
-- Committed
-- Partial Received
-- Fully Received
-- Delayed
-- At Risk
-- Canceled
-
 ### Task
-Purpose: track next actions and accountability.
-
-Core fields:
 - id
 - campaign_id
 - owner
 - title
 - due_date
-- related_entity_type
-- related_entity_id
 - priority
+- related_object_type
+- related_object_id
 - status
 - notes
 
-Suggested priorities:
-- Critical
-- High
-- Normal
-- Low
-
-Suggested statuses:
-- Open
-- In Progress
-- Completed
-- Deferred
-- Canceled
-
-## 5. Intelligence objects
+## Intelligence and reporting objects
 
 ### OccupationClassification
-Core fields:
 - id
 - contribution_record_id
 - raw_occupation
@@ -510,11 +303,10 @@ Core fields:
 - review_notes
 
 ### VendorClassification
-Core fields:
 - id
 - expenditure_record_id
-- raw_vendor_name
-- normalized_vendor_name
+- vendor_name_raw
+- vendor_name_normalized
 - vendor_category
 - spend_category
 - classification_status
@@ -522,21 +314,7 @@ Core fields:
 - manual_override_value
 - review_notes
 
-### SpendCategoryClassification
-Core fields:
-- id
-- expenditure_record_id
-- purpose_raw
-- normalized_purpose
-- spend_category
-- spend_family
-- classification_status
-- classification_confidence
-- manual_override_value
-- review_notes
-
 ### DonorGeoSummary
-Core fields:
 - id
 - campaign_id
 - zip5
@@ -547,86 +325,35 @@ Core fields:
 - itemized_donor_count
 - in_district_flag
 - adjacent_region_flag
-- socioeconomic_band
-- notes
+- income_context_band
 
 ### PlannedVsActualSummary
-Core fields:
 - id
 - campaign_id
 - scenario_id
-- period_label
-- planned_activity_count
-- completed_activity_count
-- planned_ask_total
-- actual_ask_total
-- planned_raise_total
-- actual_raise_total
-- planned_pledge_total
-- actual_pledge_total
-- deposit_lag_indicator
-- completion_rate
-- variance_notes
+- period_start
+- period_end
+- planned_raise
+- actual_received
+- planned_asks
+- actual_asks
+- planned_activities
+- completed_activities
+- pledge_conversion_rate
+- deposit_lag_status
+- cause_of_gap_summary
 
 ### RiskFlag
-Core fields:
 - id
 - campaign_id
 - scenario_id
-- created_at
 - flag_type
 - severity
 - title
-- explanation
+- description
 - trigger_metric
 - trigger_value
 - recommended_action
 - status
-- notes
-
-Suggested severities:
-- Info
-- Watch
-- Caution
-- Warning
-- Critical
-
-Suggested statuses:
-- Active
-- Acknowledged
-- Resolved
-- Suppressed
-
-## 6. Bridge objects
-
-### FPEBudgetDemandSnapshot
-Core fields:
-- snapshot_id
-- schema_version
-- campaign_id
-- office_id
-- scenario_id
 - created_at
-- total_projected_field_cost
-- monthly_field_cost_schedule
-- staffing_cost_schedule
-- field_spend_milestones
-- peak_field_spend_month
-- field_confidence_band
-- notes
-
-### CFEFundingStatusSnapshot
-Core fields:
-- snapshot_id
-- schema_version
-- campaign_id
-- office_id
-- scenario_id
-- created_at
-- selected_field_plan_cost
-- funded_percent_of_field_plan
-- reserve_status
-- hiring_greenlight_status
-- expansion_greenlight_status
-- funding_risk_level
-- notes
+- resolved_at

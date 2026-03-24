@@ -4,7 +4,7 @@
 Classification is a product feature, not cleanup work. It should preserve uncertainty, support manual review, and improve over time.
 
 ## Resolution order
-**manual override > exact rule > fuzzy rule > unknown**
+manual override > exact rule > fuzzy rule > unknown
 
 ## Status labels
 - Confirmed
@@ -17,6 +17,15 @@ Classification is a product feature, not cleanup work. It should preserve uncert
 - High
 - Medium
 - Low
+
+## Applies to
+- donor occupation
+- donor industry
+- employer sector
+- vendor category
+- spend category
+- donor type
+- fundraising channel
 
 ## Occupation family suggestions
 - Healthcare
@@ -69,38 +78,9 @@ Classification is a product feature, not cleanup work. It should preserve uncert
 - Reserve / Contingency
 - Unknown
 
-## Vendor category suggestions
-- Media Buyer
-- Consultant / Strategist
-- Payroll / HR
-- Digital Vendor
-- Pollster / Research
-- Printer / Mail House
-- Compliance / Legal / Accounting
-- Creative / Production
-- Office / Software / Operations
-- Event Vendor
-- Travel / Hospitality
-- Field Vendor
-- Data Vendor
-- Unknown
-
-## Channel suggestions
-- Call Time
-- Major Donor Meetings
-- Events
-- Online
-- Finance Committee
-- Host Network
-- Self-Funding
-- PAC / Committee Support
-- Other
-- Unknown
-
-## Manual review queue guidance
-Prioritize review for:
-- highest-dollar unknown occupations
-- highest-dollar unknown vendors
-- most frequent unknown categories
-- large recent expenditures with ambiguous purpose
-- top donor ZIPs with missing clean tags
+## Review-queue rule
+The product should surface the highest-impact ambiguous records first:
+- top unknown occupations by dollars
+- top unknown vendors by spend
+- top unknown channels by amount
+- top ambiguous ZIPs or geography records

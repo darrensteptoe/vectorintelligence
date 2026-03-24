@@ -1,44 +1,46 @@
 export const OVERALL_PATH_STATUS_DESCRIPTIONS = {
   "On Path":
-    "The current finance path is supporting the selected campaign plan at a workable pace.",
-  "Slightly Behind":
-    "The campaign is modestly behind the active finance path but remains recoverable with disciplined execution.",
-  "Behind Pace":
-    "Current raising and activity levels are not keeping up with the active funding requirement.",
-  "At Risk":
-    "The campaign is entering a period where planned costs may outpace safe cash availability.",
+    "The campaign is generally tracking with the active funding path. This does not eliminate risk, but the current pace and projected receipts are broadly aligned with the next major spending window.",
+  Watch:
+    "The campaign is still within reach of the active path, but the margin for error has narrowed. One weak period or a delayed set of receipts could create avoidable pressure.",
   "Off Path":
-    "The current finance program is not sufficient to support the selected campaign plan without material change."
+    "The campaign is behind the active funding path. The problem is not only the current gap, but the timing of that gap relative to upcoming commitments."
 };
 
 export const RESERVE_STATUS_DESCRIPTIONS = {
-  Greenlight: "Current reserve coverage is healthy relative to upcoming commitments.",
-  Watch: "Reserve coverage remains workable but has less cushion than preferred.",
-  Caution:
-    "Reserve coverage is thin relative to upcoming costs and should be reinforced soon.",
-  Redline: "Current reserve coverage is not sufficient for the next spending window."
+  Healthy: "The reserve cushion is currently in a workable range for the next spending window.",
+  Tight:
+    "The reserve cushion is thinner than preferred. The campaign may still be able to proceed, but flexibility is narrowing.",
+  "At Risk": "The reserve cushion is below a safe operating range for the next spending window."
 };
 
 export const FIELD_FUNDING_STATUS_DESCRIPTIONS = {
-  Greenlight: "The selected field plan appears finance-safe under the current budget path.",
+  Greenlight: "The selected field posture is presently supportable under the active finance path.",
   Caution:
-    "The selected field plan is only partially finance-safe and may require pacing discipline or delayed expansion.",
-  Redline:
-    "The selected field plan is not currently finance-safe under the active funding path."
+    "The selected field posture may be supportable, but the campaign has less room for delay or underperformance than preferred.",
+  Redline: "The selected field posture is not safely supported by the current finance path."
+};
+
+export const ACTIVITY_EXECUTION_STATUS_DESCRIPTIONS = {
+  Strong:
+    "Planned finance activity is being completed at a level that gives the path a real chance to hold.",
+  Mixed: "Some planned finance work is happening, but not consistently enough to feel secure.",
+  Weak:
+    "The campaign is not completing enough of the planned finance work to support the path reliably."
 };
 
 export const RISK_FLAG_LANGUAGE = {
-  behindPace: {
+  fundingPace: {
     titles: [
-      "Raise Pace Below Target",
-      "Monthly Raise Pace Is Off Track",
-      "Funding Pace Not Keeping Up With Plan"
+      "Funding Pace Is Slipping",
+      "Raise Pace Is Below Target",
+      "Current Pace Is Not Keeping Up With Plan"
     ],
     description:
       "The campaign has raised less than the required amount for this period. At the current pace, upcoming budget pressure will be harder to cover cleanly.",
     recommendedActions: [
-      "Increase candidate call time and tighten the near-term ask list.",
-      "Add immediate follow-up on unresolved commitments from the current period.",
+      "Increase candidate call time volume immediately.",
+      "Focus follow-up on unresolved commitments already in the pipeline.",
       "Shift the next two weeks toward higher-yield finance activity."
     ]
   },
@@ -49,88 +51,70 @@ export const RISK_FLAG_LANGUAGE = {
       "Upcoming Costs Are Pressuring Cash Safety"
     ],
     description:
-      "The current reserve position is below the preferred cushion for the next spending window. That does not automatically require cuts, but it does reduce flexibility and increases risk around new commitments.",
+      "The current reserve position is below the preferred cushion for the next spending window. That does not automatically require cuts, but it does reduce flexibility and increase risk around new commitments.",
     recommendedActions: [
-      "Delay nonessential spending until reserve status improves.",
-      "Pull forward near-term asks tied to the next commitment window.",
-      "Review optional budget lines before approving new additions."
+      "Pause optional spending until reserve improves.",
+      "Pull forward higher-probability asks where possible.",
+      "Avoid adding new recurring cost commitments until the next checkpoint stabilizes."
     ]
   },
-  fieldNotCashSafe: {
+  fieldAffordability: {
     titles: [
-      "Field Expansion Is Not Yet Finance-Safe",
-      "Selected Field Plan Is Only Partially Funded",
-      "Field Ramp Timing Exceeds Current Funding Path"
+      "Selected Field Plan Is Not Yet Cash-Safe",
+      "Field Expansion Is Running Ahead Of Funding",
+      "Field Commitments Are Pressuring The Finance Path"
     ],
     description:
-      "The selected field scenario is not yet fully supported by the active finance path. Proceeding without adjustment would increase pressure on reserve and later budget windows.",
+      "The campaign's selected field posture is creating timed cost pressure that the current finance path does not comfortably support.",
     recommendedActions: [
-      "Hold expansion until the next funding checkpoint is met.",
-      "Use the smaller field scenario until reserve coverage improves.",
-      "Increase finance activity tied to the next staffing milestone."
+      "Delay expansion until reserve returns to a safer range.",
+      "Reduce assumptions about near-term scale if receipts do not improve.",
+      "Treat hiring and expansion as finance-dependent decisions, not fixed assumptions."
     ]
   },
-  consultantOverheadPressure: {
+  overweightOverhead: {
     titles: [
       "Overhead Share Is Running High",
-      "Consultant Load Is Pressuring the Budget",
-      "Administrative Spend Is Crowding Out Program Capacity"
+      "Admin And Consultant Load Is Crowding The Plan",
+      "Too Much Budget Is Moving Outside Core Program Needs"
     ],
     description:
-      "A larger-than-preferred share of the budget is flowing to non-program costs. That may be reasonable in context, but it reduces flexibility for field, persuasion, or reserve protection.",
+      "A larger share of the budget is going to overhead, consulting, or non-program costs than the current plan comfortably supports.",
     recommendedActions: [
-      "Review consultant and operations scope before adding new commitments.",
-      "Protect core program lines first and delay lower-priority support costs.",
-      "Compare current mix against historical norms for this race type."
+      "Review which costs are required versus merely preferred.",
+      "Delay or resize optional consultant and production commitments.",
+      "Protect reserve and core program needs before expanding overhead."
     ]
   },
   eventUnderperformance: {
     titles: [
-      "Event Yield Came In Below Goal",
-      "Fundraiser Underperformed Relative to Plan",
-      "Event Program Is Not Carrying Its Expected Share"
+      "Event Program Is Underperforming",
+      "Events Are Not Carrying Their Assigned Share",
+      "Event Yield Is Too Soft For The Current Plan"
     ],
     description:
-      "This event or event block produced less net money than planned. Repeating the same mix without adjustment will leave a larger burden on other channels.",
+      "The event program is producing less net revenue than the plan assumes. The problem may be attendance, ask strategy, follow-up, or cost discipline.",
     recommendedActions: [
-      "Tighten host standards and RSVP conversion before the next event.",
-      "Increase post-event follow-up to improve pledge realization.",
-      "Shift weight toward higher-performing finance channels if needed."
+      "Treat the next event as a targeted yield exercise.",
+      "Tighten host expectations and follow-up discipline.",
+      "Do not assume future events will close a broader path gap without evidence."
     ]
   },
-  pledgeLag: {
+  donorConcentration: {
     titles: [
-      "Pledge Conversion Is Slower Than Planned",
-      "Expected Money Has Not Landed on Time",
-      "Deposit Timing Is Pressuring the Path"
+      "Donor Base Is Too Narrow",
+      "Too Much Of The Path Depends On A Small Group",
+      "Current Raise Mix Is Overconcentrated"
     ],
     description:
-      "A meaningful share of expected money is arriving later than planned. That can distort the campaign's real cash position even when topline commitment numbers look healthy.",
+      "A disproportionate share of current money is coming from a narrow set of donors, geographies, or channels. That can work temporarily, but it increases vulnerability to fatigue and delay.",
     recommendedActions: [
-      "Work the delayed pledge list immediately.",
-      "Separate soft commitments from reliable near-term receipts in planning.",
-      "Do not treat unresolved pledges as fully available cash."
-    ]
-  },
-  donorConcentrationRisk: {
-    titles: [
-      "Donor Base Is Too Concentrated",
-      "A Narrow Donor Cluster Is Carrying Too Much Weight",
-      "Geography of Support Is Too Tight"
-    ],
-    description:
-      "A relatively narrow set of donors, ZIPs, or support clusters is carrying an outsized share of receipts. That may be manageable in the short term, but it creates fragility if one source slows.",
-    recommendedActions: [
-      "Broaden asks into underdeveloped donor geographies and sectors.",
-      "Reduce dependence on one or two large donor channels.",
-      "Use upcoming events and call time to widen the base rather than only deepen the same pool."
+      "Broaden the near-term ask universe.",
+      "Build secondary channels that reduce dependence on a single source.",
+      "Use donor intelligence to identify adjacent geographies and sectors for expansion."
     ]
   }
 };
 
-export const NEUTRAL_INFORMATIONAL_LINES = [
-  "This pattern is worth watching but does not currently require a change in plan.",
-  "This category is within a workable range for the active scenario.",
-  "This result is mixed: useful in context, but not strong enough to carry more of the path without support.",
-  "Unknown or unclassified share remains visible here so the team can judge confidence appropriately."
-];
+export const EMPTY_WARNING_STATE =
+  "No active warnings are currently above threshold. That does not mean the campaign is risk-free. It means no current metric is elevated enough to trigger a formal warning under the active scenario.";

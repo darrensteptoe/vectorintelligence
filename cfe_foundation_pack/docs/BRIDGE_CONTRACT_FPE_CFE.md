@@ -1,9 +1,7 @@
 # FPE ↔ CFE Bridge Contract
 
 ## Bridge philosophy
-The bridge between FPE and CFE should be intentionally narrow.
-
-It exists to exchange high-value planning signals, not merge applications.
+The bridge between FPE and CFE should be intentionally narrow. It exists to exchange high-value planning signals, not merge applications.
 
 ## Architectural rules
 1. FPE and CFE remain separate apps.
@@ -55,49 +53,13 @@ Core fields:
 - funding_risk_level
 - notes
 
-## Allowed bridge interpretations
-FPE → CFE may influence:
-- campaign budget plan
-- timing pressure
-- reserve requirements
-- funding checkpoints
-- field affordability diagnostics
-
-CFE → FPE may influence:
-- hiring greenlight/caution
-- expansion greenlight/caution
-- budget pressure messaging
-- scenario realism
-
-## Disallowed bridge behavior
-The bridge must not:
-- rewrite FPE internal math
-- rewrite CFE internal finance math
-- create live circular dependencies
-- share UI state
-- bypass snapshot validation
-
-## Validation requirements
-Bridge snapshots should validate:
-- schema version
-- required field presence
-- campaign/scenario identifiers
-- numeric shape of cost schedules
-- snapshot timestamp and provenance
-
-## Recommended bridge statuses
+## Recommended status outputs
 For finance status returned to FPE:
 - Greenlight
 - Caution
 - Redline
 
-## Recommended FPE confidence labels
-For field demand imported to CFE:
-- Stable
-- Moderate uncertainty
-- High uncertainty
-
-## Human-readable bridge message examples
-- “Selected field plan is currently 84% funded under the active finance path.”
-- “Organizer expansion should not proceed until reserve status returns to Greenlight.”
-- “Field scenario is historically plausible but not cash-safe under current monthly raise pace.”
+## Recommended human-readable bridge messages
+- Selected field plan is currently 84% funded under the active finance path.
+- Organizer expansion should not proceed until reserve status returns to Greenlight.
+- Field scenario is historically plausible but not cash-safe under current monthly raise pace.

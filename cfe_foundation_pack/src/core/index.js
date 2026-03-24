@@ -3,6 +3,7 @@ export * from "./contracts/types.js";
 export * from "./contracts/warningLanguage.js";
 export * from "./contracts/manualLanguage.js";
 export * from "./contracts/reportingLanguage.js";
+export * from "./contracts/uiCopy.js";
 
 export * from "./engine/budget.js";
 export * from "./engine/timeline.js";

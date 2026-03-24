@@ -1,72 +1,92 @@
 # Campaign Finance Engine (CFE) — Warning and Status Language
 
-## Tone rules
-Warning and status language should be:
-- firm but not hysterical
-- practical
-- campaign-native
-- specific about cause
-- specific about consequence
-- specific about next move
+## Status philosophy
+Statuses should be calm, plainspoken, and actionable. They should help a campaign decide what to do next, not merely label a problem.
 
-Avoid:
-- vague panic language
-- robotic phrasing
-- false certainty
-- jargon for its own sake
+## Core status sets
 
-## Core health statuses
-
-### Overall Path Status
+### Overall path status
 - On Path
-- Slightly Behind
-- Behind Pace
-- At Risk
+- Watch
 - Off Path
 
-Suggested descriptions:
-- **On Path**: The current finance path is supporting the selected campaign plan at a workable pace.
-- **Slightly Behind**: The campaign is modestly behind the active finance path but remains recoverable with disciplined execution.
-- **Behind Pace**: Current raising and activity levels are not keeping up with the active funding requirement.
-- **At Risk**: The campaign is entering a period where planned costs may outpace safe cash availability.
-- **Off Path**: The current finance program is not sufficient to support the selected campaign plan without material change.
+#### On Path
+Short label:
+On Path
 
-### Reserve Status
+Description:
+“The campaign is generally tracking with the active funding path. This does not eliminate risk, but the current pace and projected receipts are broadly aligned with the next major spending window.”
+
+#### Watch
+Short label:
+Watch
+
+Description:
+“The campaign is still within reach of the active path, but the margin for error has narrowed. One weak period or a delayed set of receipts could create avoidable pressure.”
+
+#### Off Path
+Short label:
+Off Path
+
+Description:
+“The campaign is behind the active funding path. The problem is not only the current gap, but the timing of that gap relative to upcoming commitments.”
+
+### Reserve status
+- Healthy
+- Tight
+- At Risk
+
+#### Healthy
+“The reserve cushion is currently in a workable range for the next spending window.”
+
+#### Tight
+“The reserve cushion is thinner than preferred. The campaign may still be able to proceed, but flexibility is narrowing.”
+
+#### At Risk
+“The reserve cushion is below a safe operating range for the next spending window.”
+
+### Field funding status
 - Greenlight
-- Watch
 - Caution
 - Redline
 
-Suggested descriptions:
-- **Greenlight**: Current reserve coverage is healthy relative to upcoming commitments.
-- **Watch**: Reserve coverage remains workable but has less cushion than preferred.
-- **Caution**: Reserve coverage is thin relative to upcoming costs and should be reinforced soon.
-- **Redline**: Current reserve coverage is not sufficient for the next spending window.
+#### Greenlight
+“The selected field posture is presently supportable under the active finance path.”
 
-### Field Funding Status (for bridge)
-- Greenlight
-- Caution
-- Redline
+#### Caution
+“The selected field posture may be supportable, but the campaign has less room for delay or underperformance than preferred.”
 
-Suggested descriptions:
-- **Greenlight**: The selected field plan appears finance-safe under the current budget path.
-- **Caution**: The selected field plan is only partially finance-safe and may require pacing discipline or delayed expansion.
-- **Redline**: The selected field plan is not currently finance-safe under the active funding path.
+#### Redline
+“The selected field posture is not safely supported by the current finance path.”
 
-## Risk flag language bank
+### Activity execution status
+- Strong
+- Mixed
+- Weak
 
-### Behind Pace
+#### Strong
+“Planned finance activity is being completed at a level that gives the path a real chance to hold.”
+
+#### Mixed
+“Some planned finance work is happening, but not consistently enough to feel secure.”
+
+#### Weak
+“The campaign is not completing enough of the planned finance work to support the path reliably.”
+
+## Warning families
+
+### Funding Pace
 Title options:
-- Raise Pace Below Target
-- Monthly Raise Pace Is Off Track
-- Funding Pace Not Keeping Up With Plan
+- Funding Pace Is Slipping
+- Raise Pace Is Below Target
+- Current Pace Is Not Keeping Up With Plan
 
 Description template:
 “The campaign has raised less than the required amount for this period. At the current pace, upcoming budget pressure will be harder to cover cleanly.”
 
-Recommended action options:
-- “Increase candidate call time and tighten the near-term ask list.”
-- “Add immediate follow-up on unresolved commitments from the current period.”
+Recommended actions:
+- “Increase candidate call time volume immediately.”
+- “Focus follow-up on unresolved commitments already in the pipeline.”
 - “Shift the next two weeks toward higher-yield finance activity.”
 
 ### Reserve Pressure
@@ -76,85 +96,68 @@ Title options:
 - Upcoming Costs Are Pressuring Cash Safety
 
 Description template:
-“The current reserve position is below the preferred cushion for the next spending window. That does not automatically require cuts, but it does reduce flexibility and increases risk around new commitments.”
+“The current reserve position is below the preferred cushion for the next spending window. That does not automatically require cuts, but it does reduce flexibility and increase risk around new commitments.”
 
-Recommended action options:
-- “Delay nonessential spending until reserve status improves.”
-- “Pull forward near-term asks tied to the next commitment window.”
-- “Review optional budget lines before approving new additions.”
+Recommended actions:
+- “Pause optional spending until reserve improves.”
+- “Pull forward higher-probability asks where possible.”
+- “Avoid adding new recurring cost commitments until the next checkpoint stabilizes.”
 
-### Field Not Cash-Safe
+### Field Affordability
 Title options:
-- Field Expansion Is Not Yet Finance-Safe
-- Selected Field Plan Is Only Partially Funded
-- Field Ramp Timing Exceeds Current Funding Path
+- Selected Field Plan Is Not Yet Cash-Safe
+- Field Expansion Is Running Ahead Of Funding
+- Field Commitments Are Pressuring The Finance Path
 
 Description template:
-“The selected field scenario is not yet fully supported by the active finance path. Proceeding without adjustment would increase pressure on reserve and later budget windows.”
+“The campaign’s selected field posture is creating timed cost pressure that the current finance path does not comfortably support.”
 
-Recommended action options:
-- “Hold expansion until the next funding checkpoint is met.”
-- “Use the smaller field scenario until reserve coverage improves.”
-- “Increase finance activity tied to the next staffing milestone.”
+Recommended actions:
+- “Delay expansion until reserve returns to a safer range.”
+- “Reduce assumptions about near-term scale if receipts do not improve.”
+- “Treat hiring and expansion as finance-dependent decisions, not fixed assumptions.”
 
-### Consultant / Overhead Pressure
+### Overweight Overhead
 Title options:
 - Overhead Share Is Running High
-- Consultant Load Is Pressuring the Budget
-- Administrative Spend Is Crowding Out Program Capacity
+- Admin And Consultant Load Is Crowding The Plan
+- Too Much Budget Is Moving Outside Core Program Needs
 
 Description template:
-“A larger-than-preferred share of the budget is flowing to non-program costs. That may be reasonable in context, but it reduces flexibility for field, persuasion, or reserve protection.”
+“A larger share of the budget is going to overhead, consulting, or non-program costs than the current plan comfortably supports.”
 
-Recommended action options:
-- “Review consultant and operations scope before adding new commitments.”
-- “Protect core program lines first and delay lower-priority support costs.”
-- “Compare current mix against historical norms for this race type.”
+Recommended actions:
+- “Review which costs are required versus merely preferred.”
+- “Delay or resize optional consultant and production commitments.”
+- “Protect reserve and core program needs before expanding overhead.”
 
 ### Event Underperformance
 Title options:
-- Event Yield Came In Below Goal
-- Fundraiser Underperformed Relative to Plan
-- Event Program Is Not Carrying Its Expected Share
+- Event Program Is Underperforming
+- Events Are Not Carrying Their Assigned Share
+- Event Yield Is Too Soft For The Current Plan
 
 Description template:
-“This event or event block produced less net money than planned. Repeating the same mix without adjustment will leave a larger burden on other channels.”
+“The event program is producing less net revenue than the plan assumes. The problem may be attendance, ask strategy, follow-up, or cost discipline.”
 
-Recommended action options:
-- “Tighten host standards and RSVP conversion before the next event.”
-- “Increase post-event follow-up to improve pledge realization.”
-- “Shift weight toward higher-performing finance channels if needed.”
+Recommended actions:
+- “Treat the next event as a targeted yield exercise.”
+- “Tighten host expectations and follow-up discipline.”
+- “Do not assume future events will close a broader path gap without evidence.”
 
-### Pledge Lag
+### Donor Concentration
 Title options:
-- Pledge Conversion Is Slower Than Planned
-- Expected Money Has Not Landed on Time
-- Deposit Timing Is Pressuring the Path
+- Donor Base Is Too Narrow
+- Too Much Of The Path Depends On A Small Group
+- Current Raise Mix Is Overconcentrated
 
 Description template:
-“A meaningful share of expected money is arriving later than planned. That can distort the campaign’s real cash position even when topline commitment numbers look healthy.”
+“A disproportionate share of current money is coming from a narrow set of donors, geographies, or channels. That can work temporarily, but it increases vulnerability to fatigue and delay.”
 
-Recommended action options:
-- “Work the delayed pledge list immediately.”
-- “Separate soft commitments from reliable near-term receipts in planning.”
-- “Do not treat unresolved pledges as fully available cash.”
+Recommended actions:
+- “Broaden the near-term ask universe.”
+- “Build secondary channels that reduce dependence on a single source.”
+- “Use donor intelligence to identify adjacent geographies and sectors for expansion.”
 
-### Donor Concentration Risk
-Title options:
-- Donor Base Is Too Concentrated
-- A Narrow Donor Cluster Is Carrying Too Much Weight
-- Geography of Support Is Too Tight
-
-Description template:
-“A relatively narrow set of donors, ZIPs, or support clusters is carrying an outsized share of receipts. That may be manageable in the short term, but it creates fragility if one source slows.”
-
-Recommended action options:
-- “Broaden asks into underdeveloped donor geographies and sectors.”
-- “Reduce dependence on one or two large donor channels.”
-- “Use upcoming events and call time to widen the base rather than only deepen the same pool.”
-
-## Neutral informational status language
-- “This pattern is worth watching but does not currently require a change in plan.”
-- “This category is within a workable range for the active scenario.”
-- “This result is mixed: useful in context, but not strong enough to carry more of the path without support.”
-- “Unknown or unclassified share remains visible here so the team can judge confidence appropriately.”
+## Empty warning state
+“No active warnings are currently above threshold. That does not mean the campaign is risk-free. It means no current metric is elevated enough to trigger a formal warning under the active scenario.”

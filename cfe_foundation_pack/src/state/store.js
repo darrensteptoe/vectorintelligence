@@ -83,7 +83,7 @@ function estimateRaisedToDate(activities) {
  */
 function makeInitialState() {
   return {
-    route: "/setup",
+    route: "/overview",
     scenarioId: "active",
     raceProfile: null,
     campaignProfile: null,
@@ -101,7 +101,7 @@ function makeInitialState() {
       budgetSummary: null,
       spendTimeline: null,
       fundingRequirement: null,
-      reserveStatus: "Greenlight",
+      reserveStatus: "Healthy",
       fieldFundingStatus: null,
       riskFlags: [],
       reports: {
@@ -385,7 +385,7 @@ export function createCfeStore(seed = {}) {
             ? "No spend peak identified yet."
             : `Peak spend month is ${timeline.peak_month}, reserve planning should be paced to that window.`,
         decisionPoints: [
-          "Approve optional lines only when reserve status is Greenlight or Watch.",
+          "Approve optional lines only when reserve status is Healthy or Tight.",
           "Hold expansion decisions until next checkpoint target is met."
         ]
       });

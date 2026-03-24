@@ -1,80 +1,83 @@
 export const REPORTING_PHILOSOPHY =
-  "Reports should feel like they came from a strong finance director or senior consultant: clear, unsentimental, grounded, and useful.";
+  "Reports should read like serious campaign documents, not software dumps. They should be clean, direct, and operationally useful.";
 
-export const REPORT_STRUCTURE = [
-  "Header / context",
-  "Current condition",
-  "What changed this period",
-  "Where we are versus plan",
-  "Where risk is building",
-  "What needs to happen next"
+export const REPORT_QUESTIONS = [
+  "what happened",
+  "why it matters",
+  "what is at risk",
+  "what to do next"
 ];
 
-export const WEEKLY_FINANCE_MEMO_TEMPLATE = {
-  header: "Weekly Finance Memo — [Campaign Name] — [Week Ending Date]",
-  opening:
-    "The campaign remains [On Path / Slightly Behind / Behind Pace / At Risk / Off Path] against the active finance path. This week's main question is whether near-term finance activity is strong enough to support the next spending window cleanly.",
-  interpretationExamples: [
-    "The topline is workable, but reserve remains thinner than preferred for the next commitment window.",
-    "The campaign is behind the monthly target largely because planned activity did not fully convert into completed asks.",
-    "Event performance was mixed: useful for broadening support, but not strong enough to carry the amount assumed in the active plan."
+export const REPORT_STRUCTURE = [
+  "Executive Summary",
+  "Current Condition",
+  "Interpretation",
+  "Risks",
+  "Recommended Actions"
+];
+
+export const EXEC_SUMMARY_TEMPLATES = {
+  strong:
+    "The campaign remains on a workable funding path for the selected plan. Current activity and expected receipts are generally aligned with the next spending window, though the margin for error is not unlimited.",
+  mixed:
+    "The campaign is still within reach of the active funding path, but the margin for error has narrowed. Recent activity has not fully matched target, and upcoming costs will be harder to cover cleanly unless near-term finance work improves.",
+  weak:
+    "The campaign is currently behind the active funding path. The issue is not only the topline gap, but the timing of that gap relative to upcoming commitments. Without stronger near-term performance or plan adjustment, the current budget will become harder to support safely."
+};
+
+export const REPORT_STATUS_PHRASES = {
+  strong: [
+    "remains on a workable path",
+    "broadly aligned with the active plan",
+    "holding within a usable range",
+    "operating with a manageable level of pressure"
+  ],
+  mixed: [
+    "still recoverable, but narrower than preferred",
+    "workable for now, though the margin for error is thinning",
+    "not yet a crisis, but no longer comfortable"
+  ],
+  weak: [
+    "materially behind the active path",
+    "too soft relative to upcoming commitments",
+    "not yet cash-safe"
   ]
 };
 
-export const CANDIDATE_BRIEF_TEMPLATE = {
-  opening:
-    "This week's finance priority is to keep the campaign on pace for the next funding checkpoint while protecting flexibility for upcoming commitments.",
-  sections: [
-    "This week's raise goal",
-    "This week's top asks",
-    "This week's most important follow-up",
-    "Event priorities",
-    "One risk to watch"
-  ]
-};
+export const WEEKLY_FINANCE_MEMO_SECTIONS = [
+  "period summary",
+  "path status",
+  "target vs actual",
+  "activity completion",
+  "top wins",
+  "top misses",
+  "next-week priorities",
+  "active risks"
+];
 
-export const FINANCE_COMMITTEE_MEMO_TEMPLATE = {
-  opening:
-    "The finance committee's role this period is to convert identified capacity into near-term receipts while reducing pressure on the candidate and core staff.",
-  sections: [
-    "Committee target for period",
-    "Top assigned prospects",
-    "Commitments needing resolution",
-    "Event support status",
-    "Accountability notes"
-  ]
-};
+export const CANDIDATE_BRIEF_SECTIONS = [
+  "this week's raise target",
+  "call time goal",
+  "highest-priority asks",
+  "event priorities",
+  "concise risks",
+  "what candidate needs to do next"
+];
 
-export const LEADERSHIP_MEMO_TEMPLATE = {
-  opening:
-    "The campaign's budget path remains [status]. The key leadership question is whether planned commitments in the next phase can proceed without materially weakening reserve or crowding out core program priorities.",
-  sections: [
-    "Budget status",
-    "Safe vs unsafe commitments",
-    "Field affordability note",
-    "Spending pressure note",
-    "Recommended decision points"
-  ]
-};
+export const FINANCE_COMMITTEE_BRIEF_SECTIONS = [
+  "committee target",
+  "assigned prospects",
+  "completed asks",
+  "unresolved commitments",
+  "event program status",
+  "next push"
+];
 
-export const FILING_SNAPSHOT_TEMPLATE = {
-  opening:
-    "This filing snapshot estimates where the campaign is likely to land for the upcoming reporting window and how that position compares with the active plan and relevant historical ranges.",
-  sections: [
-    "Reported/received to date",
-    "Expected before filing",
-    "Expected after filing",
-    "Risk to headline number",
-    "Historical context"
-  ]
-};
-
-export const DONOR_INTELLIGENCE_TEMPLATE = {
-  opening:
-    "This report summarizes who is funding the campaign, from where, and how concentrated that support currently appears. These patterns should be used as strategic signals rather than treated as fixed political truths."
-};
-
-export const EXPENDITURE_REPORT_TEMPLATE = {
-  opening:
-    "This report compares current spending mix to the campaign's stated plan and to relevant historical norms. The goal is not to force every campaign into the same shape, but to identify where current spending patterns are supporting or pressuring the broader strategy."
-};
+export const LEADERSHIP_BUDGET_HEALTH_SECTIONS = [
+  "total budget status",
+  "funded share of plan",
+  "field affordability",
+  "major upcoming cost windows",
+  "reserve status",
+  "what is safe vs not safe"
+];

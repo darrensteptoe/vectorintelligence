@@ -1,98 +1,124 @@
 # Campaign Finance Engine (CFE) — Reporting Blueprint
 
 ## Reporting philosophy
-Reports should feel like they came from a strong finance director or senior consultant: clear, unsentimental, grounded, and useful.
+Reports should read like serious campaign documents, not software dumps. They should be clean, direct, and operationally useful.
 
-They should not sound bloated, over-technical, or theatrical.
+Every report should answer:
+- what happened
+- why it matters
+- what is at risk
+- what to do next
 
-## Core reporting rules
-1. Reports should separate facts, interpretation, and recommendations.
-2. Reports should reference campaign, race, and scenario context.
-3. Reports should avoid fake certainty.
-4. Reports should remain readable by candidates and senior staff.
-5. Reports should use direct language and actionable framing.
-
-## Standard report structure
-1. Header / context
-2. Current condition
-3. What changed this period
-4. Where we are versus plan
-5. Where risk is building
-6. What needs to happen next
-
-## Weekly Finance Memo language template
-### Header
-“Weekly Finance Memo — [Campaign Name] — [Week Ending Date]”
-
-### Opening summary
-“The campaign remains [On Path / Slightly Behind / Behind Pace / At Risk / Off Path] against the active finance path. This week’s main question is whether near-term finance activity is strong enough to support the next spending window cleanly.”
-
-### Current condition block
-- Raised this period: [X]
-- Planned raise this period: [Y]
-- Pace status: [status]
-- Reserve status: [status]
-- Field funding status: [status if relevant]
-
-### Interpretation language examples
-- “The topline is workable, but reserve remains thinner than preferred for the next commitment window.”
-- “The campaign is behind the monthly target largely because planned activity did not fully convert into completed asks.”
-- “Event performance was mixed: useful for broadening support, but not strong enough to carry the amount assumed in the active plan.”
-
-### Recommendations block
-“Priority next moves:
-1. [specific action]
-2. [specific action]
-3. [specific action]”
-
-## Candidate Briefing language template
-Opening:
-“This week’s finance priority is to keep the campaign on pace for the next funding checkpoint while protecting flexibility for upcoming commitments.”
+## Report families
+### 1. Weekly Finance Memo
+Audience:
+- finance director
+- candidate
+- campaign manager
+- senior consultant
 
 Sections:
-- This week’s raise goal
-- This week’s top asks
-- This week’s most important follow-up
-- Event priorities
-- One risk to watch
+- period summary
+- path status
+- target vs actual
+- activity completion
+- top wins
+- top misses
+- next-week priorities
+- active risks
 
-## Finance Committee Memo language template
-Opening:
-“The finance committee’s role this period is to convert identified capacity into near-term receipts while reducing pressure on the candidate and core staff.”
-
-Sections:
-- Committee target for period
-- Top assigned prospects
-- Commitments needing resolution
-- Event support status
-- Accountability notes
-
-## Leadership / Manager memo language template
-Opening:
-“The campaign’s budget path remains [status]. The key leadership question is whether planned commitments in the next phase can proceed without materially weakening reserve or crowding out core program priorities.”
+### 2. Candidate Brief
+Audience:
+- candidate
 
 Sections:
-- Budget status
-- Safe vs unsafe commitments
-- Field affordability note
-- Spending pressure note
-- Recommended decision points
+- this week’s raise target
+- call time goal
+- highest-priority asks
+- event priorities
+- concise risks
+- what candidate needs to do next
 
-## Filing Snapshot language template
-Opening:
-“This filing snapshot estimates where the campaign is likely to land for the upcoming reporting window and how that position compares with the active plan and relevant historical ranges.”
+### 3. Finance Committee Brief
+Audience:
+- committee members
+- finance chair
 
 Sections:
-- Reported/received to date
-- Expected before filing
-- Expected after filing
-- Risk to headline number
-- Historical context
+- committee target
+- assigned prospects
+- completed asks
+- unresolved commitments
+- event program status
+- next push
 
-## Donor Intelligence report language template
-Opening:
-“This report summarizes who is funding the campaign, from where, and how concentrated that support currently appears. These patterns should be used as strategic signals rather than treated as fixed political truths.”
+### 4. Leadership Budget Health Report
+Audience:
+- campaign manager
+- senior team
+- consultant
 
-## Expenditure report language template
-Opening:
-“This report compares current spending mix to the campaign’s stated plan and to relevant historical norms. The goal is not to force every campaign into the same shape, but to identify where current spending patterns are supporting or pressuring the broader strategy.”
+Sections:
+- total budget status
+- funded share of plan
+- field affordability
+- major upcoming cost windows
+- reserve status
+- what is safe vs not safe
+
+### 5. Filing Period Snapshot
+Audience:
+- campaign leadership
+- treasurer/compliance-adjacent staff
+- consultant
+
+Sections:
+- receipts to date
+- likely in before filing
+- likely after filing
+- benchmark comparison
+- risk to headline number
+- late-period priorities
+
+### 6. Donor Intelligence Memo
+Audience:
+- finance director
+- consultant
+- candidate where useful
+
+Sections:
+- top ZIPs
+- in-district vs outside support
+- top occupation families
+- donor concentration
+- what the donor base appears to look like
+- practical implications
+
+### 7. Channel Performance Memo
+Audience:
+- finance director
+- consultant
+
+Sections:
+- channel targets
+- channel actuals
+- strongest sources of revenue
+- weak channels
+- overreliance risk
+- practical adjustments
+
+## Tone rules
+- plainspoken
+- strategically literate
+- no hype
+- no needless jargon
+- no fake certainty
+- clear distinctions between reported, standardized, and modeled outputs
+
+## Report structure rule
+Each report should follow:
+1. Executive Summary
+2. Current Condition
+3. Interpretation
+4. Risks
+5. Recommended Actions

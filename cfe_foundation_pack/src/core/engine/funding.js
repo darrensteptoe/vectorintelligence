@@ -26,20 +26,17 @@ export function computeReserveTarget(input) {
  */
 export function evaluateReserveStatus(input) {
   if (input.reserveTarget <= 0) {
-    return "Greenlight";
+    return "Healthy";
   }
 
   const ratio = input.reserveAvailable / input.reserveTarget;
   if (ratio >= 1) {
-    return "Greenlight";
+    return "Healthy";
   }
-  if (ratio >= 0.85) {
-    return "Watch";
+  if (ratio >= 0.75) {
+    return "Tight";
   }
-  if (ratio >= 0.65) {
-    return "Caution";
-  }
-  return "Redline";
+  return "At Risk";
 }
 
 /**
@@ -50,14 +47,8 @@ function pathStatusFromPaceRatio(paceRatio) {
   if (paceRatio >= 1) {
     return "On Path";
   }
-  if (paceRatio >= 0.9) {
-    return "Slightly Behind";
-  }
-  if (paceRatio >= 0.75) {
-    return "Behind Pace";
-  }
-  if (paceRatio >= 0.6) {
-    return "At Risk";
+  if (paceRatio >= 0.85) {
+    return "Watch";
   }
   return "Off Path";
 }
@@ -73,10 +64,10 @@ function fundingRiskLevelFromPaceRatio(paceRatio) {
   if (paceRatio >= 0.9) {
     return "Moderate";
   }
-  if (paceRatio >= 0.75) {
+  if (paceRatio >= 0.8) {
     return "Elevated";
   }
-  if (paceRatio >= 0.6) {
+  if (paceRatio >= 0.65) {
     return "High";
   }
   return "Severe";
@@ -281,11 +272,11 @@ export function deriveFieldFundingStatus(reserveStatus, fundedPercentOfFieldPlan
     throw new Error(`Invalid reserve status: ${reserveStatus}`);
   }
 
-  if (reserveStatus === "Redline" || fundedPercentOfFieldPlan < 0.8) {
+  if (reserveStatus === "At Risk" || fundedPercentOfFieldPlan < 0.8) {
     return "Redline";
   }
 
-  if (reserveStatus === "Caution" || fundedPercentOfFieldPlan < 0.95) {
+  if (reserveStatus === "Tight" || fundedPercentOfFieldPlan < 0.95) {
     return "Caution";
   }
 

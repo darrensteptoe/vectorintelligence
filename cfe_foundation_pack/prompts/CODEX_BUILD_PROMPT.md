@@ -1,77 +1,60 @@
-# Codex Build Prompt — Campaign Finance Engine (CFE)
+# CODEX BUILD PROMPT — Campaign Finance Engine (CFE)
 
-You are building the **Campaign Finance Engine (CFE)**, the standalone finance sibling to the Field Path Engine (FPE).
+Build the Campaign Finance Engine (CFE) as a standalone sibling to the Field Path Engine (FPE). Do not merge the applications. Preserve a narrow snapshot-based bridge only.
 
-## Non-negotiable product definition
-CFE is not a generic CRM, not bookkeeping software, and not a clone of existing campaign tools. It is a **campaign budget, funding path, and finance execution engine**.
+## Non-negotiable rules
+- No calculation logic in render glue.
+- Canonical engine logic only in dedicated core modules.
+- Do not recompute canonical outputs inside reports or cards.
+- Preserve raw imported values.
+- Manual override always wins over automatic classification.
+- Unknown is allowed and must remain visible.
+- Reported, standardized, and modeled values must stay distinct.
+- FPE and CFE must communicate only through validated snapshot contracts.
 
-Its job is to help campaigns:
-- model full campaign costs
-- phase those costs over time
-- determine what must be raised and by when
-- compare the plan to historical realism where useful
-- track finance execution
-- generate consultant-grade reports
-- and communicate cleanly with FPE through a narrow bridge contract
+## What to build first
+1. App skeleton and safe boundary structure
+2. Race/campaign setup
+3. Budget builder
+4. Spend timeline engine
+5. Funding path engine
+6. Finance activity layer
+7. Donor/spend intelligence basics
+8. Risk console
+9. Reporting surfaces
+10. Bridge import/export surfaces
 
-## Architectural instructions
-1. Keep CFE architecturally separate from FPE.
-2. Use a sacred-core structure: no core calculation logic in render layers.
-3. Canonical math must live in dedicated engine modules only.
-4. Reports and UI surfaces must consume canonical snapshots rather than recomputing local values.
-5. Preserve raw source values for any imported public data.
-6. Manual override precedence must be built into classification architecture from the start.
-7. The bridge with FPE must be snapshot-based and validated.
+## Build-quality requirement
+This app must not just be structurally correct. It must use the language in this handoff pack for:
+- statuses
+- warnings
+- helper text
+- empty states
+- report sections
+- manual copy
+- interpretation notes
 
-## Required reading from this pack before implementation
+## Required docs to follow
+Read and implement according to:
 - PRODUCT_BRIEF.md
 - SYSTEM_RULES.md
-- docs/MODULE_MAP.md
-- docs/BRIDGE_CONTRACT_FPE_CFE.md
-- docs/SCHEMAS.md
-- docs/FORMULAS.md
 - DATA_SOURCES.md
 - CLASSIFICATION_RULES.md
 - WARNING_AND_STATUS_LANGUAGE.md
 - MANUAL_AND_OPERATOR_LANGUAGE.md
 - REPORTING_BLUEPRINT.md
-- WORKFLOWS.md
+- docs/MODULE_MAP.md
+- docs/BRIDGE_CONTRACT_FPE_CFE.md
+- docs/SCHEMAS.md
+- docs/FORMULAS.md
+- docs/WORKFLOWS.md
 - PHASE_ROADMAP.md
+- ui_copy/UI_COPY_PACK.md
+- ui_copy/EMPTY_STATES_AND_TOOLTIPS.md
+- manual/FULL_MANUAL_PACK.md
+- reports/FULL_REPORT_LANGUAGE_PACK.md
+- reports/REPORT_SECTION_LANGUAGE.md
+- reports/REPORT_STATUS_PHRASES.md
 
-## Build priorities
-Implement in phased order as described in `PHASE_ROADMAP.md`.
-
-Do not jump ahead into decorative UI or secondary features before the following are stable:
-- campaign setup
-- budget builder
-- spend timeline
-- funding requirement snapshot
-- risk and reserve logic
-- finance operations basics
-- reporting structure
-
-## User-facing language requirement
-Do not invent warning copy, help text, or report tone on your own if the pack already provides language. Use the language files in this pack as the source of truth for:
-- statuses
-- warnings
-- descriptions
-- help/manual text
-- report phrasing
-- operator-facing interpretations
-
-## Reporting requirement
-Reports must feel like they were written by a strong finance director or senior consultant. They should be:
-- direct
-- readable
-- practical
-- non-theatrical
-- clear about current condition, interpretation, and next moves
-
-## Classification requirement
-Classification resolution order must be:
-**manual override > exact rule > fuzzy rule > unknown**
-
-Unknowns must remain visible in outputs.
-
-## Deliverable standard
-Produce a clean, modular app structure that can be hardened and tested like late-stage FPE. Favor clarity, canonical snapshots, and safe boundaries over speed hacks.
+## Output expectation
+Produce a clean build-ready project that reflects this product definition, not a simplified clone of donor software. The app should feel like an elite campaign operating product, with disciplined architecture and consultant-grade outputs.

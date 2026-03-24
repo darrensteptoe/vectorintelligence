@@ -5,19 +5,15 @@ export const CLASSIFICATION_RESOLUTION_ORDER = [
   "unknown"
 ];
 
-export const CORE_PATH_STATUSES = [
-  "On Path",
-  "Slightly Behind",
-  "Behind Pace",
-  "At Risk",
-  "Off Path"
-];
+export const CORE_PATH_STATUSES = ["On Path", "Watch", "Off Path"];
 
 export const FUNDING_RISK_LEVELS = ["Low", "Moderate", "Elevated", "High", "Severe"];
 
-export const RESERVE_STATUSES = ["Greenlight", "Watch", "Caution", "Redline"];
+export const RESERVE_STATUSES = ["Healthy", "Tight", "At Risk"];
 
 export const FIELD_FUNDING_STATUSES = ["Greenlight", "Caution", "Redline"];
+
+export const ACTIVITY_EXECUTION_STATUSES = ["Strong", "Mixed", "Weak"];
 
 export const CLASSIFICATION_STATUSES = [
   "Confirmed",
@@ -58,14 +54,7 @@ export const SPEND_PATTERNS = [
   "Custom"
 ];
 
-export const SOURCE_TRUST_LABELS = [
-  "Official reported source",
-  "Campaign-entered source",
-  "Bridge-derived source",
-  "Standardized from source",
-  "Estimated/model-derived",
-  "Manually overridden"
-];
+export const SOURCE_TRUST_LABELS = ["Reported", "Standardized", "Modeled"];
 
 export const RISK_FLAG_SEVERITIES = ["Info", "Watch", "Caution", "Warning", "Critical"];
 export const RISK_FLAG_STATUSES = ["Active", "Acknowledged", "Resolved", "Suppressed"];

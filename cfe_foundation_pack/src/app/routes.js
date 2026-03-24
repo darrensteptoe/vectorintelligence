@@ -1,11 +1,18 @@
 export const APP_ROUTES = [
-  { path: "/setup", title: "Campaign Setup" },
-  { path: "/budget", title: "Budget Builder" },
-  { path: "/timeline", title: "Spend Timeline" },
-  { path: "/funding", title: "Funding Path" },
-  { path: "/operations", title: "Finance Operations" },
-  { path: "/reporting", title: "Reporting" },
-  { path: "/bridge", title: "FPE-CFE Bridge" }
+  { path: "/overview", title: "Overview" },
+  { path: "/setup", title: "Race Setup" },
+  { path: "/budget", title: "Budget" },
+  { path: "/timeline", title: "Timeline" },
+  { path: "/benchmarks", title: "Benchmarks" },
+  { path: "/funding-path", title: "Funding Path" },
+  { path: "/channels", title: "Channels" },
+  { path: "/activity", title: "Activity" },
+  { path: "/pledges", title: "Pledges" },
+  { path: "/donors", title: "Donors" },
+  { path: "/spending", title: "Spending" },
+  { path: "/risks", title: "Risks" },
+  { path: "/reports", title: "Reports" },
+  { path: "/bridge", title: "Bridge" }
 ];
 
 /**

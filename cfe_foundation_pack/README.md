@@ -1,40 +1,49 @@
-# Campaign Finance Engine (CFE) — Foundation Pack
+# Campaign Finance Engine (CFE) — Full Handoff Pack
 
-This folder is a build-ready planning pack for the Campaign Finance Engine, the finance sibling to the Field Path Engine.
+This pack is the build-ready product definition for the Campaign Finance Engine (CFE), the finance sibling to the Field Path Engine (FPE).
 
-## What this pack contains
-- Product definition
-- System rules
-- Module map
-- Bridge contract with FPE
-- Core schemas
-- Core formulas
-- Data source strategy
-- Classification rules
-- Warning and status language
-- Manual and operator copy
-- Reporting blueprint
-- Workflow map
-- Phase roadmap
-- Codex handoff prompt
+## Purpose
+CFE is a standalone campaign budget, funding path, and finance execution system. It should help a campaign answer:
 
-## How to use this pack
-1. Read `PRODUCT_BRIEF.md` first.
-2. Lock `SYSTEM_RULES.md` before coding.
-3. Use `docs/SCHEMAS.md` and `docs/FORMULAS.md` to define canonical core modules.
-4. Use `WARNING_AND_STATUS_LANGUAGE.md`, `MANUAL_AND_OPERATOR_LANGUAGE.md`, and `REPORTING_BLUEPRINT.md` to populate user-facing text.
-5. Use `PHASE_ROADMAP.md` to stage implementation.
-6. Use `prompts/CODEX_BUILD_PROMPT.md` as the implementation handoff.
+- What are we trying to fund?
+- When do those costs hit?
+- What does history say is realistic for this kind of race?
+- What must we raise by each checkpoint?
+- Which finance activities are producing the money?
+- What part of the plan is safely fundable right now?
+- What needs to change before the next cost window arrives?
 
-## Implementation scaffold (Phase 1 + core Phase 2/3/5 primitives)
-This repository now includes a runnable JavaScript scaffold under `src/` with:
+## Pack contents
+- core product and architecture docs
+- schemas
+- formulas
+- workflows
+- bridge contract with FPE
+- reporting blueprint and report language
+- full warning and status language
+- manual/operator copy
+- UI copy pack
+- empty-state and helper text pack
+- Codex build prompt
 
-- app shell and route scaffolding (`src/app`)
-- canonical contracts and language packs (`src/core/contracts`)
-- canonical engines for budget, spend timeline, funding path, reserve status, risk flags, classification precedence, and report composition (`src/core/engine`)
-- validated bridge surfaces for FPE import and CFE export snapshots (`src/core/bridge`)
-- state/store scaffolding that computes canonical snapshots and feeds page/report surfaces (`src/state`)
+## Product stance
+CFE is not generic bookkeeping software, generic donor CRM, or a compliance replacement. It is a budget-path planning and finance execution control system.
+
+## Relationship to FPE
+- FPE = operations demand engine
+- CFE = budget and funding path engine
+
+They remain separate applications and communicate only through narrow snapshot contracts.
+
+## Implementation scaffold included
+This folder now includes a runnable JavaScript scaffold under `src/` with:
+- sacred-core boundary docs and canonical contracts
+- canonical engines for budget, timeline, funding path, reserve logic, risk flags, classification precedence, and report composition
+- validated FPE import and CFE export snapshot bridge surfaces
+- store/state scaffolding that computes canonical snapshots and feeds route pages
+- route/page shell for Overview, Setup, Budget, Timeline, Benchmarks, Funding Path, Channels, Activity, Pledges, Donors, Spending, Risks, Reports, and Bridge
+- language modules aligned to this handoff pack (`warning`, `manual`, `reporting`, `ui copy`, `empty states`)
 - baseline tests in `test/core.test.js`
 
 ## Local verification
-- Run tests: `npm test`
+- Run: `npm test`
