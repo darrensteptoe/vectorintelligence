@@ -1,9 +1,12 @@
-import { HARDENED_APP_MAP } from "../core/contracts/hardening.js";
-
-export const APP_ROUTES = HARDENED_APP_MAP.map((entry) => ({
-  path: entry.path,
-  title: entry.title
-}));
+export const APP_ROUTES = [
+  { path: "/setup", title: "Campaign Setup" },
+  { path: "/budget", title: "Budget Builder" },
+  { path: "/timeline", title: "Spend Timeline" },
+  { path: "/funding", title: "Funding Path" },
+  { path: "/operations", title: "Finance Operations" },
+  { path: "/reporting", title: "Reporting" },
+  { path: "/bridge", title: "FPE-CFE Bridge" }
+];
 
 /**
  * @param {string} path

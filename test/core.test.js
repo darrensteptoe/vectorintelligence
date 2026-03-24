@@ -1,17 +1,11 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 
-import { APP_ROUTES } from "../src/app/routes.js";
 import {
   buildSpendTimelineSnapshot,
   computeBudgetSummary,
   computeFundingRequirementSnapshot,
-  exportBudgetSnapshot,
-  exportFundingPathSnapshot,
-  importBudgetSnapshot,
-  importFundingPathSnapshot,
   resolveClassification,
-  runContractChecks,
   validateFpeBudgetDemandSnapshot
 } from "../src/core/index.js";
 import { createCfeStore } from "../src/state/store.js";
@@ -138,7 +132,7 @@ test("funding requirement snapshot computes gaps and statuses", () => {
   assert.equal(snapshot.total_raise_target, 150000);
   assert.equal(typeof snapshot.path_status, "string");
   assert.equal(typeof snapshot.funding_risk_level, "string");
-  assert.equal(snapshot.gap_to_safe_funding >= 0, true);
+  assert.ok(snapshot.gap_to_safe_funding >= 0);
 });
 
 test("bridge validation rejects malformed snapshot and accepts valid shape", () => {
@@ -171,11 +165,10 @@ test("bridge validation rejects malformed snapshot and accepts valid shape", () 
   assert.equal(valid.ok, true);
 });
 
-test("store recomputes canonical snapshots, diagnostics, and report outputs", () => {
+test("store recomputes canonical snapshots and builds report outputs", () => {
   const store = createCfeStore();
   store.setCampaignSetup({
     scenarioId: "active",
-    scenarioState: "Active Scenario",
     campaignProfile: {
       id: "camp1",
       race_profile_id: "race1",
@@ -203,7 +196,7 @@ test("store recomputes canonical snapshots, diagnostics, and report outputs", ()
     required_cost_share: 0,
     optional_cost_share: 0,
     reserve_target: 15000,
-    status: "Locked"
+    status: "Active"
   });
 
   for (const line of baseBudgetLines) {
@@ -213,93 +206,8 @@ test("store recomputes canonical snapshots, diagnostics, and report outputs", ()
   store.recomputeCanonicalSnapshots({ raisedToDate: 18000, actualRaiseToDate: 16000 });
 
   const state = store.getState();
-  assert.equal(state.snapshots.budgetSummary == null, false);
-  assert.equal(state.snapshots.spendTimeline == null, false);
-  assert.equal(state.snapshots.fundingRequirement == null, false);
-  assert.equal(state.snapshots.reports.weeklyFinanceMemo == null, false);
-  assert.equal(state.snapshots.diagnostics?.overall_status, "PASS");
-});
-
-test("hardening route map exposes the required 12 top-level pages", () => {
-  const requiredPaths = [
-    "/overview",
-    "/budget",
-    "/timeline",
-    "/benchmarks",
-    "/funding-path",
-    "/finance-operations",
-    "/donor-intelligence",
-    "/expenditure-intelligence",
-    "/risks",
-    "/reports",
-    "/manual",
-    "/settings-data-imports"
-  ];
-
-  assert.equal(APP_ROUTES.length, requiredPaths.length);
-  for (const path of requiredPaths) {
-    assert.equal(
-      APP_ROUTES.some((route) => route.path === path),
-      true,
-      `Missing route ${path}`
-    );
-  }
-});
-
-test("diagnostics engine flags missing canonical context on empty state", () => {
-  const store = createCfeStore();
-  const report = runContractChecks(store.getState());
-  assert.equal(report.overall_status, "FAIL");
-  assert.equal(report.failed > 0, true);
-});
-
-test("budget and funding path snapshots roundtrip with schema checks", () => {
-  const store = createCfeStore();
-  store.setCampaignSetup({
-    scenarioId: "active",
-    scenarioState: "Active Scenario",
-    campaignProfile: {
-      id: "camp1",
-      race_profile_id: "race1",
-      candidate_name: "Candidate A",
-      committee_name: "Friends of Candidate A",
-      campaign_start_date: "2025-12-01",
-      current_cash_on_hand: 25000,
-      current_debt: 5000,
-      campaign_phase: "Primary"
-    },
-    electionCalendar: {
-      id: "cal1",
-      race_profile_id: "race1",
-      primary_date: "2026-03-20",
-      general_date: "2026-11-03"
-    }
-  });
-  store.setBudgetPlan({
-    id: "plan1",
-    campaign_id: "camp1",
-    scenario_id: "active",
-    total_budget_planned: 0,
-    total_required_budget: 0,
-    required_cost_share: 0,
-    optional_cost_share: 0,
-    reserve_target: 15000,
-    status: "Locked"
-  });
-  for (const line of baseBudgetLines) {
-    store.upsertBudgetLine(line);
-  }
-  store.recomputeCanonicalSnapshots({ raisedToDate: 18000, actualRaiseToDate: 16000 });
-
-  const state = store.getState();
-  const budgetSnapshot = exportBudgetSnapshot(state);
-  const pathSnapshot = exportFundingPathSnapshot(state);
-
-  const importedBudget = importBudgetSnapshot(budgetSnapshot);
-  const importedPath = importFundingPathSnapshot(pathSnapshot);
-
-  assert.equal(importedBudget.snapshot_type, "budget");
-  assert.equal(importedPath.snapshot_type, "funding_path");
-  assert.equal(importedBudget.scenario_id, "active");
-  assert.equal(importedPath.scenario_id, "active");
+  assert.ok(state.snapshots.budgetSummary);
+  assert.ok(state.snapshots.spendTimeline);
+  assert.ok(state.snapshots.fundingRequirement);
+  assert.ok(state.snapshots.reports.weeklyFinanceMemo);
 });

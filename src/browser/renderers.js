@@ -1,33 +1,29 @@
-const SHARED_SHELL_KEYS = new Set(["page_question", "manual_guidance", "right_rail", "permissions"]);
+import { MANUAL_HELP, MANUAL_INTRO, MANUAL_WARNING_INTERPRETATION } from "../core/contracts/manualLanguage.js";
+import { REPORTING_PHILOSOPHY, REPORT_STRUCTURE } from "../core/contracts/reportingLanguage.js";
+import {
+  FIELD_FUNDING_STATUS_DESCRIPTIONS,
+  OVERALL_PATH_STATUS_DESCRIPTIONS,
+  RESERVE_STATUS_DESCRIPTIONS
+} from "../core/contracts/warningLanguage.js";
 
-/**
- * @param {string} key
- * @returns {string}
- */
-function labelize(key) {
-  return key
-    .replace(/([a-z])([A-Z])/g, "$1 $2")
-    .replace(/[_-]+/g, " ")
-    .replace(/\s+/g, " ")
-    .trim()
-    .replace(/^./, (char) => char.toUpperCase());
-}
+const PAGE_QUESTIONS = {
+  overview:
+    "Are campaign setup inputs and baseline assumptions strong enough to support a finance-safe operating plan?",
+  "funding-path":
+    "Is the campaign currently on a workable finance path for upcoming commitments and reserve coverage?",
+  reports:
+    "Do current reporting outputs describe conditions clearly enough for candidate, committee, and leadership decisions?",
+  manual:
+    "How should operators interpret engine outputs, warnings, and required actions in plain operating terms?",
+  fallback: "What does this module show, and how does it connect to the active campaign finance path?"
+};
 
-/**
- * @param {unknown} value
- * @returns {value is Record<string, unknown>}
- */
-function isObject(value) {
-  return typeof value === "object" && value !== null && Array.isArray(value) === false;
-}
-
-/**
- * @param {unknown} value
- * @returns {value is string | number | boolean}
- */
-function isPrimitive(value) {
-  return typeof value === "string" || typeof value === "number" || typeof value === "boolean";
-}
+const ROUTE_TO_MANUAL_HELP = {
+  overview: MANUAL_HELP.budgetBuilder,
+  "funding-path": MANUAL_HELP.fundingPath,
+  reports: MANUAL_HELP.plannedVsActual,
+  manual: MANUAL_WARNING_INTERPRETATION
+};
 
 /**
  * @param {string} tag
@@ -46,6 +42,30 @@ function node(tag, options = {}) {
 }
 
 /**
+ * @param {unknown} value
+ * @returns {value is Record<string, unknown>}
+ */
+function isObject(value) {
+  return typeof value === "object" && value !== null && !Array.isArray(value);
+}
+
+/**
+ * @param {unknown} value
+ * @returns {value is number}
+ */
+function isNumber(value) {
+  return typeof value === "number" && Number.isFinite(value);
+}
+
+/**
+ * @param {unknown} value
+ * @returns {value is string}
+ */
+function isNonEmptyString(value) {
+  return typeof value === "string" && value.trim().length > 0;
+}
+
+/**
  * @param {number} amount
  * @returns {string}
  */
@@ -58,14 +78,6 @@ function formatCurrency(amount) {
 }
 
 /**
- * @param {string} key
- * @returns {boolean}
- */
-function keyLooksLikeMoney(key) {
-  return /amount|budget|raise|cost|target|gap|cash|debt|reserve|funding|spend|yield|total/i.test(key);
-}
-
-/**
  * @param {unknown} value
  * @param {string} [key]
  * @returns {string}
@@ -75,71 +87,63 @@ function formatValue(value, key = "") {
     return "Not available";
   }
 
+  if (typeof value === "boolean") {
+    return value ? "Yes" : "No";
+  }
+
   if (typeof value === "number") {
-    if (Number.isFinite(value) === false) {
-      return String(value);
-    }
-
-    if (keyLooksLikeMoney(key)) {
-      return formatCurrency(value);
-    }
-
-    if (/percent|share|ratio|rate/i.test(key)) {
+    if (/percent|share|ratio/i.test(key)) {
       if (value >= 0 && value <= 1) {
         return `${Math.round(value * 100)}%`;
       }
       return `${Math.round(value)}%`;
     }
 
+    if (/budget|amount|cost|cash|debt|raise|funding|reserve|target|gap|spend/i.test(key)) {
+      return formatCurrency(value);
+    }
+
     return value.toLocaleString("en-US");
   }
 
-  if (typeof value === "boolean") {
-    return value ? "Yes" : "No";
+  if (typeof value === "string") {
+    if (/^\d{4}-\d{2}-\d{2}T/.test(value)) {
+      return value.slice(0, 10);
+    }
+    return value;
   }
 
   return String(value);
 }
 
 /**
- * @param {string} text
+ * @param {string} value
  * @returns {string}
  */
-function toneForStatus(text) {
-  const value = text.toLowerCase();
+function toneForStatus(value) {
+  const normalized = value.toLowerCase();
 
   if (
-    value.includes("off path") ||
-    value.includes("at risk") ||
-    value.includes("redline") ||
-    value.includes("critical") ||
-    value.includes("fail") ||
-    value.includes("severe") ||
-    value.includes("warning")
+    normalized.includes("off path") ||
+    normalized.includes("risk") ||
+    normalized.includes("redline") ||
+    normalized.includes("critical") ||
+    normalized.includes("severe")
   ) {
     return "bad";
   }
 
   if (
-    value.includes("watch") ||
-    value.includes("tight") ||
-    value.includes("caution") ||
-    value.includes("mixed") ||
-    value.includes("elevated") ||
-    value.includes("moderate")
+    normalized.includes("behind") ||
+    normalized.includes("watch") ||
+    normalized.includes("caution") ||
+    normalized.includes("moderate") ||
+    normalized.includes("elevated")
   ) {
     return "warn";
   }
 
-  if (
-    value.includes("on path") ||
-    value.includes("healthy") ||
-    value.includes("greenlight") ||
-    value.includes("strong") ||
-    value.includes("pass") ||
-    value.includes("ready") ||
-    value.includes("low")
-  ) {
+  if (normalized.includes("on path") || normalized.includes("greenlight") || normalized.includes("low")) {
     return "good";
   }
 
@@ -151,8 +155,23 @@ function toneForStatus(text) {
  * @returns {HTMLElement}
  */
 function statusChip(label) {
-  const chip = node("span", { className: `status-chip status-chip--${toneForStatus(label)}`, text: label });
-  return chip;
+  return node("span", {
+    className: `status-chip status-chip--${toneForStatus(label)}`,
+    text: label
+  });
+}
+
+/**
+ * @param {string} key
+ * @returns {string}
+ */
+function labelize(key) {
+  return key
+    .replace(/([a-z0-9])([A-Z])/g, "$1 $2")
+    .replace(/[_-]+/g, " ")
+    .replace(/\s+/g, " ")
+    .trim()
+    .replace(/^./, (char) => char.toUpperCase());
 }
 
 /**
@@ -160,69 +179,72 @@ function statusChip(label) {
  * @returns {HTMLElement}
  */
 function sectionCard(title) {
-  const section = node("section", { className: "section-card" });
+  const card = node("section", { className: "section-card" });
   const heading = node("h2", { className: "section-title", text: title });
-  section.appendChild(heading);
-  return section;
+  card.appendChild(heading);
+  return card;
+}
+
+/**
+ * @param {string} title
+ * @param {string} value
+ * @param {string} [meta]
+ * @returns {HTMLElement}
+ */
+function statTile(title, value, meta = "") {
+  const tile = node("article", { className: "stat-tile" });
+  const titleNode = node("h3", { text: title });
+  const valueNode = node("p", { className: "stat-value", text: value });
+  tile.appendChild(titleNode);
+  tile.appendChild(valueNode);
+
+  if (meta) {
+    tile.appendChild(node("p", { className: "stat-meta", text: meta }));
+  }
+
+  return tile;
 }
 
 /**
  * @param {Record<string, unknown>} data
  * @returns {HTMLElement}
  */
-function renderKeyValueGrid(data) {
-  const grid = node("dl", { className: "kv-grid" });
+function keyValueGrid(data) {
+  const list = node("dl", { className: "kv-grid" });
 
   for (const [key, value] of Object.entries(data)) {
     const row = node("div", { className: "kv-row" });
     const dt = node("dt", { text: labelize(key) });
-    const dd = node("dd");
-    dd.textContent = formatValue(value, key);
+    const dd = node("dd", { text: formatValue(value, key) });
+
     row.appendChild(dt);
     row.appendChild(dd);
-    grid.appendChild(row);
+    list.appendChild(row);
   }
 
-  return grid;
-}
-
-/**
- * @param {unknown[]} items
- * @returns {HTMLElement}
- */
-function renderPrimitiveList(items) {
-  const list = node("ul", { className: "simple-list" });
-  for (const item of items) {
-    const li = node("li", { text: formatValue(item) });
-    list.appendChild(li);
-  }
   return list;
 }
 
 /**
- * @param {Record<string, unknown>[]} rows
+ * @param {Record<string, number>} record
+ * @param {string} keyColumn
+ * @param {string} valueColumn
  * @returns {HTMLElement}
  */
-function renderObjectTable(rows) {
+function mapTable(record, keyColumn, valueColumn) {
   const table = node("table", { className: "data-table" });
-  const allKeys = Array.from(new Set(rows.flatMap((row) => Object.keys(row))));
-
   const thead = node("thead");
-  const headerRow = node("tr");
-  for (const key of allKeys) {
-    const th = node("th", { text: labelize(key) });
-    headerRow.appendChild(th);
-  }
-  thead.appendChild(headerRow);
+  const headRow = node("tr");
+  headRow.appendChild(node("th", { text: keyColumn }));
+  headRow.appendChild(node("th", { text: valueColumn }));
+  thead.appendChild(headRow);
 
   const tbody = node("tbody");
-  for (const rowData of rows) {
-    const tr = node("tr");
-    for (const key of allKeys) {
-      const td = node("td", { text: formatValue(rowData[key], key) });
-      tr.appendChild(td);
-    }
-    tbody.appendChild(tr);
+  for (const [key, amount] of Object.entries(record).sort(([a], [b]) => a.localeCompare(b))) {
+    const row = node("tr");
+    row.appendChild(node("td", { text: key }));
+    row.appendChild(node("td", { text: formatValue(amount, valueColumn) }));
+    tbody.appendChild(row);
   }
 
   table.appendChild(thead);
@@ -231,738 +253,865 @@ function renderObjectTable(rows) {
 }
 
 /**
+ * @param {string} label
+ * @param {HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement} control
+ * @param {string} [hint]
+ * @returns {HTMLElement}
+ */
+function formField(label, control, hint = "") {
+  const wrapper = node("label", { className: "form-field" });
+  const labelNode = node("span", { className: "field-label", text: label });
+
+  wrapper.appendChild(labelNode);
+  wrapper.appendChild(control);
+
+  if (hint) {
+    wrapper.appendChild(node("span", { className: "field-hint", text: hint }));
+  }
+
+  return wrapper;
+}
+
+/**
+ * @param {string} name
+ * @param {string} value
+ * @param {{type?: string, min?: string, step?: string}} [opts]
+ * @returns {HTMLInputElement}
+ */
+function input(name, value, opts = {}) {
+  const field = document.createElement("input");
+  field.className = "input-control";
+  field.name = name;
+  field.type = opts.type ?? "text";
+  field.value = value;
+  if (opts.min != null) {
+    field.min = opts.min;
+  }
+  if (opts.step != null) {
+    field.step = opts.step;
+  }
+  return field;
+}
+
+/**
+ * @param {string | undefined | null} isoDate
+ * @returns {string}
+ */
+function toDateInput(isoDate) {
+  if (!isNonEmptyString(isoDate)) {
+    return "";
+  }
+  return isoDate.slice(0, 10);
+}
+
+/**
+ * @param {unknown} value
+ * @param {number} fallback
+ * @returns {number}
+ */
+function toNumber(value, fallback) {
+  const parsed = Number(value);
+  return Number.isFinite(parsed) ? parsed : fallback;
+}
+
+/**
+ * @param {Record<string, unknown> | null | undefined} payload
+ * @returns {Record<string, unknown>}
+ */
+function safePayload(payload) {
+  return isObject(payload) ? payload : {};
+}
+
+/**
+ * @param {import('../state/store.js').CfeState} state
+ * @returns {HTMLElement}
+ */
+function renderStateBanner(state) {
+  const path = state.snapshots.fundingRequirement?.path_status ?? "Not computed";
+  const reserve = state.snapshots.reserveStatus ?? "Not computed";
+  const tone = toneForStatus(`${path} ${reserve}`);
+
+  const banner = node("section", { className: `banner banner--${tone}` });
+  banner.appendChild(node("h3", { text: "Current Finance Condition" }));
+  banner.appendChild(
+    node("p", {
+      text: `Path status is ${path}. Reserve status is ${reserve}. Use controls below to test and recompute assumptions.`
+    })
+  );
+  return banner;
+}
+
+/**
+ * @param {import('../state/store.js').CfeState} state
+ * @returns {HTMLElement}
+ */
+function renderOverviewStats(state) {
+  const summary = state.snapshots.budgetSummary;
+  const funding = state.snapshots.fundingRequirement;
+
+  const grid = node("div", { className: "stat-grid" });
+  grid.appendChild(
+    statTile(
+      "Cash on Hand",
+      formatValue(state.campaignProfile?.current_cash_on_hand ?? 0, "cash"),
+      "Current available cash position"
+    )
+  );
+  grid.appendChild(statTile("Debt", formatValue(state.campaignProfile?.current_debt ?? 0, "debt")));
+  grid.appendChild(
+    statTile(
+      "Planned Budget",
+      formatValue(summary?.total_planned_budget ?? 0, "budget"),
+      `Required share ${formatValue(summary?.required_cost_share ?? 0, "share")}`
+    )
+  );
+  grid.appendChild(
+    statTile(
+      "Total Raise Target",
+      formatValue(funding?.total_raise_target ?? 0, "raise"),
+      funding?.path_status ?? "No path status yet"
+    )
+  );
+  return grid;
+}
+
+/**
+ * @param {import('../state/store.js').CfeState} state
+ * @param {{submitOverview: (data: {
+ *   candidateName: string,
+ *   committeeName: string,
+ *   campaignPhase: string,
+ *   cashOnHand: number,
+ *   currentDebt: number,
+ *   primaryDate: string,
+ *   generalDate: string
+ * }) => void}} handlers
+ * @returns {HTMLElement}
+ */
+function renderOverviewControls(state, handlers) {
+  const card = sectionCard("Campaign Inputs");
+  card.appendChild(
+    node("p", {
+      className: "section-note",
+      text: "These controls update setup state and then trigger canonical recompute with current funding assumptions."
+    })
+  );
+
+  const form = node("form", { className: "control-form" });
+
+  const candidate = input("candidateName", state.campaignProfile?.candidate_name ?? "");
+  const committee = input("committeeName", state.campaignProfile?.committee_name ?? "");
+  const phase = input("campaignPhase", state.campaignProfile?.campaign_phase ?? "");
+  const cash = input("cashOnHand", String(state.campaignProfile?.current_cash_on_hand ?? 0), {
+    type: "number",
+    min: "0",
+    step: "100"
+  });
+  const debt = input("currentDebt", String(state.campaignProfile?.current_debt ?? 0), {
+    type: "number",
+    min: "0",
+    step: "100"
+  });
+  const primaryDate = input("primaryDate", toDateInput(state.electionCalendar?.primary_date), {
+    type: "date"
+  });
+  const generalDate = input("generalDate", toDateInput(state.electionCalendar?.general_date), {
+    type: "date"
+  });
+
+  form.appendChild(formField("Candidate Name", candidate));
+  form.appendChild(formField("Committee Name", committee));
+  form.appendChild(formField("Campaign Phase", phase));
+  form.appendChild(formField("Current Cash On Hand", cash));
+  form.appendChild(formField("Current Debt", debt));
+  form.appendChild(formField("Primary Date", primaryDate));
+  form.appendChild(formField("General Date", generalDate));
+
+  const actions = node("div", { className: "form-actions" });
+  const submit = node("button", { className: "button button--primary", text: "Apply Setup Updates" });
+  submit.setAttribute("type", "submit");
+  actions.appendChild(submit);
+  form.appendChild(actions);
+
+  form.addEventListener("submit", (event) => {
+    event.preventDefault();
+    handlers.submitOverview({
+      candidateName: candidate.value.trim(),
+      committeeName: committee.value.trim(),
+      campaignPhase: phase.value.trim(),
+      cashOnHand: toNumber(cash.value, state.campaignProfile?.current_cash_on_hand ?? 0),
+      currentDebt: toNumber(debt.value, state.campaignProfile?.current_debt ?? 0),
+      primaryDate: primaryDate.value,
+      generalDate: generalDate.value
+    });
+  });
+
+  card.appendChild(form);
+  return card;
+}
+
+/**
+ * @param {Record<string, unknown>} payload
+ * @returns {HTMLElement}
+ */
+function renderOverviewProfiles(payload) {
+  const card = sectionCard("Profile And Calendar Surfaces");
+  const grid = node("div", { className: "split-grid" });
+
+  const blocks = [
+    ["Race Profile", payload.race_profile],
+    ["Campaign Profile", payload.campaign_profile],
+    ["Filing Calendar", payload.filing_calendar],
+    ["Election Calendar", payload.election_calendar]
+  ];
+
+  for (const [title, value] of blocks) {
+    const block = node("article", { className: "sub-block" });
+    block.appendChild(node("h3", { className: "sub-block-title", text: title }));
+
+    if (isObject(value)) {
+      block.appendChild(keyValueGrid(value));
+    } else {
+      block.appendChild(node("p", { className: "muted", text: "No data loaded." }));
+    }
+
+    grid.appendChild(block);
+  }
+
+  card.appendChild(grid);
+  return card;
+}
+
+/**
+ * @param {import('../state/store.js').CfeState} state
+ * @param {{raisedToDate: number, actualRaiseToDate: number, weekEndingDate: string, fieldPlanCost: number}} inputs
+ * @param {{submitFunding: (data: {
+ *   reserveTarget: number,
+ *   competitiveThreshold: number,
+ *   raisedToDate: number,
+ *   actualRaiseToDate: number,
+ *   weekEndingDate: string,
+ *   fieldPlanCost: number
+ * }) => void}} handlers
+ * @returns {HTMLElement}
+ */
+function renderFundingControls(state, inputs, handlers) {
+  const card = sectionCard("Funding Path Inputs");
+  card.appendChild(
+    node("p", {
+      className: "section-note",
+      text: "Controls here feed benchmark, reserve target, bridge plan cost, and recompute options without changing engine contracts."
+    })
+  );
+
+  const form = node("form", { className: "control-form" });
+  const reserveTarget = input("reserveTarget", String(state.budgetPlan?.reserve_target ?? 0), {
+    type: "number",
+    min: "0",
+    step: "100"
+  });
+  const competitiveThreshold = input(
+    "competitiveThreshold",
+    String(
+      typeof state.benchmarkSet?.competitive_threshold === "number"
+        ? state.benchmarkSet.competitive_threshold
+        : state.snapshots.budgetSummary?.total_planned_budget ?? 0
+    ),
+    {
+      type: "number",
+      min: "0",
+      step: "100"
+    }
+  );
+  const raised = input("raisedToDate", String(inputs.raisedToDate), {
+    type: "number",
+    min: "0",
+    step: "100"
+  });
+  const actual = input("actualRaiseToDate", String(inputs.actualRaiseToDate), {
+    type: "number",
+    min: "0",
+    step: "100"
+  });
+  const weekEnding = input("weekEndingDate", inputs.weekEndingDate, { type: "date" });
+  const fieldPlanCost = input("fieldPlanCost", String(inputs.fieldPlanCost), {
+    type: "number",
+    min: "0",
+    step: "100"
+  });
+
+  form.appendChild(formField("Reserve Target", reserveTarget));
+  form.appendChild(formField("Competitive Threshold", competitiveThreshold));
+  form.appendChild(formField("Raised To Date", raised));
+  form.appendChild(formField("Actual Raised To Date", actual));
+  form.appendChild(formField("Week Ending", weekEnding));
+  form.appendChild(formField("Field Plan Cost (Bridge)", fieldPlanCost));
+
+  const actions = node("div", { className: "form-actions" });
+  const submit = node("button", { className: "button button--primary", text: "Recompute Funding Path" });
+  submit.setAttribute("type", "submit");
+  actions.appendChild(submit);
+  form.appendChild(actions);
+
+  form.addEventListener("submit", (event) => {
+    event.preventDefault();
+    handlers.submitFunding({
+      reserveTarget: toNumber(reserveTarget.value, state.budgetPlan?.reserve_target ?? 0),
+      competitiveThreshold: toNumber(
+        competitiveThreshold.value,
+        typeof state.benchmarkSet?.competitive_threshold === "number"
+          ? state.benchmarkSet.competitive_threshold
+          : 0
+      ),
+      raisedToDate: toNumber(raised.value, inputs.raisedToDate),
+      actualRaiseToDate: toNumber(actual.value, inputs.actualRaiseToDate),
+      weekEndingDate: weekEnding.value || inputs.weekEndingDate,
+      fieldPlanCost: toNumber(fieldPlanCost.value, inputs.fieldPlanCost)
+    });
+  });
+
+  card.appendChild(form);
+  return card;
+}
+
+/**
+ * @param {import('../state/store.js').CfeState} state
+ * @param {Record<string, unknown>} payload
+ * @returns {HTMLElement}
+ */
+function renderFundingStatus(state, payload) {
+  const card = sectionCard("Funding Status");
+  const grid = node("div", { className: "stat-grid" });
+
+  const requirement = isObject(payload.funding_requirement_snapshot)
+    ? payload.funding_requirement_snapshot
+    : state.snapshots.fundingRequirement ?? null;
+
+  grid.appendChild(
+    statTile(
+      "Path Status",
+      isObject(requirement) ? formatValue(requirement.path_status) : "Not available",
+      isObject(requirement) ? formatValue(requirement.funding_risk_level) : ""
+    )
+  );
+  grid.appendChild(statTile("Reserve Status", formatValue(payload.reserve_status)));
+  grid.appendChild(statTile("Field Funding Status", formatValue(payload.field_funding_status)));
+  grid.appendChild(
+    statTile(
+      "Gap To Safe Funding",
+      isObject(requirement) ? formatValue(requirement.gap_to_safe_funding, "gap") : "Not available"
+    )
+  );
+  grid.appendChild(
+    statTile(
+      "Gap To Competitive Funding",
+      isObject(requirement) ? formatValue(requirement.gap_to_competitive_funding, "gap") : "Not available"
+    )
+  );
+  grid.appendChild(
+    statTile(
+      "Raise Target",
+      isObject(requirement) ? formatValue(requirement.total_raise_target, "raise") : "Not available"
+    )
+  );
+
+  card.appendChild(grid);
+  return card;
+}
+
+/**
+ * @param {import('../state/store.js').CfeState} state
+ * @param {Record<string, unknown>} payload
+ * @returns {HTMLElement}
+ */
+function renderFundingWarnings(state, payload) {
+  const card = sectionCard("Risk Flags And Warnings");
+  const flags = Array.isArray(payload.risk_flags)
+    ? payload.risk_flags
+    : Array.isArray(state.snapshots.riskFlags)
+      ? state.snapshots.riskFlags
+      : [];
+
+  if (flags.length === 0) {
+    const good = node("div", { className: "banner banner--good" });
+    good.appendChild(node("p", { text: "No active risk flags. Current path appears stable." }));
+    card.appendChild(good);
+    return card;
+  }
+
+  for (const flag of flags) {
+    if (!isObject(flag)) {
+      continue;
+    }
+
+    const warning = node("article", { className: `warning-block warning-block--${toneForStatus(String(flag.severity ?? ""))}` });
+    const top = node("div", { className: "warning-head" });
+    top.appendChild(node("h3", { text: formatValue(flag.title) }));
+    if (isNonEmptyString(String(flag.severity ?? ""))) {
+      top.appendChild(statusChip(String(flag.severity)));
+    }
+
+    warning.appendChild(top);
+    warning.appendChild(node("p", { text: formatValue(flag.explanation) }));
+    warning.appendChild(
+      node("p", {
+        className: "warning-action",
+        text: `Recommended action: ${formatValue(flag.recommended_action)}`
+      })
+    );
+
+    card.appendChild(warning);
+  }
+
+  return card;
+}
+
+/**
+ * @param {Record<string, unknown>} payload
+ * @returns {HTMLElement}
+ */
+function renderFundingTables(payload) {
+  const card = sectionCard("Raise Targets");
+  const requirement = isObject(payload.funding_requirement_snapshot) ? payload.funding_requirement_snapshot : null;
+
+  if (!requirement) {
+    card.appendChild(node("p", { className: "muted", text: "Funding requirement snapshot has not been computed." }));
+    return card;
+  }
+
+  const layout = node("div", { className: "split-grid" });
+
+  const byMonth = node("article", { className: "sub-block" });
+  byMonth.appendChild(node("h3", { className: "sub-block-title", text: "Raise Target By Month" }));
+  if (isObject(requirement.raise_target_by_month)) {
+    byMonth.appendChild(
+      mapTable(
+        /** @type {Record<string, number>} */ (requirement.raise_target_by_month),
+        "Month",
+        "Amount"
+      )
+    );
+  }
+  layout.appendChild(byMonth);
+
+  const checkpoints = node("article", { className: "sub-block" });
+  checkpoints.appendChild(node("h3", { className: "sub-block-title", text: "Checkpoint Targets" }));
+  if (isObject(requirement.raise_target_by_checkpoint)) {
+    checkpoints.appendChild(
+      mapTable(
+        /** @type {Record<string, number>} */ (requirement.raise_target_by_checkpoint),
+        "Checkpoint",
+        "Amount"
+      )
+    );
+  }
+  layout.appendChild(checkpoints);
+
+  card.appendChild(layout);
+  return card;
+}
+
+/**
+ * @param {import('../state/store.js').CfeState} state
+ * @returns {HTMLElement}
+ */
+function renderChannelPanel(state) {
+  const card = sectionCard("Finance Channel Panel");
+
+  /** @type {Record<string, number>} */
+  const totals = {};
+  for (const activity of state.financeActivities) {
+    const channel = isNonEmptyString(activity.channel) ? activity.channel : "Unlabeled";
+    totals[channel] = (totals[channel] ?? 0) + (isNumber(activity.goal_amount) ? activity.goal_amount : 0);
+  }
+
+  if (Object.keys(totals).length === 0) {
+    card.appendChild(node("p", { className: "muted", text: "No finance activities loaded." }));
+    return card;
+  }
+
+  card.appendChild(mapTable(totals, "Channel", "Goal Amount"));
+  return card;
+}
+
+/**
+ * @param {import('../state/store.js').CfeState} state
+ * @param {{raisedToDate: number, actualRaiseToDate: number, weekEndingDate: string}} inputs
+ * @param {{submitReports: (data: {weekEndingDate: string, raisedToDate: number, actualRaiseToDate: number}) => void}} handlers
+ * @returns {HTMLElement}
+ */
+function renderReportControls(state, inputs, handlers) {
+  const card = sectionCard("Report Refresh Inputs");
+  card.appendChild(
+    node("p", {
+      className: "section-note",
+      text: "Update reporting context values and recompute report surfaces through the existing store workflow."
+    })
+  );
+
+  const form = node("form", { className: "control-form control-form--compact" });
+  const weekEnding = input("weekEndingDate", inputs.weekEndingDate, { type: "date" });
+  const raised = input("raisedToDate", String(inputs.raisedToDate), {
+    type: "number",
+    min: "0",
+    step: "100"
+  });
+  const actual = input("actualRaiseToDate", String(inputs.actualRaiseToDate), {
+    type: "number",
+    min: "0",
+    step: "100"
+  });
+
+  form.appendChild(formField("Week Ending", weekEnding));
+  form.appendChild(formField("Raised To Date", raised));
+  form.appendChild(formField("Actual Raised To Date", actual));
+
+  const actions = node("div", { className: "form-actions" });
+  const submit = node("button", { className: "button button--primary", text: "Refresh Reports" });
+  submit.setAttribute("type", "submit");
+  actions.appendChild(submit);
+  form.appendChild(actions);
+
+  form.addEventListener("submit", (event) => {
+    event.preventDefault();
+    handlers.submitReports({
+      weekEndingDate: weekEnding.value || inputs.weekEndingDate,
+      raisedToDate: toNumber(raised.value, inputs.raisedToDate),
+      actualRaiseToDate: toNumber(actual.value, inputs.actualRaiseToDate)
+    });
+  });
+
+  card.appendChild(form);
+  return card;
+}
+
+/**
+ * @param {string} title
  * @param {unknown} value
  * @returns {HTMLElement}
  */
-function renderValue(value) {
+function renderStructuredCard(title, value) {
+  const card = sectionCard(title);
+
   if (value == null) {
-    return node("p", { className: "muted", text: "Not available." });
-  }
-
-  if (isPrimitive(value)) {
-    return node("p", { text: formatValue(value) });
-  }
-
-  if (Array.isArray(value)) {
-    if (value.length === 0) {
-      return node("p", { className: "muted", text: "No items." });
-    }
-
-    if (value.every((item) => isPrimitive(item))) {
-      return renderPrimitiveList(value);
-    }
-
-    if (value.every((item) => isObject(item))) {
-      return renderObjectTable(/** @type {Record<string, unknown>[]} */ (value));
-    }
-
-    const list = node("div", { className: "stack" });
-    value.forEach((item, index) => {
-      const block = node("div", { className: "sub-block" });
-      const title = node("h3", { className: "sub-block-title", text: `Item ${index + 1}` });
-      block.appendChild(title);
-      block.appendChild(renderValue(item));
-      list.appendChild(block);
-    });
-    return list;
+    card.appendChild(node("p", { className: "muted", text: "Not available." }));
+    return card;
   }
 
   if (isObject(value)) {
-    const entries = Object.entries(value);
-    const primitivesOnly = entries.every(([, child]) => isPrimitive(child) || child == null);
-
-    if (primitivesOnly) {
-      return renderKeyValueGrid(/** @type {Record<string, unknown>} */ (value));
-    }
-
     const stack = node("div", { className: "stack" });
-    for (const [key, child] of entries) {
-      const block = node("div", { className: "sub-block" });
-      const title = node("h3", { className: "sub-block-title", text: labelize(key) });
-      block.appendChild(title);
-      block.appendChild(renderValue(child));
+
+    for (const [key, child] of Object.entries(value)) {
+      if (Array.isArray(child)) {
+        const block = node("article", { className: "sub-block" });
+        block.appendChild(node("h3", { className: "sub-block-title", text: labelize(key) }));
+        if (child.length === 0) {
+          block.appendChild(node("p", { className: "muted", text: "No items." }));
+        } else {
+          const list = node("ul", { className: "simple-list" });
+          for (const item of child) {
+            list.appendChild(node("li", { text: formatValue(item, key) }));
+          }
+          block.appendChild(list);
+        }
+        stack.appendChild(block);
+        continue;
+      }
+
+      if (isObject(child)) {
+        const block = node("article", { className: "sub-block" });
+        block.appendChild(node("h3", { className: "sub-block-title", text: labelize(key) }));
+        block.appendChild(keyValueGrid(child));
+        stack.appendChild(block);
+        continue;
+      }
+
+      const block = node("article", { className: "sub-block" });
+      block.appendChild(node("h3", { className: "sub-block-title", text: labelize(key) }));
+      block.appendChild(node("p", { text: formatValue(child, key) }));
       stack.appendChild(block);
     }
-    return stack;
+
+    card.appendChild(stack);
+    return card;
   }
 
-  return node("p", { text: String(value) });
+  card.appendChild(node("p", { text: formatValue(value) }));
+  return card;
 }
 
 /**
- * @param {Record<string, unknown>} source
- * @param {string[]} keys
- * @returns {Record<string, unknown>}
- */
-function pick(source, keys) {
-  const out = {};
-  for (const key of keys) {
-    if (source[key] != null) {
-      out[key] = source[key];
-    }
-  }
-  return out;
-}
-
-/**
- * @param {Record<string, unknown>} payload
- * @returns {HTMLElement[]}
- */
-function renderOverview(payload) {
-  /** @type {HTMLElement[]} */
-  const sections = [];
-
-  if (isObject(payload.header_block)) {
-    const hero = sectionCard("Overview Context");
-
-    if (payload.header_block.eyebrow) {
-      hero.appendChild(node("p", { className: "eyebrow", text: formatValue(payload.header_block.eyebrow) }));
-    }
-
-    if (payload.header_block.title) {
-      hero.appendChild(node("h3", { className: "hero-title", text: formatValue(payload.header_block.title) }));
-    }
-
-    if (payload.header_block.body) {
-      hero.appendChild(node("p", { text: formatValue(payload.header_block.body) }));
-    }
-
-    sections.push(hero);
-  }
-
-  if (payload.global_info_banner) {
-    const banner = node("section", { className: "banner banner--info" });
-    banner.appendChild(node("p", { text: formatValue(payload.global_info_banner) }));
-    sections.push(banner);
-  }
-
-  if (isObject(payload.state_banner)) {
-    const stateBanner = node("section", {
-      className: `banner banner--${toneForStatus(String(payload.state_banner.header ?? ""))}`
-    });
-    if (payload.state_banner.header) {
-      stateBanner.appendChild(node("h3", { text: formatValue(payload.state_banner.header) }));
-    }
-    if (payload.state_banner.body) {
-      stateBanner.appendChild(node("p", { text: formatValue(payload.state_banner.body) }));
-    }
-    sections.push(stateBanner);
-  }
-
-  if (isObject(payload.hero_cards)) {
-    const card = sectionCard("Core Indicators");
-    const grid = node("div", { className: "stat-grid" });
-
-    for (const [key, raw] of Object.entries(payload.hero_cards)) {
-      const tile = node("article", { className: "stat-tile" });
-      const entry = isObject(raw) ? raw : { value: raw };
-
-      const title = formatValue(entry.title ?? labelize(key));
-      tile.appendChild(node("h3", { text: title }));
-
-      const primary =
-        entry.value ??
-        entry.path_status ??
-        entry.reserve_status ??
-        entry.field_funding_status ??
-        entry.funding_risk_level ??
-        null;
-
-      const value = node("p", { className: "stat-value", text: formatValue(primary, key) });
-      tile.appendChild(value);
-
-      const detail = pick(entry, [
-        "funding_risk_level",
-        "path_status",
-        "reserve_status",
-        "field_funding_status",
-        "funded_percent_of_field_plan",
-        "reserve_floor"
-      ]);
-
-      if (Object.keys(detail).length > 0) {
-        tile.appendChild(renderKeyValueGrid(detail));
-      }
-
-      if (entry.helperText) {
-        tile.appendChild(node("p", { className: "muted", text: formatValue(entry.helperText) }));
-      }
-
-      if (entry.interpretation) {
-        tile.appendChild(node("p", { className: "muted", text: formatValue(entry.interpretation) }));
-      }
-
-      grid.appendChild(tile);
-    }
-
-    card.appendChild(grid);
-    sections.push(card);
-  }
-
-  if (isObject(payload.interpretation_panel)) {
-    const card = sectionCard(formatValue(payload.interpretation_panel.title ?? "Interpretation"));
-    card.appendChild(node("p", { text: formatValue(payload.interpretation_panel.body) }));
-    sections.push(card);
-  }
-
-  if (isObject(payload.status_chip_helper_copy)) {
-    const card = sectionCard("Status Guidance");
-    card.appendChild(renderKeyValueGrid(payload.status_chip_helper_copy));
-    sections.push(card);
-  }
-
-  if (isObject(payload.tooltips)) {
-    const card = sectionCard("Tooltips");
-    card.appendChild(renderKeyValueGrid(payload.tooltips));
-    sections.push(card);
-  }
-
-  if (isObject(payload.empty_state)) {
-    const card = node("section", { className: "banner banner--neutral" });
-    if (payload.empty_state.title) {
-      card.appendChild(node("h3", { text: formatValue(payload.empty_state.title) }));
-    }
-    if (payload.empty_state.body) {
-      card.appendChild(node("p", { text: formatValue(payload.empty_state.body) }));
-    }
-    if (payload.empty_state.primaryAction) {
-      card.appendChild(node("p", { className: "muted", text: `Suggested action: ${formatValue(payload.empty_state.primaryAction)}` }));
-    }
-    sections.push(card);
-  }
-
-  return sections;
-}
-
-/**
- * @param {Record<string, unknown>} payload
- * @returns {HTMLElement[]}
- */
-function renderFundingPath(payload) {
-  /** @type {HTMLElement[]} */
-  const sections = [];
-
-  if (payload.body) {
-    const intro = sectionCard("Funding Path");
-    intro.appendChild(node("p", { text: formatValue(payload.body) }));
-    sections.push(intro);
-  }
-
-  if (isObject(payload.status_block)) {
-    const status = sectionCard("Current Condition");
-
-    const chipRow = node("div", { className: "chip-row" });
-    const statuses = pick(payload.status_block, [
-      "path_status",
-      "reserve_status",
-      "field_funding_status",
-      "funding_risk_level"
-    ]);
-
-    for (const [key, value] of Object.entries(statuses)) {
-      const chipWrap = node("div", { className: "chip-wrap" });
-      chipWrap.appendChild(node("span", { className: "chip-label", text: labelize(key) }));
-      chipWrap.appendChild(statusChip(formatValue(value, key)));
-      chipRow.appendChild(chipWrap);
-    }
-
-    status.appendChild(chipRow);
-
-    if (isObject(payload.status_block.state_banner)) {
-      const stateBanner = node("div", { className: "sub-banner" });
-      if (payload.status_block.state_banner.header) {
-        stateBanner.appendChild(node("h3", { text: formatValue(payload.status_block.state_banner.header) }));
-      }
-      if (payload.status_block.state_banner.body) {
-        stateBanner.appendChild(node("p", { text: formatValue(payload.status_block.state_banner.body) }));
-      }
-      status.appendChild(stateBanner);
-    }
-
-    sections.push(status);
-  }
-
-  if (isObject(payload.funding_requirement_snapshot)) {
-    const snapshot = sectionCard("Funding Requirement Snapshot");
-    snapshot.appendChild(renderKeyValueGrid(payload.funding_requirement_snapshot));
-    sections.push(snapshot);
-  }
-
-  if (Array.isArray(payload.warnings)) {
-    const warningCard = sectionCard("Funding Path Warnings");
-
-    if (payload.warnings.length === 0) {
-      warningCard.appendChild(node("p", { className: "muted", text: "No active funding-path warnings." }));
-    } else {
-      const stack = node("div", { className: "stack" });
-      for (const warning of payload.warnings) {
-        const block = node("article", { className: "warning-block" });
-        block.appendChild(node("h3", { text: formatValue(warning.title ?? "Warning") }));
-        block.appendChild(node("p", { text: formatValue(warning.body) }));
-        stack.appendChild(block);
-      }
-      warningCard.appendChild(stack);
-    }
-
-    sections.push(warningCard);
-  }
-
-  if (Array.isArray(payload.risk_flags)) {
-    const riskCard = sectionCard("Active Risk Flags");
-
-    if (payload.risk_flags.length === 0) {
-      riskCard.appendChild(node("p", { className: "muted", text: "No active risk flags in the current snapshot." }));
-    } else {
-      const table = node("table", { className: "data-table" });
-      table.innerHTML =
-        "<thead><tr><th>Severity</th><th>Type</th><th>Title</th><th>Recommended Action</th></tr></thead><tbody></tbody>";
-      const tbody = table.querySelector("tbody");
-
-      for (const flag of payload.risk_flags) {
-        const tr = node("tr");
-
-        const tdSeverity = node("td");
-        tdSeverity.appendChild(statusChip(formatValue(flag.severity ?? "Info")));
-        tr.appendChild(tdSeverity);
-
-        tr.appendChild(node("td", { text: formatValue(flag.flag_type) }));
-        tr.appendChild(node("td", { text: formatValue(flag.title) }));
-        tr.appendChild(node("td", { text: formatValue(flag.recommended_action) }));
-
-        tbody?.appendChild(tr);
-      }
-
-      riskCard.appendChild(table);
-    }
-
-    sections.push(riskCard);
-  }
-
-  if (isObject(payload.channel_target_panel)) {
-    const channel = sectionCard(formatValue(payload.channel_target_panel.title ?? "Channel Targets"));
-
-    if (payload.channel_target_panel.intro) {
-      channel.appendChild(node("p", { text: formatValue(payload.channel_target_panel.intro) }));
-    }
-
-    if (Array.isArray(payload.channel_target_panel.subsectionLabels)) {
-      channel.appendChild(renderPrimitiveList(payload.channel_target_panel.subsectionLabels));
-    }
-
-    if (payload.channel_target_panel.channel_target_plan) {
-      channel.appendChild(renderValue(payload.channel_target_panel.channel_target_plan));
-    } else {
-      channel.appendChild(node("p", { className: "muted", text: "No channel target plan has been attached yet." }));
-    }
-
-    sections.push(channel);
-  }
-
-  if (isObject(payload.interpretation_block)) {
-    const interpretation = sectionCard(formatValue(payload.interpretation_block.title ?? "Interpretation"));
-    interpretation.appendChild(node("p", { text: formatValue(payload.interpretation_block.body) }));
-    sections.push(interpretation);
-  }
-
-  if (payload.empty_state) {
-    const empty = node("section", { className: "banner banner--neutral" });
-    empty.appendChild(node("p", { text: formatValue(payload.empty_state) }));
-    sections.push(empty);
-  }
-
-  return sections;
-}
-
-/**
- * @param {Record<string, unknown>} payload
- * @returns {HTMLElement[]}
- */
-function renderReports(payload) {
-  /** @type {HTMLElement[]} */
-  const sections = [];
-
-  const intro = sectionCard("Reports Workspace");
-  if (payload.body) {
-    intro.appendChild(node("p", { text: formatValue(payload.body) }));
-  }
-  if (payload.module_intro) {
-    intro.appendChild(node("p", { className: "muted", text: formatValue(payload.module_intro) }));
-  }
-  sections.push(intro);
-
-  if (isObject(payload.report_generation_state)) {
-    const state = node("section", {
-      className: `banner banner--${toneForStatus(String(payload.report_generation_state.header ?? ""))}`
-    });
-    state.appendChild(node("h3", { text: formatValue(payload.report_generation_state.header) }));
-    state.appendChild(node("p", { text: formatValue(payload.report_generation_state.body) }));
-    sections.push(state);
-  }
-
-  if (isObject(payload.report_picker_descriptions)) {
-    const picker = sectionCard("Report Types");
-    picker.appendChild(renderKeyValueGrid(payload.report_picker_descriptions));
-    sections.push(picker);
-  }
-
-  const structureTone = sectionCard("Structure and Tone");
-
-  if (Array.isArray(payload.section_structure)) {
-    structureTone.appendChild(node("h3", { className: "sub-heading", text: "Section Structure" }));
-    structureTone.appendChild(renderPrimitiveList(payload.section_structure));
-  }
-
-  if (Array.isArray(payload.tone_rules)) {
-    structureTone.appendChild(node("h3", { className: "sub-heading", text: "Tone Rules" }));
-    structureTone.appendChild(renderPrimitiveList(payload.tone_rules));
-  }
-
-  sections.push(structureTone);
-
-  if (isObject(payload.preface_variants) || isObject(payload.preview_language)) {
-    const preview = sectionCard("Preview Language");
-
-    if (isObject(payload.preface_variants)) {
-      preview.appendChild(node("h3", { className: "sub-heading", text: "Preface Variants" }));
-      preview.appendChild(renderKeyValueGrid(payload.preface_variants));
-    }
-
-    if (isObject(payload.preview_language)) {
-      preview.appendChild(node("h3", { className: "sub-heading", text: "Report Preview Blocks" }));
-      preview.appendChild(renderValue(payload.preview_language));
-    }
-
-    sections.push(preview);
-  }
-
-  if (isObject(payload.reports)) {
-    const reports = sectionCard("Generated Reports");
-
-    for (const [key, report] of Object.entries(payload.reports)) {
-      const details = node("details", { className: "details-block" });
-      details.open = true;
-
-      const summary = node("summary", { text: labelize(key) });
-      details.appendChild(summary);
-
-      if (report == null) {
-        details.appendChild(node("p", { className: "muted", text: "Not generated yet." }));
-      } else {
-        details.appendChild(renderValue(report));
-      }
-
-      reports.appendChild(details);
-    }
-
-    sections.push(reports);
-  }
-
-  if (isObject(payload.export_preview)) {
-    const exportPreview = sectionCard("Export Preview");
-    exportPreview.appendChild(renderKeyValueGrid(payload.export_preview));
-    sections.push(exportPreview);
-  }
-
-  if (payload.empty_state) {
-    const empty = node("section", { className: "banner banner--neutral" });
-    empty.appendChild(node("h3", { text: formatValue(payload.empty_state.header) }));
-    empty.appendChild(node("p", { text: formatValue(payload.empty_state.body) }));
-    sections.push(empty);
-  }
-
-  return sections;
-}
-
-/**
- * @param {Record<string, unknown>} payload
- * @returns {HTMLElement[]}
- */
-function renderManual(payload) {
-  /** @type {HTMLElement[]} */
-  const sections = [];
-
-  if (isObject(payload.front_page)) {
-    const front = sectionCard(formatValue(payload.front_page.title ?? "Manual"));
-    if (payload.front_page.opening) {
-      front.appendChild(node("p", { text: formatValue(payload.front_page.opening) }));
-    }
-    if (payload.front_page.context) {
-      front.appendChild(node("p", { className: "muted", text: formatValue(payload.front_page.context) }));
-    }
-    sections.push(front);
-  }
-
-  if (payload.usage_guidance) {
-    const usage = node("section", { className: "banner banner--info" });
-    usage.appendChild(node("p", { text: formatValue(payload.usage_guidance) }));
-    sections.push(usage);
-  }
-
-  const fundamentals = sectionCard("Manual Standards");
-
-  if (Array.isArray(payload.tone_rules)) {
-    fundamentals.appendChild(node("h3", { className: "sub-heading", text: "Tone Rules" }));
-    fundamentals.appendChild(renderPrimitiveList(payload.tone_rules));
-  }
-
-  if (Array.isArray(payload.ecosystem_alignment_rules)) {
-    fundamentals.appendChild(node("h3", { className: "sub-heading", text: "Ecosystem Alignment" }));
-    fundamentals.appendChild(renderPrimitiveList(payload.ecosystem_alignment_rules));
-  }
-
-  sections.push(fundamentals);
-
-  if (isObject(payload.section_intros)) {
-    const intros = sectionCard("Section Intros");
-    intros.appendChild(renderKeyValueGrid(payload.section_intros));
-    sections.push(intros);
-  }
-
-  if (isObject(payload.sections)) {
-    const manualSections = sectionCard("Manual Sections");
-    const grid = node("div", { className: "manual-grid" });
-
-    for (const [key, section] of Object.entries(payload.sections)) {
-      const block = node("article", { className: "manual-block" });
-      if (isObject(section)) {
-        block.appendChild(node("h3", { text: formatValue(section.title ?? labelize(key)) }));
-        if (section.body) {
-          block.appendChild(node("p", { text: formatValue(section.body) }));
-        }
-
-        const extra = { ...section };
-        delete extra.title;
-        delete extra.body;
-
-        if (Object.keys(extra).length > 0) {
-          block.appendChild(renderValue(extra));
-        }
-      } else {
-        block.appendChild(node("h3", { text: labelize(key) }));
-        block.appendChild(renderValue(section));
-      }
-
-      grid.appendChild(block);
-    }
-
-    manualSections.appendChild(grid);
-    sections.push(manualSections);
-  }
-
-  if (isObject(payload.page_manual_guidance)) {
-    const pageGuidance = sectionCard("Page-by-Page Guidance");
-
-    for (const [key, section] of Object.entries(payload.page_manual_guidance)) {
-      const details = node("details", { className: "details-block" });
-      const summary = node("summary", { text: labelize(key) });
-      details.appendChild(summary);
-      details.appendChild(renderValue(section));
-      pageGuidance.appendChild(details);
-    }
-
-    sections.push(pageGuidance);
-  }
-
-  if (Array.isArray(payload.healthy_range_guidance)) {
-    const healthy = sectionCard("Healthy Range Guidance");
-    healthy.appendChild(renderPrimitiveList(payload.healthy_range_guidance));
-    sections.push(healthy);
-  }
-
-  if (Array.isArray(payload.common_operator_mistakes)) {
-    const mistakes = sectionCard("Common Operator Mistakes");
-    mistakes.appendChild(renderPrimitiveList(payload.common_operator_mistakes));
-    sections.push(mistakes);
-  }
-
-  return sections;
-}
-
-/**
- * @param {Record<string, unknown>} payload
- * @returns {HTMLElement[]}
- */
-function renderGeneric(payload) {
-  const sections = [];
-
-  const visibleEntries = Object.entries(payload).filter(([key]) => SHARED_SHELL_KEYS.has(key) === false);
-  for (const [key, value] of visibleEntries) {
-    const section = sectionCard(labelize(key));
-    section.appendChild(renderValue(value));
-    sections.push(section);
-  }
-
-  return sections;
-}
-
-/**
- * @param {string} route
- * @param {Record<string, unknown>} payload
- * @returns {HTMLElement[]}
- */
-function renderRouteSections(route, payload) {
-  switch (route) {
-    case "/overview":
-      return renderOverview(payload);
-    case "/funding-path":
-      return renderFundingPath(payload);
-    case "/reports":
-      return renderReports(payload);
-    case "/manual":
-      return renderManual(payload);
-    default:
-      return renderGeneric(payload);
-  }
-}
-
-/**
- * @param {Record<string, unknown>} payload
  * @returns {HTMLElement}
  */
-function buildRightRail(payload) {
+function renderReportingToneCard() {
+  const card = sectionCard("Reporting Tone And Structure");
+  card.appendChild(node("p", { text: REPORTING_PHILOSOPHY }));
+
+  const listTitle = node("h3", { className: "sub-heading", text: "Expected Report Structure" });
+  card.appendChild(listTitle);
+
+  const list = node("ol", { className: "ordered-list" });
+  for (const item of REPORT_STRUCTURE) {
+    list.appendChild(node("li", { text: item }));
+  }
+  card.appendChild(list);
+
+  return card;
+}
+
+/**
+ * @returns {HTMLElement}
+ */
+function renderManualSurface() {
+  const wrapper = node("div", { className: "stack" });
+
+  const intro = sectionCard("Manual Front Page");
+  intro.appendChild(node("p", { text: MANUAL_INTRO }));
+  wrapper.appendChild(intro);
+
+  const sections = sectionCard("Operational Guidance Modules");
+  const detailsStack = node("div", { className: "stack" });
+  for (const [key, value] of Object.entries(MANUAL_HELP)) {
+    const details = node("details", { className: "details-block" });
+    const summary = node("summary", { text: labelize(key) });
+    const body = node("p", { text: value });
+    details.appendChild(summary);
+    details.appendChild(body);
+    detailsStack.appendChild(details);
+  }
+  sections.appendChild(detailsStack);
+  wrapper.appendChild(sections);
+
+  const warning = node("section", { className: "banner banner--warn" });
+  warning.appendChild(node("h3", { text: "Warning Interpretation" }));
+  warning.appendChild(node("p", { text: MANUAL_WARNING_INTERPRETATION }));
+  wrapper.appendChild(warning);
+
+  wrapper.appendChild(renderReportingToneCard());
+
+  return wrapper;
+}
+
+/**
+ * @param {import('../state/store.js').CfeState} state
+ * @param {string} presenterKey
+ * @param {{raisedToDate: number, actualRaiseToDate: number, weekEndingDate: string, fieldPlanCost: number}} inputs
+ * @returns {HTMLElement}
+ */
+function renderRightRail(state, presenterKey, inputs) {
   const rail = node("aside", { className: "right-rail" });
 
-  const question = sectionCard("Page Question");
-  question.appendChild(node("p", { text: formatValue(payload.page_question) }));
-  rail.appendChild(question);
+  const questionCard = sectionCard("Page Question");
+  questionCard.appendChild(
+    node("p", {
+      text: PAGE_QUESTIONS[presenterKey] ?? PAGE_QUESTIONS.fallback
+    })
+  );
+  rail.appendChild(questionCard);
 
-  if (isObject(payload.manual_guidance)) {
-    const manual = sectionCard("Manual Guidance");
-    manual.appendChild(renderValue(payload.manual_guidance));
-    rail.appendChild(manual);
+  const statusCard = sectionCard("Current Status");
+  const chipRow = node("div", { className: "chip-row" });
+
+  const pathStatus = state.snapshots.fundingRequirement?.path_status;
+  const reserveStatus = state.snapshots.reserveStatus;
+  const fieldStatus = state.snapshots.fieldFundingStatus;
+
+  if (isNonEmptyString(pathStatus)) {
+    const wrapper = node("div", { className: "chip-wrap" });
+    wrapper.appendChild(node("span", { className: "chip-label", text: "Path" }));
+    wrapper.appendChild(statusChip(pathStatus));
+    chipRow.appendChild(wrapper);
+  }
+  if (isNonEmptyString(reserveStatus)) {
+    const wrapper = node("div", { className: "chip-wrap" });
+    wrapper.appendChild(node("span", { className: "chip-label", text: "Reserve" }));
+    wrapper.appendChild(statusChip(reserveStatus));
+    chipRow.appendChild(wrapper);
+  }
+  if (isNonEmptyString(fieldStatus)) {
+    const wrapper = node("div", { className: "chip-wrap" });
+    wrapper.appendChild(node("span", { className: "chip-label", text: "Field" }));
+    wrapper.appendChild(statusChip(fieldStatus));
+    chipRow.appendChild(wrapper);
   }
 
-  if (isObject(payload.right_rail)) {
-    const rr = payload.right_rail;
+  const riskWrap = node("div", { className: "chip-wrap" });
+  riskWrap.appendChild(node("span", { className: "chip-label", text: "Active Risk Flags" }));
+  riskWrap.appendChild(statusChip(String(state.snapshots.riskFlags.length)));
+  chipRow.appendChild(riskWrap);
 
-    if (isObject(rr.coach_block)) {
-      const coach = sectionCard(formatValue(rr.coach_block.title ?? "Operator Coach"));
-      coach.appendChild(node("p", { text: formatValue(rr.coach_block.body) }));
-      coach.appendChild(node("p", { className: "muted", text: `Good discipline: ${formatValue(rr.coach_block.good_discipline)}` }));
-      coach.appendChild(node("p", { className: "muted", text: `Bad habit: ${formatValue(rr.coach_block.bad_habit)}` }));
-      rail.appendChild(coach);
-    }
+  statusCard.appendChild(chipRow);
+  rail.appendChild(statusCard);
 
-    if (isObject(rr.current_state)) {
-      const currentState = sectionCard("Current State");
-      currentState.appendChild(renderKeyValueGrid(rr.current_state));
-      rail.appendChild(currentState);
-    }
+  const assumptions = sectionCard("Current Assumptions");
+  assumptions.appendChild(
+    keyValueGrid({
+      week_ending_date: inputs.weekEndingDate,
+      raised_to_date: inputs.raisedToDate,
+      actual_raise_to_date: inputs.actualRaiseToDate,
+      reserve_target: state.budgetPlan?.reserve_target ?? 0,
+      competitive_threshold:
+        typeof state.benchmarkSet?.competitive_threshold === "number"
+          ? state.benchmarkSet.competitive_threshold
+          : 0,
+      field_plan_cost: inputs.fieldPlanCost
+    })
+  );
+  rail.appendChild(assumptions);
 
-    if (Array.isArray(rr.warnings)) {
-      const warningCard = sectionCard("Warnings");
-      if (rr.warnings.length === 0) {
-        warningCard.appendChild(node("p", { className: "muted", text: "No active right-rail warnings." }));
-      } else {
-        const stack = node("div", { className: "stack" });
-        for (const warning of rr.warnings) {
-          const block = node("article", { className: "warning-block" });
-          const title = node("h3");
-          title.appendChild(statusChip(formatValue(warning.severity ?? "Info")));
-          title.appendChild(document.createTextNode(` ${formatValue(warning.title)}`));
-          block.appendChild(title);
-          block.appendChild(node("p", { text: formatValue(warning.action) }));
-          stack.appendChild(block);
-        }
-        warningCard.appendChild(stack);
-      }
-      rail.appendChild(warningCard);
-    }
+  const guide = sectionCard("Manual Guidance");
+  guide.appendChild(node("p", { text: ROUTE_TO_MANUAL_HELP[presenterKey] ?? MANUAL_HELP.budgetBuilder }));
+  rail.appendChild(guide);
 
-    if (rr.next_action) {
-      const nextAction = sectionCard("Next Action");
-      nextAction.appendChild(node("p", { text: formatValue(rr.next_action) }));
-      rail.appendChild(nextAction);
-    }
+  const interpretation = sectionCard("Status Interpretation");
+  const interpretationStack = node("div", { className: "stack" });
 
-    if (Array.isArray(rr.assumptions)) {
-      const assumptions = sectionCard("Assumptions");
-      assumptions.appendChild(renderPrimitiveList(rr.assumptions));
-      rail.appendChild(assumptions);
-    }
-
-    if (Array.isArray(rr.interpretation)) {
-      const interpretation = sectionCard("Interpretation");
-      interpretation.appendChild(renderPrimitiveList(rr.interpretation));
-      rail.appendChild(interpretation);
-    }
-
-    if (Array.isArray(rr.ecosystem_alignment)) {
-      const ecosystem = sectionCard("Ecosystem Alignment");
-      ecosystem.appendChild(renderPrimitiveList(rr.ecosystem_alignment));
-      rail.appendChild(ecosystem);
-    }
-
-    if (isObject(rr.snapshot_context)) {
-      const snapshot = sectionCard("Snapshot Context");
-      snapshot.appendChild(renderKeyValueGrid(rr.snapshot_context));
-      rail.appendChild(snapshot);
-    }
+  if (isNonEmptyString(pathStatus) && OVERALL_PATH_STATUS_DESCRIPTIONS[pathStatus]) {
+    const block = node("article", { className: "sub-block" });
+    block.appendChild(node("h3", { className: "sub-block-title", text: `Path: ${pathStatus}` }));
+    block.appendChild(node("p", { text: OVERALL_PATH_STATUS_DESCRIPTIONS[pathStatus] }));
+    interpretationStack.appendChild(block);
   }
 
-  if (isObject(payload.permissions)) {
-    const permissions = sectionCard("Permissions");
-    const chipRow = node("div", { className: "chip-row" });
+  if (isNonEmptyString(reserveStatus) && RESERVE_STATUS_DESCRIPTIONS[reserveStatus]) {
+    const block = node("article", { className: "sub-block" });
+    block.appendChild(node("h3", { className: "sub-block-title", text: `Reserve: ${reserveStatus}` }));
+    block.appendChild(node("p", { text: RESERVE_STATUS_DESCRIPTIONS[reserveStatus] }));
+    interpretationStack.appendChild(block);
+  }
 
-    const canView = statusChip(payload.permissions.can_view ? "Can View" : "View Blocked");
-    const canEdit = statusChip(payload.permissions.can_edit ? "Can Edit" : "Read Only");
-    chipRow.appendChild(canView);
-    chipRow.appendChild(canEdit);
-    permissions.appendChild(chipRow);
+  if (isNonEmptyString(fieldStatus) && FIELD_FUNDING_STATUS_DESCRIPTIONS[fieldStatus]) {
+    const block = node("article", { className: "sub-block" });
+    block.appendChild(node("h3", { className: "sub-block-title", text: `Field: ${fieldStatus}` }));
+    block.appendChild(node("p", { text: FIELD_FUNDING_STATUS_DESCRIPTIONS[fieldStatus] }));
+    interpretationStack.appendChild(block);
+  }
 
-    permissions.appendChild(renderValue({ role: payload.permissions.role, route: payload.permissions.route }));
-    rail.appendChild(permissions);
+  if (interpretationStack.childElementCount === 0) {
+    interpretation.appendChild(node("p", { className: "muted", text: "No interpreted status context available yet." }));
+  } else {
+    interpretation.appendChild(interpretationStack);
+  }
+  rail.appendChild(interpretation);
+
+  if (state.snapshots.riskFlags.length > 0) {
+    const warnings = sectionCard("Top Warnings");
+    for (const flag of state.snapshots.riskFlags.slice(0, 3)) {
+      const warning = node("article", { className: `warning-block warning-block--${toneForStatus(flag.severity)}` });
+      warning.appendChild(node("h3", { text: flag.title }));
+      warning.appendChild(node("p", { text: flag.recommended_action }));
+      warnings.appendChild(warning);
+    }
+    rail.appendChild(warnings);
   }
 
   return rail;
 }
 
 /**
- * @param {{route: string, title: string, payload: Record<string, unknown>}} view
- * @param {Array<{path: string, title: string}>} routes
+ * @param {Array<{label: string, href: string, active: boolean}>} items
+ * @param {string} heading
  * @returns {HTMLElement}
  */
-export function buildAppSurface(view, routes) {
-  const shell = node("div", { className: "app-shell" });
+function navGroup(items, heading) {
+  const wrapper = node("div", { className: "nav-group" });
+  wrapper.appendChild(node("h3", { className: "nav-heading", text: heading }));
 
-  const topBar = node("header", { className: "app-topbar" });
-  topBar.appendChild(node("h1", { className: "app-title", text: "Campaign Finance Engine" }));
-  topBar.appendChild(node("p", { className: "app-subtitle", text: "Operational finance control surface" }));
-  shell.appendChild(topBar);
+  const list = node("div", { className: "nav-links" });
+  for (const item of items) {
+    const link = document.createElement("a");
+    link.className = `nav-link${item.active ? " active" : ""}`;
+    link.href = item.href;
+    link.textContent = item.label;
+    list.appendChild(link);
+  }
+
+  wrapper.appendChild(list);
+  return wrapper;
+}
+
+/**
+ * @param {{view: {title: string, payload: Record<string, unknown>}, state: import('../state/store.js').CfeState, activeView: {id: string, label: string, kind: string}, nav: {primary: Array<{label: string, href: string, active: boolean}>, modules: Array<{label: string, href: string, active: boolean}>}, inputs: {raisedToDate: number, actualRaiseToDate: number, weekEndingDate: string, fieldPlanCost: number}, handlers: {submitOverview: Function, submitFunding: Function, submitReports: Function}}} context
+ * @returns {HTMLElement}
+ */
+export function buildAppSurface(context) {
+  const root = node("div", { className: "app-shell" });
+
+  const top = node("header", { className: "app-topbar" });
+  top.appendChild(node("h1", { className: "app-title", text: "Campaign Finance Engine" }));
+  const subtitle = context.state.campaignProfile
+    ? `${context.state.campaignProfile.committee_name} • ${context.state.raceProfile?.office ?? ""} ${
+        context.state.raceProfile?.district ?? ""
+      }`
+    : "Operator runtime";
+  top.appendChild(node("p", { className: "app-subtitle", text: subtitle.trim() }));
+  root.appendChild(top);
 
   const layout = node("div", { className: "app-layout" });
 
-  const nav = node("aside", { className: "route-nav" });
-  nav.appendChild(node("h2", { className: "section-title", text: "Routes" }));
-
-  const navLinks = node("div", { className: "nav-links" });
-  for (const route of routes) {
-    const link = node("a", { className: "nav-link", text: route.title });
-    if (route.path === view.route) {
-      link.classList.add("active");
-    }
-    link.href = `#${route.path}`;
-    navLinks.appendChild(link);
+  const nav = node("nav", { className: "route-nav" });
+  nav.appendChild(navGroup(context.nav.primary, "Operator Views"));
+  if (context.nav.modules.length > 0) {
+    nav.appendChild(navGroup(context.nav.modules, "Module Routes"));
   }
-  nav.appendChild(navLinks);
+  layout.appendChild(nav);
 
   const main = node("main", { className: "main-column" });
   const header = node("section", { className: "page-header" });
-  header.appendChild(node("h2", { className: "page-title", text: view.title }));
-  if (view.payload.page_question) {
-    header.appendChild(node("p", { className: "page-question", text: formatValue(view.payload.page_question) }));
-  }
+
+  const presenterKey =
+    context.activeView.id === "manual"
+      ? "manual"
+      : context.view.route === "/setup"
+        ? "overview"
+        : context.view.route === "/funding"
+          ? "funding-path"
+          : context.view.route === "/reporting"
+            ? "reports"
+            : "fallback";
+
+  header.appendChild(node("h2", { className: "page-title", text: context.activeView.label }));
+  header.appendChild(node("p", { className: "page-question", text: PAGE_QUESTIONS[presenterKey] ?? PAGE_QUESTIONS.fallback }));
   main.appendChild(header);
 
-  const routeSections = renderRouteSections(view.route, view.payload);
-  for (const section of routeSections) {
-    main.appendChild(section);
+  const payload = safePayload(context.view.payload);
+
+  if (presenterKey === "overview") {
+    main.appendChild(renderStateBanner(context.state));
+
+    const statsCard = sectionCard("Core Indicators");
+    statsCard.appendChild(renderOverviewStats(context.state));
+    main.appendChild(statsCard);
+
+    main.appendChild(renderOverviewControls(context.state, context.handlers));
+    main.appendChild(renderOverviewProfiles(payload));
+  } else if (presenterKey === "funding-path") {
+    main.appendChild(renderStateBanner(context.state));
+    main.appendChild(renderFundingControls(context.state, context.inputs, context.handlers));
+    main.appendChild(renderFundingStatus(context.state, payload));
+    main.appendChild(renderFundingWarnings(context.state, {
+      ...payload,
+      risk_flags: context.state.snapshots.riskFlags
+    }));
+    main.appendChild(renderFundingTables(payload));
+    main.appendChild(renderChannelPanel(context.state));
+  } else if (presenterKey === "reports") {
+    main.appendChild(renderReportControls(context.state, context.inputs, context.handlers));
+    main.appendChild(renderReportingToneCard());
+    main.appendChild(renderStructuredCard("Weekly Finance Memo", payload.weekly_finance_memo));
+    main.appendChild(renderStructuredCard("Candidate Brief", payload.candidate_brief));
+    main.appendChild(renderStructuredCard("Finance Committee Memo", payload.committee_memo));
+    main.appendChild(renderStructuredCard("Leadership Memo", payload.leadership_memo));
+  } else if (presenterKey === "manual") {
+    main.appendChild(renderManualSurface());
+  } else {
+    main.appendChild(renderStateBanner(context.state));
+    main.appendChild(renderStructuredCard(context.view.title, payload));
   }
 
-  layout.appendChild(nav);
   layout.appendChild(main);
-  layout.appendChild(buildRightRail(view.payload));
+  layout.appendChild(renderRightRail(context.state, presenterKey, context.inputs));
 
-  shell.appendChild(layout);
-  return shell;
+  root.appendChild(layout);
+  return root;
 }

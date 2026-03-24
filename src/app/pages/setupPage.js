@@ -1,6 +1,6 @@
 export const setupPage = {
   id: "setup",
-  title: "Race Setup",
+  title: "Campaign Setup",
   render(state) {
     return {
       race_profile: state.raceProfile ?? null,

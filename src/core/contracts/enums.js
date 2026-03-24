@@ -5,15 +5,19 @@ export const CLASSIFICATION_RESOLUTION_ORDER = [
   "unknown"
 ];
 
-export const CORE_PATH_STATUSES = ["On Path", "Watch", "Off Path"];
-export const PACE_STATUSES = CORE_PATH_STATUSES;
-export const FUNDING_STATUSES = CORE_PATH_STATUSES;
+export const CORE_PATH_STATUSES = [
+  "On Path",
+  "Slightly Behind",
+  "Behind Pace",
+  "At Risk",
+  "Off Path"
+];
 
 export const FUNDING_RISK_LEVELS = ["Low", "Moderate", "Elevated", "High", "Severe"];
 
-export const RESERVE_STATUSES = ["Healthy", "Tight", "At Risk"];
+export const RESERVE_STATUSES = ["Greenlight", "Watch", "Caution", "Redline"];
+
 export const FIELD_FUNDING_STATUSES = ["Greenlight", "Caution", "Redline"];
-export const ACTIVITY_EXECUTION_STATUSES = ["Strong", "Mixed", "Weak"];
 
 export const CLASSIFICATION_STATUSES = [
   "Confirmed",
@@ -25,31 +29,24 @@ export const CLASSIFICATION_STATUSES = [
 
 export const CLASSIFICATION_CONFIDENCE_LEVELS = ["High", "Medium", "Low"];
 
-export const BUDGET_PLAN_STATUSES = ["Draft", "Reviewed", "Locked", "Superseded", "Archived"];
-export const SCENARIO_STATES = [
-  "Draft Scenario",
-  "Active Scenario",
-  "Comparison Scenario",
-  "Archived Scenario"
-];
-export const BRIDGE_SNAPSHOT_STATES = ["Imported", "Validated", "Rejected", "Superseded"];
+export const BUDGET_PLAN_STATUSES = ["Draft", "Active", "Archived", "Frozen"];
 
 export const BUDGET_DOMAINS = [
   "Field Program",
-  "Payroll",
+  "Staff Payroll",
   "Consultants / Strategy",
   "Polling / Research",
   "Digital Program",
   "Paid Media",
   "Direct Mail",
   "Compliance / Legal / Accounting",
-  "Office / Operations / Software",
+  "Office / Software / Operations",
   "Creative / Photo / Video",
-  "Event Costs",
+  "Fundraising Event Costs",
   "Travel / Meals",
   "Printing / Signs / Literature",
   "Data / Voter File / Tools",
-  "Reserve / Contingency"
+  "Contingency / Reserve"
 ];
 
 export const SPEND_PATTERNS = [
@@ -61,34 +58,37 @@ export const SPEND_PATTERNS = [
   "Custom"
 ];
 
-export const SOURCE_TRUST_LABELS = ["Reported", "Standardized", "Modeled", "Bridge-Derived"];
-
-export const RISK_SEVERITY_LABELS = ["On Path", "Watch", "Off Path"];
+export const SOURCE_TRUST_LABELS = [
+  "Official reported source",
+  "Campaign-entered source",
+  "Bridge-derived source",
+  "Standardized from source",
+  "Estimated/model-derived",
+  "Manually overridden"
+];
 
 export const RISK_FLAG_SEVERITIES = ["Info", "Watch", "Caution", "Warning", "Critical"];
-export const RISK_FLAG_STATUSES = ["Active", "Acknowledged", "Resolved", "Historical"];
+export const RISK_FLAG_STATUSES = ["Active", "Acknowledged", "Resolved", "Suppressed"];
 
 export const ACTIVITY_TYPES = [
   "Call Time",
   "Donor Meeting",
   "Fundraiser",
-  "Finance Committee Touch",
+  "Finance Committee Meeting",
   "Online Push",
-  "Follow-Up Block",
-  "Internal Finance Review"
+  "Filing Push",
+  "Thank-you / Follow-up Block",
+  "Internal Finance Review",
+  "Compliance Deadline"
 ];
 
-export const ACTIVITY_STATUSES = ["Planned", "In Progress", "Completed", "Canceled", "Deferred"];
-
-export const PLEDGE_STATES = [
-  "Identified",
-  "Asked",
-  "Committed",
-  "Expected",
-  "Received",
-  "Deposited",
-  "Reported",
-  "Lost"
+export const ACTIVITY_STATUSES = [
+  "Scheduled",
+  "In Progress",
+  "Completed",
+  "Canceled",
+  "Deferred",
+  "Needs Follow-up"
 ];
 
 export const TASK_PRIORITIES = ["Critical", "High", "Normal", "Low"];
