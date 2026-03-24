@@ -25,7 +25,14 @@ export const CLASSIFICATION_STATUSES = [
 
 export const CLASSIFICATION_CONFIDENCE_LEVELS = ["High", "Medium", "Low"];
 
-export const BUDGET_PLAN_STATUSES = ["Draft", "Active", "Archived", "Frozen"];
+export const BUDGET_PLAN_STATUSES = ["Draft", "Reviewed", "Locked", "Superseded", "Archived"];
+export const SCENARIO_STATES = [
+  "Draft Scenario",
+  "Active Scenario",
+  "Comparison Scenario",
+  "Archived Scenario"
+];
+export const BRIDGE_SNAPSHOT_STATES = ["Imported", "Validated", "Rejected", "Superseded"];
 
 export const BUDGET_DOMAINS = [
   "Field Program",
@@ -59,7 +66,7 @@ export const SOURCE_TRUST_LABELS = ["Reported", "Standardized", "Modeled", "Brid
 export const RISK_SEVERITY_LABELS = ["On Path", "Watch", "Off Path"];
 
 export const RISK_FLAG_SEVERITIES = ["Info", "Watch", "Caution", "Warning", "Critical"];
-export const RISK_FLAG_STATUSES = ["Active", "Acknowledged", "Resolved", "Suppressed"];
+export const RISK_FLAG_STATUSES = ["Active", "Acknowledged", "Resolved", "Historical"];
 
 export const ACTIVITY_TYPES = [
   "Call Time",
@@ -71,14 +78,17 @@ export const ACTIVITY_TYPES = [
   "Internal Finance Review"
 ];
 
-export const ACTIVITY_STATUSES = [
-  "Planned",
-  "Scheduled",
-  "Completed",
-  "Partially Completed",
-  "Canceled",
-  "Needs Follow-Up",
-  "Closed"
+export const ACTIVITY_STATUSES = ["Planned", "In Progress", "Completed", "Canceled", "Deferred"];
+
+export const PLEDGE_STATES = [
+  "Identified",
+  "Asked",
+  "Committed",
+  "Expected",
+  "Received",
+  "Deposited",
+  "Reported",
+  "Lost"
 ];
 
 export const TASK_PRIORITIES = ["Critical", "High", "Normal", "Low"];

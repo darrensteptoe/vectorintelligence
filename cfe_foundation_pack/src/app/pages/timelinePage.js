@@ -1,11 +1,11 @@
-import { EMPTY_STATES, SPEND_TIMELINE_SURFACE, TOOLTIP_LIBRARY } from "../../core/contracts/uiCopy.js";
+import { SPEND_TIMELINE_SURFACE, TOOLTIP_LIBRARY } from "../../core/contracts/uiCopy.js";
 
 /**
  * @param {import('../../core/contracts/types.js').SpendTimelineSnapshot | null} snapshot
  * @param {string} reserveStatus
  */
 function warningCallout(snapshot, reserveStatus) {
-  if (!snapshot) {
+  if (snapshot == null) {
     return null;
   }
 
@@ -24,14 +24,16 @@ function warningCallout(snapshot, reserveStatus) {
 }
 
 export const timelinePage = {
-  id: "spend-timeline",
-  title: "Spend Timeline",
+  id: "timeline",
+  title: "Timeline",
   render(state) {
     const snapshot = state.snapshots.spendTimeline;
 
     return {
-      header: SPEND_TIMELINE_SURFACE.header,
+      header: "Timeline",
       body: SPEND_TIMELINE_SURFACE.body,
+      module_intro:
+        "Use timeline pressure to see when campaign costs bunch together and when reserve flexibility thins.",
       timeline_cards: SPEND_TIMELINE_SURFACE.timelineCards,
       timeline_card_helper: SPEND_TIMELINE_SURFACE.timelineCardHelper,
       interpretation_panel: SPEND_TIMELINE_SURFACE.interpretationPanel,
@@ -42,8 +44,7 @@ export const timelinePage = {
         checkpoint_target: TOOLTIP_LIBRARY.checkpointTarget,
         modeled_value: TOOLTIP_LIBRARY.modeledValue
       },
-      empty_state:
-        snapshot == null ? SPEND_TIMELINE_SURFACE.emptyState : EMPTY_STATES.timeline
+      empty_state: snapshot == null ? SPEND_TIMELINE_SURFACE.emptyState : null
     };
   }
 };

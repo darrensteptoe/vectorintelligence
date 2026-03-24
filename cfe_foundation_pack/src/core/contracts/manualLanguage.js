@@ -116,3 +116,174 @@ export const HEALTHY_RANGE_GUIDANCE = [
   "unusually concentrated",
   "heavier than the historical norm"
 ];
+
+export const PAGE_MANUAL_GUIDANCE = {
+  overview: {
+    what_this_page_is_for:
+      "Leadership view of budget posture, path posture, reserve posture, and immediate action priorities.",
+    how_to_read:
+      "Start with path status, then reserve status, then field funding signal. The ordering matters because timing risk often appears in reserve before it appears in topline summaries.",
+    strong_condition:
+      "Strong means the campaign is On Path with a Healthy reserve and no material timing contradiction in upcoming costs.",
+    weak_condition:
+      "Weak means the campaign is Off Path, reserve is Tight or At Risk, and next-window commitments assume receipts that are not yet secure.",
+    what_to_do_next:
+      "Strengthen near-term finance execution and delay optional obligations if reserve pressure is rising.",
+    limits:
+      "Overview is a command summary; it cannot replace line-level budget, activity, or classification review."
+  },
+  budget: {
+    what_this_page_is_for:
+      "Define campaign costs by domain, timing, and required/optional discipline.",
+    how_to_read:
+      "Review required and optional shares before adding new lines. Confirm timing assumptions for each major line instead of entering totals without windows.",
+    strong_condition:
+      "Strong budgets are timed, prioritized, and realistic about what is actually required.",
+    weak_condition:
+      "Weak budgets carry too much early pressure and hide optional spend as if it were mandatory.",
+    what_to_do_next:
+      "If the path tightens, adjust optional sequencing before cutting core operating lines.",
+    limits:
+      "Budget structure does not prove finance execution quality by itself."
+  },
+  timeline: {
+    what_this_page_is_for:
+      "Translate budget structure into time-aware pressure windows.",
+    how_to_read:
+      "Look at peak window first, then reserve floor ahead, then checkpoint demands.",
+    strong_condition:
+      "Strong timing means costs and likely receipts are aligned enough to preserve choice.",
+    weak_condition:
+      "Weak timing means commitments compress before likely money and reduce room for correction.",
+    what_to_do_next:
+      "Resequence optional spend and pull forward high-probability asks before entering peak pressure.",
+    limits:
+      "Timeline outputs are modeled projections and should be reviewed when assumptions change."
+  },
+  benchmarks: {
+    what_this_page_is_for:
+      "Provide historical realism context from comparable races.",
+    how_to_read:
+      "Treat benchmark signals as evidence context, not commands. Compare current assumptions against comparable distributions and timing norms.",
+    strong_condition:
+      "Strong benchmark posture means assumptions are within credible bands and deviations are intentional.",
+    weak_condition:
+      "Weak benchmark posture means key assumptions rely on outlier performance without operational support.",
+    what_to_do_next:
+      "If realism flags rise, tighten assumptions or increase near-term execution plans.",
+    limits:
+      "Comparables can inform judgment, but they cannot predict campaign-specific outcomes alone."
+  },
+  fundingPath: {
+    what_this_page_is_for:
+      "Show required raise totals, checkpoint targets, and channel implications under reserve discipline.",
+    how_to_read:
+      "Read total requirement, next checkpoint, and reserve floor together. A healthy topline can still hide near-term exposure.",
+    strong_condition:
+      "Strong path means current pace supports near-term windows without reserve degradation.",
+    weak_condition:
+      "Weak path means checkpoint pressure depends on assumptions the campaign has not earned yet.",
+    what_to_do_next:
+      "Raise execution volume in the next two weeks and defer optional commitments if margin is narrowing.",
+    limits:
+      "Path outputs do not replace activity quality review or pledge conversion review."
+  },
+  financeOperations: {
+    what_this_page_is_for:
+      "Track and improve the work that creates receipts: calls, meetings, events, follow-up, and tasks.",
+    how_to_read:
+      "Compare planned versus completed work and review conversion quality, not activity count alone.",
+    strong_condition:
+      "Strong operations means high completion on high-yield work with disciplined follow-up.",
+    weak_condition:
+      "Weak operations means inconsistent completion and unresolved commitments accumulating.",
+    what_to_do_next:
+      "Tighten owner-level accountability and prioritize asks closest to conversion.",
+    limits:
+      "Activity logs do not guarantee receipt timing unless conversion and deposits follow."
+  },
+  donorIntelligence: {
+    what_this_page_is_for:
+      "Interpret donor base breadth, geography, and occupation/industry composition.",
+    how_to_read:
+      "Start with concentration and in-district share before over-reading small segment changes.",
+    strong_condition:
+      "Strong donor posture is broad enough to absorb softness in any single donor cluster.",
+    weak_condition:
+      "Weak donor posture is overconcentrated or highly dependent on outside-network clusters.",
+    what_to_do_next:
+      "Broaden ask universes and keep unknown classifications visible until reviewed.",
+    limits:
+      "Donor profile does not directly prove voter persuasion strength or turnout behavior."
+  },
+  expenditureIntelligence: {
+    what_this_page_is_for:
+      "Explain spending mix and alignment with strategy and timing.",
+    how_to_read:
+      "Compare category shares with budget intent and timing sequence, not totals alone.",
+    strong_condition:
+      "Strong spend posture aligns category mix to current strategy and known timing constraints.",
+    weak_condition:
+      "Weak spend posture is top-heavy, mistimed, or too dependent on overhead growth.",
+    what_to_do_next:
+      "Control optional overhead and verify vendor concentration risk before new commitments.",
+    limits:
+      "Category signals can guide decisions but cannot capture every qualitative program tradeoff."
+  },
+  risks: {
+    what_this_page_is_for:
+      "Concentrated warning surface tied to canonical triggers and practical action.",
+    how_to_read:
+      "Read severity with cause and next action together. Severity without cause is not operationally useful.",
+    strong_condition:
+      "Strong risk posture means no elevated triggers or rapid mitigation on recent flags.",
+    weak_condition:
+      "Weak risk posture means multiple active warnings tied to pace, reserve, or execution degradation.",
+    what_to_do_next:
+      "Act on top risks in priority order and confirm trigger movement in the next reporting cycle.",
+    limits:
+      "Risk flags are decision aids, not guarantees of outcome."
+  },
+  reports: {
+    what_this_page_is_for:
+      "Generate circulation-ready outputs that reuse canonical snapshots and interpretation language.",
+    how_to_read:
+      "Verify snapshot freshness and section completeness before export.",
+    strong_condition:
+      "Strong report posture means outputs are complete, current, and actionable without rewrite.",
+    weak_condition:
+      "Weak report posture means missing snapshot context or unresolved classification coverage.",
+    what_to_do_next:
+      "Resolve blocking sections and regenerate using current canonical snapshots.",
+    limits:
+      "Report polish does not substitute for underlying data completeness."
+  },
+  manual: {
+    what_this_page_is_for:
+      "Teach campaign operators how to interpret and act on CFE outputs.",
+    how_to_read:
+      "Use module intros first, then metric explainers, then warning guidance.",
+    strong_condition:
+      "Strong manual usage means operators can explain why a metric matters and what action follows.",
+    weak_condition:
+      "Weak manual usage means users navigate screens but cannot interpret underlying implications.",
+    what_to_do_next:
+      "Use manual notes in workflow planning and report interpretation.",
+    limits:
+      "Manual guidance supports judgment; it does not replace campaign leadership decisions."
+  },
+  settingsDataImports: {
+    what_this_page_is_for:
+      "Control imports, exports, snapshot governance, and role-aware system behavior.",
+    how_to_read:
+      "Validate snapshot and contract diagnostics before accepting new data into active scenario workflows.",
+    strong_condition:
+      "Strong controls preserve provenance and keep Reported/Standardized/Modeled distinctions intact.",
+    weak_condition:
+      "Weak controls accept unvalidated data or flatten trust-label distinctions silently.",
+    what_to_do_next:
+      "Run diagnostics before export and inspect rejected/flagged import records.",
+    limits:
+      "Control surfaces enforce discipline but cannot repair poor source records automatically."
+  }
+};

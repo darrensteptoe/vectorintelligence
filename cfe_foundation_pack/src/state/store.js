@@ -6,6 +6,7 @@ import {
   computeReserveTarget,
   evaluateReserveStatus
 } from "../core/engine/funding.js";
+import { runContractChecks } from "../core/engine/hardening.js";
 import {
   composeCandidateBrief,
   composeFinanceCommitteeMemo,
@@ -19,6 +20,9 @@ import { buildSpendTimelineSnapshot } from "../core/engine/timeline.js";
  * @typedef {{
  *   route: string,
  *   scenarioId: string,
+ *   scenarioState: string,
+ *   activeRole: string,
+ *   bridgeSnapshotState: string,
  *   raceProfile: import('../core/contracts/types.js').RaceProfile | null,
  *   campaignProfile: import('../core/contracts/types.js').CampaignProfile | null,
  *   filingCalendar: import('../core/contracts/types.js').FilingCalendar | null,
@@ -42,6 +46,7 @@ import { buildSpendTimelineSnapshot } from "../core/engine/timeline.js";
  *     fieldFundingStatus: string | null,
  *     activityCompletionRate: number | null,
  *     riskFlags: import('../core/contracts/types.js').RiskFlag[],
+ *     diagnostics: Record<string, unknown> | null,
  *     reports: {
  *       weeklyFinanceMemo: Record<string, unknown> | null,
  *       candidateBrief: Record<string, unknown> | null,
@@ -57,6 +62,7 @@ import { buildSpendTimelineSnapshot } from "../core/engine/timeline.js";
  *   getState: () => CfeState,
  *   subscribe: (listener: (state: CfeState) => void) => () => void,
  *   setRoute: (route: string) => void,
+ *   setActiveRole: (role: string) => void,
  *   setCampaignSetup: (setup: Partial<CfeState>) => void,
  *   setBudgetPlan: (plan: import('../core/contracts/types.js').BudgetPlan) => void,
  *   upsertBudgetLine: (line: import('../core/contracts/types.js').BudgetLine) => void,
@@ -93,12 +99,16 @@ function estimateActivityCompletionRate(activities) {
 
   let completedWeight = 0;
   for (const activity of activities) {
-    if (activity.status === "Completed" || activity.status === "Closed") {
+    if (activity.status === "Completed") {
       completedWeight += 1;
       continue;
     }
-    if (activity.status === "Partially Completed") {
+    if (activity.status === "In Progress") {
       completedWeight += 0.5;
+      continue;
+    }
+    if (activity.status === "Deferred") {
+      completedWeight += 0.25;
     }
   }
 
@@ -112,6 +122,9 @@ function makeInitialState() {
   return {
     route: "/overview",
     scenarioId: "active",
+    scenarioState: "Active Scenario",
+    activeRole: "Finance Director",
+    bridgeSnapshotState: "Imported",
     raceProfile: null,
     campaignProfile: null,
     filingCalendar: null,
@@ -135,6 +148,7 @@ function makeInitialState() {
       fieldFundingStatus: null,
       activityCompletionRate: null,
       riskFlags: [],
+      diagnostics: null,
       reports: {
         weeklyFinanceMemo: null,
         candidateBrief: null,
@@ -177,6 +191,9 @@ export function createCfeStore(seed = {}) {
     }
   }
 
+  /**
+   * @param {(current: CfeState) => CfeState} updater
+   */
   function setState(updater) {
     state = updater(state);
     notify();
@@ -196,6 +213,10 @@ export function createCfeStore(seed = {}) {
 
     setRoute(route) {
       setState((current) => ({ ...current, route }));
+    },
+
+    setActiveRole(role) {
+      setState((current) => ({ ...current, activeRole: role }));
     },
 
     setCampaignSetup(setup) {
@@ -227,7 +248,7 @@ export function createCfeStore(seed = {}) {
     upsertBudgetLine(line) {
       setState((current) => {
         const index = current.budgetLines.findIndex((item) => item.id === line.id);
-        if (index === -1) {
+        if (index < 0) {
           return {
             ...current,
             budgetLines: [...current.budgetLines, line]
@@ -261,6 +282,7 @@ export function createCfeStore(seed = {}) {
       const snapshot = importFpeBudgetDemandSnapshot(raw);
       setState((current) => ({
         ...current,
+        bridgeSnapshotState: "Imported",
         bridge: {
           ...current.bridge,
           fpeSnapshot: snapshot
@@ -269,7 +291,7 @@ export function createCfeStore(seed = {}) {
     },
 
     recomputeCanonicalSnapshots(options = {}) {
-      if (state.campaignProfile === null || state.budgetPlan === null || state.budgetLines.length === 0) {
+      if (state.campaignProfile == null || state.budgetPlan == null || state.budgetLines.length === 0) {
         return;
       }
 
@@ -328,7 +350,7 @@ export function createCfeStore(seed = {}) {
 
       let cfeBridgeSnapshot = state.bridge.cfeSnapshot;
       let fieldFundingStatus = null;
-      if (state.bridge.fpeSnapshot) {
+      if (state.bridge.fpeSnapshot != null) {
         cfeBridgeSnapshot = exportCfeFundingStatusSnapshot({
           campaignId: state.campaignProfile.id,
           officeId: state.bridge.fpeSnapshot.office_id,
@@ -385,8 +407,7 @@ export function createCfeStore(seed = {}) {
           "Prioritize host-confirmed events with strong RSVP pipelines.",
           "Pair event asks with same-week follow-up blocks."
         ],
-        oneRisk:
-          riskFlags[0]?.title ?? "Reserve coverage should be watched as spending pressure increases.",
+        oneRisk: riskFlags[0]?.title ?? "Reserve coverage should be watched as spending pressure increases.",
         fundingStatus: fundingRequirement.path_status
       });
 
@@ -425,8 +446,37 @@ export function createCfeStore(seed = {}) {
         ]
       });
 
+      const nextBridgeSnapshotState =
+        state.bridge.fpeSnapshot == null ? state.bridgeSnapshotState : "Validated";
+
+      const diagnostics = runContractChecks({
+        ...state,
+        bridgeSnapshotState: nextBridgeSnapshotState,
+        bridge: {
+          ...state.bridge,
+          cfeSnapshot: cfeBridgeSnapshot
+        },
+        snapshots: {
+          ...state.snapshots,
+          budgetSummary,
+          spendTimeline: timeline,
+          fundingRequirement,
+          reserveStatus,
+          fieldFundingStatus,
+          activityCompletionRate,
+          riskFlags,
+          reports: {
+            weeklyFinanceMemo,
+            candidateBrief,
+            financeCommitteeMemo,
+            leadershipMemo
+          }
+        }
+      });
+
       setState((current) => ({
         ...current,
+        bridgeSnapshotState: nextBridgeSnapshotState,
         bridge: {
           ...current.bridge,
           cfeSnapshot: cfeBridgeSnapshot
@@ -440,6 +490,7 @@ export function createCfeStore(seed = {}) {
           fieldFundingStatus,
           activityCompletionRate,
           riskFlags,
+          diagnostics,
           reports: {
             weeklyFinanceMemo,
             candidateBrief,

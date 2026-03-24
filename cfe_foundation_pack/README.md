@@ -1,49 +1,32 @@
-# Campaign Finance Engine (CFE) — Component Pack Implementation
+# Campaign Finance Engine (CFE) — Final Hardening Build
 
-This workspace contains a standalone CFE implementation scaffolded from the handoff docs and component language pack.
+This workspace contains the hardened CFE implementation aligned to the final hardening pack controls.
 
-## Implemented surfaces
-- Overview
-- Budget Plan
-- Spend Timeline
-- Funding Path
-- Activity
-- Donor Intelligence
-- Expenditure Intelligence
-- Reports
-- Manual
-- Settings
+## Implemented hardening scope
+- 12-page app map aligned to `APP_MAP_AND_INFORMATION_ARCHITECTURE.md`
+- shell-level right-rail payload and page-question/manual guidance injection
+- role-aware permission payloads for top-level surfaces
+- state transition alignment for budget/scenario/bridge/activity/risk governance
+- diagnostics engine (`PASS/FAIL`) for canonical contract drift checks
+- snapshot governance extensions for budget and funding-path roundtrips
+- expanded test pack for routes, diagnostics, and snapshot contracts
 
-Route map is defined in `src/app/routes.js` and surface payload builders are in `src/app/pages/`.
+## Route map
+- `/overview`
+- `/budget`
+- `/timeline`
+- `/benchmarks`
+- `/funding-path`
+- `/finance-operations`
+- `/donor-intelligence`
+- `/expenditure-intelligence`
+- `/risks`
+- `/reports`
+- `/manual`
+- `/settings-data-imports`
 
-## Canonical language + status integration
-The implementation is wired to canonical copy/status contracts in `src/core/contracts/`:
-- status taxonomy: `On Path / Watch / Off Path`, `Healthy / Tight / At Risk`, `Greenlight / Caution / Redline`, `Strong / Mixed / Weak`
-- warning families, helper text, banners, tooltips, empty states, shared modals
-- manual language blocks and report narrative templates
-
-## Core architecture
-- Canonical calculations live in `src/core/engine/`.
-- Store orchestration and recomputation live in `src/state/store.js`.
-- Bridge import/export is isolated in `src/core/bridge/`.
-- FPE and CFE remain separate apps connected only by validated snapshot contracts.
-
-## Verify locally
+## Verify
 ```bash
 npm test
-```
-
-Optional route-render smoke check:
-```bash
 node -e "import('./src/index.js').then(({bootstrapCfe,APP_ROUTES})=>{const {shell}=bootstrapCfe();for(const r of APP_ROUTES){shell.navigate(r.path);shell.render();}console.log('render-ok',APP_ROUTES.length);})"
 ```
-
-## Source handoff docs
-- `PRODUCT_BRIEF.md`
-- `SYSTEM_RULES.md`
-- `WARNING_AND_STATUS_LANGUAGE.md`
-- `MANUAL_AND_OPERATOR_LANGUAGE.md`
-- `REPORTING_BLUEPRINT.md`
-- `docs/`, `copy/`, `manual/`, `reports/`, `ui_copy/`
-- `prompts/CODEX_BUILD_PROMPT.md`
-- `prompts/CODEX_COMPONENT_IMPLEMENTATION_PROMPT.md`

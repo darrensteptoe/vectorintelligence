@@ -8,15 +8,17 @@ export const GLOBAL_INFO_BANNER =
 
 export const NAVIGATION_LABELS = [
   "Overview",
-  "Budget Plan",
-  "Spend Timeline",
+  "Budget",
+  "Timeline",
+  "Benchmarks",
   "Funding Path",
-  "Activity",
+  "Finance Operations",
   "Donor Intelligence",
   "Expenditure Intelligence",
+  "Risks",
   "Reports",
   "Manual",
-  "Settings"
+  "Settings / Data / Imports"
 ];
 
 export const GLOBAL_STATUS_LABELS = {

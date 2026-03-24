@@ -1,15 +1,9 @@
-export const APP_ROUTES = [
-  { path: "/overview", title: "Overview" },
-  { path: "/budget-plan", title: "Budget Plan" },
-  { path: "/spend-timeline", title: "Spend Timeline" },
-  { path: "/funding-path", title: "Funding Path" },
-  { path: "/activity", title: "Activity" },
-  { path: "/donor-intelligence", title: "Donor Intelligence" },
-  { path: "/expenditure-intelligence", title: "Expenditure Intelligence" },
-  { path: "/reports", title: "Reports" },
-  { path: "/manual", title: "Manual" },
-  { path: "/settings", title: "Settings" }
-];
+import { HARDENED_APP_MAP } from "../core/contracts/hardening.js";
+
+export const APP_ROUTES = HARDENED_APP_MAP.map((entry) => ({
+  path: entry.path,
+  title: entry.title
+}));
 
 /**
  * @param {string} path
